@@ -11,7 +11,20 @@
       "Bash(mv CLAUDE.md CLAUDE.md.bak)",
       "Bash(npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --use-npm --no-turbopack)",
       "Bash(py -c \":*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "Bash(powershell.exe -Command \"py -c \"\"import graphify; print\\(''ok''\\)\"\"\")",
+      "Bash(powershell.exe -Command \"Remove-Item -ErrorAction SilentlyContinue .graphify_ast.json, .graphify_semantic.json, .graphify_extract.json, .graphify_cached.json, .graphify_uncached.txt, .graphify_semantic_new.json\")",
+      "Bash(ls /d/Kannan/coding/d_aisle_inventory/src/app/\\\\\\(dashboard\\\\\\)/)",
+      "Bash(ls /d/Kannan/coding/d_aisle_inventory/src/app/\\\\\\(auth\\\\\\)/)",
+      "Bash(ls \"/d/Kannan/coding/d_aisle_inventory/src/app/\\(dashboard\\)/\")",
+      "Bash(ls \"/d/Kannan/coding/d_aisle_inventory/src/app/\\(dashboard\\)/settings/activity-log/\")",
+      "Bash(ls \"/d/Kannan/coding/d_aisle_inventory/src/app/\\(dashboard\\)/settings/users/\")",
+      "Bash(ls \"/d/Kannan/coding/d_aisle_inventory/src/app/\\(dashboard\\)/settings/\")",
+      "Bash(ls \"/d/Kannan/coding/d_aisle_inventory/src/app/\\(dashboard\\)/adjustments/\")",
+      "Bash(cat \"/d/Kannan/coding/d_aisle_inventory/src/app/\\(dashboard\\)/adjustments/page.tsx\")",
+      "Bash(ls \"/d/Kannan/coding/d_aisle_inventory/src/app/\\(dashboard\\)/reports/\")",
+      "Bash(cat \"/d/Kannan/coding/d_aisle_inventory/src/app/\\(dashboard\\)/reports/page.tsx\")"
     ]
   }
 }

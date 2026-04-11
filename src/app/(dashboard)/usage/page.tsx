@@ -1,0 +1,85 @@
+import { createClient } from "@/lib/supabase/server";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
+} from "@/components/ui/table";
+import { PageHeader } from "@/components/shared/page-header";
+import { Plus } from "lucide-react";
+import { formatDate, formatLength } from "@/lib/utils";
+
+export default async function UsagePage() {
+  const supabase = await createClient();
+
+  const { data: usage } = await supabase
+    .from("stock_usage")
+    .select("*, brides(name), rolls(roll_number, products(item_code, description)), profiles:logged_by(full_name)")
+    .order("created_at", { ascending: false })
+    .limit(100);
+
+  const { data: { user } } = await supabase.auth.getUser();
+  const { data: profile } = await supabase.from("profiles").select("role").eq("id", user!.id).single();
+  const canEdit = profile?.role === "admin" || profile?.role === "inventory_manager";
+
+  return (
+    <div className="space-y-6">
+      <PageHeader
+        title="Stock Usage"
+        description="Material consumption log"
+        action={
+          canEdit ? (
+            <Link href="/usage/new">
+              <Button className="bg-rose-600 hover:bg-rose-700">
+                <Plus size={16} className="mr-2" />
+                Log Usage
+              </Button>
+            </Link>
+          ) : undefined
+        }
+      />
+
+      <Card>
+        <CardContent className="p-0">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Date</TableHead>
+                <TableHead>Bride</TableHead>
+                <TableHead>Product</TableHead>
+                <TableHead>Roll</TableHead>
+                <TableHead className="text-right">Quantity</TableHead>
+                <TableHead>Logged By</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {!usage || usage.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="py-12 text-center text-muted-foreground">
+                    No usage logged yet.
+                  </TableCell>
+                </TableRow>
+              ) : (
+                usage.map((u) => {
+                  const bride = u.brides as { name: string } | null;
+                  const roll = u.rolls as { roll_number: string; products: { item_code: string; description: string } } | null;
+                  const logger = u.profiles as { full_name: string } | null;
+                  return (
+                    <TableRow key={u.id}>
+                      <TableCell>{formatDate(u.usage_date)}</TableCell>
+                      <TableCell className="font-medium">{bride?.name ?? "—"}</TableCell>
+                      <TableCell>{roll?.products?.item_code} — {roll?.products?.description}</TableCell>
+                      <TableCell>{roll?.roll_number}</TableCell>
+                      <TableCell className="text-right font-medium">{formatLength(u.quantity_used)}</TableCell>
+                      <TableCell className="text-muted-foreground">{logger?.full_name ?? "—"}</TableCell>
+                    </TableRow>
+                  );
+                })
+              )}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

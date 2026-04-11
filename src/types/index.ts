@@ -38,7 +38,7 @@ export interface Product {
   category_id: string;
   sub_type: string | null;
   image_url: string | null;
-  reorder_level: number;
+  low_stock_threshold: number;
   is_phased_out: boolean;
   notes: string | null;
   created_at: string;
