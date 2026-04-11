@@ -10,7 +10,8 @@
       "Bash(py -c \"import sys; open\\(''D:/Kannan/coding/d_aisle_inventory/.graphify_python'', ''w''\\).write\\(sys.executable\\); print\\(sys.executable\\)\")",
       "Bash(mv CLAUDE.md CLAUDE.md.bak)",
       "Bash(npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --use-npm --no-turbopack)",
-      "Bash(py -c \":*)"
+      "Bash(py -c \":*)",
+      "Bash(npm install:*)"
     ]
   }
 }
