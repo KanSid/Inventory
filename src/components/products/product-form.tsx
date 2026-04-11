@@ -49,7 +49,7 @@ export function ProductForm({ categories, product }: Props) {
     const result = await uploadProductImage(file);
 
     if ("error" in result) {
-      setUploadError(result.error);
+      setUploadError(result.error ?? "Upload failed");
       setUploading(false);
       return;
     }
