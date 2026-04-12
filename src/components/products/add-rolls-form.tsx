@@ -112,7 +112,7 @@ export function AddRollsForm({ productId, itemCode }: Props) {
                     </Label>
                     <Select
                       value={roll.unit}
-                      onValueChange={(v) => updateRoll(index, "unit", v)}
+                      onValueChange={(v) => v && updateRoll(index, "unit", v)}
                     >
                       <SelectTrigger id={`unit-${index}`}>
                         <SelectValue />
