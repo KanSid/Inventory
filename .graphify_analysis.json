@@ -1,0 +1,303 @@
+{
+  "communities": {
+    "0": [
+      "activity_log_filters",
+      "activity_log_filters_activitylogfilters",
+      "admin_settings_form",
+      "admin_settings_form_handlesubmit",
+      "card",
+      "card_cardaction",
+      "card_cn",
+      "page",
+      "page_addrollspage",
+      "page_adjustmentreportpage",
+      "page_adminsettingspage",
+      "page_bridespage",
+      "page_editsupplierpage",
+      "page_handlelogin",
+      "page_home",
+      "page_inventoryreportpage",
+      "page_newadjustmentpage",
+      "page_newproductpage",
+      "page_newshipmentpage",
+      "page_newsupplierpage",
+      "page_newusagepage",
+      "page_productspage",
+      "page_reportspage",
+      "page_settingspage",
+      "page_shipmentdetailpage",
+      "page_shipmentreportpage",
+      "page_supplierdetailpage",
+      "page_supplierspage",
+      "page_usagereportpage",
+      "shipment_timeline_chart",
+      "stock_consumption_chart",
+      "stock_status_chart",
+      "top_products_chart"
+    ],
+    "1": [
+      "add_rolls_form",
+      "add_rolls_form_addrollsform",
+      "input",
+      "input_input",
+      "label",
+      "label_cn",
+      "product",
+      "product_addrolls",
+      "product_createproduct",
+      "product_form",
+      "product_form_handlefilechange",
+      "product_form_handlesubmit",
+      "product_togglephaseout",
+      "product_updateproduct",
+      "shipment_form",
+      "shipment_form_additem",
+      "shipment_form_handlesubmit",
+      "shipment_form_removeitem",
+      "shipment_form_updateitem",
+      "supplier_form",
+      "supplier_form_supplierform",
+      "textarea",
+      "textarea_cn"
+    ],
+    "2": [
+      "bride",
+      "bride_createbride",
+      "bride_updatebride",
+      "middleware",
+      "middleware_middleware",
+      "middleware_updatesession",
+      "route",
+      "route_get",
+      "server",
+      "server_createadminclient",
+      "server_createclient",
+      "supplier",
+      "supplier_createsupplier",
+      "supplier_togglesupplieractive",
+      "supplier_updatesupplier",
+      "upload",
+      "upload_uploadproductimage",
+      "usage",
+      "usage_form",
+      "usage_form_usageform",
+      "usage_logusage"
+    ],
+    "3": [
+      "avatar",
+      "avatar_avatarbadge",
+      "avatar_cn",
+      "badge",
+      "badge_badge",
+      "dropdown_menu",
+      "dropdown_menu_cn",
+      "dropdown_menu_dropdownmenu",
+      "dropdown_menu_dropdownmenucheckboxitem",
+      "dropdown_menu_dropdownmenuportal",
+      "dropdown_menu_dropdownmenutrigger",
+      "separator",
+      "separator_cn",
+      "tooltip",
+      "tooltip_tooltipcontent",
+      "utils",
+      "utils_cn",
+      "utils_formatdate",
+      "utils_formatlength",
+      "utils_yardstometers"
+    ],
+    "4": [
+      "adjustment_export",
+      "adjustment_export_exportadjustmentexcel",
+      "adjustment_export_exportadjustmentpdf",
+      "client",
+      "client_adjustmentreportclient",
+      "client_createclient",
+      "client_inventoryreportclient",
+      "client_shipmentreportclient",
+      "client_usagereportclient",
+      "inventory_export",
+      "inventory_export_exportinventoryexcel",
+      "inventory_export_exportinventorypdf",
+      "shipment_export",
+      "shipment_export_exportshipmentexcel",
+      "shipment_export_exportshipmentpdf",
+      "usage_export",
+      "usage_export_exportusageexcel",
+      "usage_export_exportusagepdf"
+    ],
+    "5": [
+      "button",
+      "button_cn",
+      "dialog",
+      "dialog_cn",
+      "dialog_dialog",
+      "dialog_dialogclose",
+      "dialog_dialogportal",
+      "dialog_dialogtrigger",
+      "export_buttons",
+      "export_buttons_exportbuttons",
+      "sheet",
+      "sheet_cn",
+      "sheet_sheet",
+      "sheet_sheetclose",
+      "sheet_sheetdescription",
+      "sheet_sheetportal",
+      "sheet_sheettitle",
+      "sheet_sheettrigger"
+    ],
+    "6": [
+      "adjustment",
+      "adjustment_createadjustment",
+      "adjustment_form",
+      "adjustment_form_handlesubmit",
+      "select",
+      "select_selectcontent",
+      "select_selectgroup",
+      "select_selectitem",
+      "select_selectlabel",
+      "select_selectscrolldownbutton",
+      "select_selectscrollupbutton",
+      "select_selectseparator",
+      "select_selecttrigger",
+      "select_selectvalue"
+    ],
+    "7": [
+      "brides_client",
+      "brides_client_bridesclient",
+      "constants",
+      "page_header",
+      "products_client",
+      "products_client_sortindicator",
+      "products_client_togglesort",
+      "status_badge",
+      "status_badge_statusbadge",
+      "table",
+      "table_cn",
+      "table_table",
+      "table_tablebody",
+      "table_tableheader"
+    ],
+    "8": [
+      "actions",
+      "actions_changeuserrole",
+      "actions_getadminuser",
+      "actions_initiatepasswordreset",
+      "actions_saveadminsettings",
+      "actions_toggleuseractive",
+      "user_management_actions",
+      "user_management_actions_handlepasswordreset",
+      "user_management_actions_handlerolechange",
+      "user_management_actions_handletoggleactive",
+      "user_management_actions_notify"
+    ],
+    "9": [
+      "categories_client",
+      "categories_client_handledelete",
+      "categories_client_handlesubmit",
+      "categories_client_opencreate",
+      "categories_client_openedit",
+      "category",
+      "category_createcategory",
+      "category_deletecategory",
+      "category_updatecategory"
+    ],
+    "10": [
+      "dashboard_shell",
+      "dashboard_shell_dashboardshell",
+      "layout",
+      "layout_dashboardlayout",
+      "sidebar",
+      "topbar",
+      "topbar_topbar"
+    ],
+    "11": [
+      "receive_button",
+      "receive_button_receiveshipmentbutton",
+      "shipment",
+      "shipment_cancelshipment",
+      "shipment_createshipment",
+      "shipment_receiveshipment"
+    ],
+    "12": [
+      "next_env_d"
+    ],
+    "13": [
+      "next_config"
+    ],
+    "14": [
+      "index"
+    ]
+  },
+  "cohesion": {
+    "0": 0.07,
+    "1": 0.12,
+    "2": 0.12,
+    "3": 0.12,
+    "4": 0.11,
+    "5": 0.13,
+    "6": 0.16,
+    "7": 0.15,
+    "8": 0.24,
+    "9": 0.25,
+    "10": 0.29,
+    "11": 0.4,
+    "12": 1.0,
+    "13": 1.0,
+    "14": 1.0
+  },
+  "gods": [
+    {
+      "id": "actions_getadminuser",
+      "label": "getAdminUser()",
+      "edges": 4
+    },
+    {
+      "id": "actions_changeuserrole",
+      "label": "changeUserRole()",
+      "edges": 2
+    },
+    {
+      "id": "actions_toggleuseractive",
+      "label": "toggleUserActive()",
+      "edges": 2
+    },
+    {
+      "id": "actions_initiatepasswordreset",
+      "label": "initiatePasswordReset()",
+      "edges": 2
+    }
+  ],
+  "surprises": [],
+  "questions": [
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 0` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.07 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 1` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.12 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 2` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.12 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 3` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.12 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 4` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.11 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 5` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.13 - nodes in this community are weakly interconnected."
+    }
+  ]
+}

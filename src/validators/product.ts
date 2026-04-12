@@ -30,3 +30,23 @@ export const addRollsSchema = z.object({
 });
 
 export type AddRollsFormData = z.infer<typeof addRollsSchema>;
+
+// New schema for variable-length rolls
+export const rollEntrySchema = z.object({
+  length: z.coerce.number().positive("Length must be positive"),
+  unit: z.enum(["meters", "yards"], { message: "Select meters or yards" }),
+});
+
+export type RollEntry = {
+  length: string | number;
+  unit: "meters" | "yards";
+};
+
+export const addVariableRollsSchema = z.object({
+  product_id: z.string().uuid(),
+  rolls: z.array(rollEntrySchema).min(1, "Add at least one roll"),
+  received_date: z.string().min(1, "Date is required"),
+  notes: z.string().max(500).nullable().optional(),
+});
+
+export type AddVariableRollsFormData = z.infer<typeof addVariableRollsSchema>;

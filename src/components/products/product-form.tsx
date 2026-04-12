@@ -87,8 +87,8 @@ export function ProductForm({ categories, product }: Props) {
       return;
     }
 
-    if ("id" in result && result.id) {
-      router.push(`/products/${result.id}`);
+    if ("item_code" in result && result.item_code) {
+      router.push(`/products/${result.item_code}`);
     } else {
       router.push("/products");
     }
@@ -117,7 +117,9 @@ export function ProductForm({ categories, product }: Props) {
               <Label htmlFor="category">Category</Label>
               <Select value={categoryId} onValueChange={(v) => setCategoryId(v ?? "")} required>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select category" />
+                  <SelectValue placeholder="Select category">
+                    {categoryId ? categories.find(c => c.id === categoryId)?.name : "Select category"}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   {categories.map((c) => (

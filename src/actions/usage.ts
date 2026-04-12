@@ -12,10 +12,10 @@ export async function logUsage(data: UsageFormData) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: { bride_id: ["Not authenticated"] } };
 
-  // Validate quantity against roll remaining
+  // Validate quantity against roll remaining and fetch readable info
   const { data: roll } = await supabase
     .from("rolls")
-    .select("current_length_m, status")
+    .select("current_length_m, status, roll_number, product_id, products(item_code)")
     .eq("id", parsed.data.roll_id)
     .single();
 
@@ -24,6 +24,13 @@ export async function logUsage(data: UsageFormData) {
   if (parsed.data.quantity_used > roll.current_length_m) {
     return { error: { quantity_used: [`Exceeds remaining stock (${roll.current_length_m}m)`] } };
   }
+
+  // Fetch bride name
+  const { data: bride } = await supabase
+    .from("brides")
+    .select("name")
+    .eq("id", parsed.data.bride_id)
+    .single();
 
   // Insert usage
   const { error: usageError } = await supabase
@@ -54,13 +61,16 @@ export async function logUsage(data: UsageFormData) {
   await supabase.from("rolls").update(updates).eq("id", parsed.data.roll_id);
 
   // Log activity
+  const rollData = roll as any;
+  const productData = rollData?.products as any;
   await supabase.from("inventory_activity_log").insert({
     user_id: user.id,
     action_type: "stock_used",
     entity_type: "usage",
     details: {
-      bride_id: parsed.data.bride_id,
-      roll_id: parsed.data.roll_id,
+      bride: bride?.name ?? "Unknown",
+      product: productData?.item_code ?? "Unknown",
+      roll: rollData?.roll_number ?? "Unknown",
       quantity_used: parsed.data.quantity_used,
       remaining: newLength,
     },

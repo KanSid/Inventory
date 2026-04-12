@@ -129,7 +129,9 @@ export function UsageForm({ brides: initialBrides, products }: Props) {
               </div>
               <Select value={brideId} onValueChange={(v) => setBrideId(v ?? "")} required>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select bride" />
+                  <SelectValue placeholder="Select bride">
+                    {brideId ? brides.find(b => b.id === brideId)?.name : undefined}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   {brides.map((b) => (
@@ -145,7 +147,9 @@ export function UsageForm({ brides: initialBrides, products }: Props) {
               <Label>Product</Label>
               <Select value={productId} onValueChange={(v) => setProductId(v ?? "")} required>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select product" />
+                  <SelectValue placeholder="Select product">
+                    {productId ? products.find(p => p.id === productId)?.item_code : undefined}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   {products.map((p) => (
@@ -160,7 +164,9 @@ export function UsageForm({ brides: initialBrides, products }: Props) {
               <Label>Roll</Label>
               <Select value={rollId} onValueChange={(v) => setRollId(v ?? "")} required disabled={!productId}>
                 <SelectTrigger>
-                  <SelectValue placeholder={productId ? "Select roll" : "Select a product first"} />
+                  <SelectValue placeholder={productId ? "Select roll" : "Select a product first"}>
+                    {rollId ? rolls.find(r => r.id === rollId)?.roll_number : undefined}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   {rolls.map((r) => (
@@ -184,7 +190,7 @@ export function UsageForm({ brides: initialBrides, products }: Props) {
                   max={selectedRoll?.current_length_m}
                   value={quantity}
                   onChange={(e) => setQuantity(e.target.value)}
-                  placeholder="e.g. 2.5"
+                  placeholder=" "
                   required
                 />
                 {selectedRoll && (

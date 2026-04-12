@@ -18,27 +18,34 @@ import { Pencil, Plus } from "lucide-react";
 import { formatLength, formatDate } from "@/lib/utils";
 
 export default async function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
+  const { id: itemCode } = await params;
   const supabase = await createClient();
 
+  // First get the product to obtain its UUID
+  const { data: product } = await supabase
+    .from("products")
+    .select("*, categories(name)")
+    .eq("item_code", itemCode)
+    .single();
+
+  if (!product) notFound();
+
+  const productId = product.id;
+
   const [
-    { data: product },
     { data: rolls },
     { data: usage },
     { data: summary },
   ] = await Promise.all([
-    supabase.from("products").select("*, categories(name, color)").eq("id", id).single(),
-    supabase.from("rolls").select("*").eq("product_id", id).order("roll_number"),
+    supabase.from("rolls").select("*").eq("product_id", productId).order("roll_number"),
     supabase
       .from("stock_usage")
       .select("*, brides(name), rolls(roll_number)")
-      .eq("rolls.product_id", id)
+      .eq("rolls.product_id", productId)
       .order("usage_date", { ascending: false })
       .limit(20),
-    supabase.from("product_stock_summary").select("*").eq("id", id).single(),
+    supabase.from("product_stock_summary").select("*").eq("id", productId).single(),
   ]);
-
-  if (!product) notFound();
 
   const { data: { user } } = await supabase.auth.getUser();
   const { data: profile } = await supabase
@@ -48,7 +55,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     .single();
   const canEdit = profile?.role === "admin" || profile?.role === "inventory_manager";
 
-  const cat = product.categories as { name: string; color: string } | null;
+  const cat = product.categories as { name: string } | null;
   const stockStatus = (summary?.stock_status ?? "out_of_stock") as "in_stock" | "low_stock" | "out_of_stock" | "phased_out";
 
   return (
@@ -59,13 +66,13 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
         action={
           canEdit ? (
             <div className="flex gap-2">
-              <Link href={`/products/${id}/rolls/add`}>
+              <Link href={`/products/${product.item_code}/rolls/add`}>
                 <Button className="bg-rose-600 hover:bg-rose-700">
                   <Plus size={16} className="mr-2" />
                   Add Rolls
                 </Button>
               </Link>
-              <Link href={`/products/${id}/edit`}>
+              <Link href={`/products/${product.item_code}/edit`}>
                 <Button variant="outline">
                   <Pencil size={16} className="mr-2" />
                   Edit
@@ -82,11 +89,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
           <CardContent className="pt-6">
             <p className="text-sm text-muted-foreground">Category</p>
             {cat && (
-              <span
-                className="mt-1 inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-medium"
-                style={{ backgroundColor: cat.color + "20", color: cat.color }}
-              >
-                <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: cat.color }} />
+              <span className="mt-1 inline-block rounded-full bg-neutral-100 px-2.5 py-0.5 text-xs font-medium text-neutral-700">
                 {cat.name}
               </span>
             )}

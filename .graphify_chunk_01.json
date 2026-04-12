@@ -1,0 +1,25 @@
+{
+  "nodes": [
+    {"id": "AGENTS_md", "label": "AGENTS.md - Project Instructions", "file_type": "document", "source_file": "AGENTS.md"},
+    {"id": "CLAUDE_md", "label": "CLAUDE.md - Project Configuration", "file_type": "document", "source_file": "CLAUDE.md"},
+    {"id": "README_md", "label": "README.md - Project Documentation", "file_type": "document", "source_file": "README.md"},
+    {"id": "GRAPH_REPORT_md", "label": "GRAPH_REPORT.md - Graphify Analysis", "file_type": "document", "source_file": "graphify-out/GRAPH_REPORT.md"},
+    {"id": "AddRollsForm_component", "label": "AddRollsForm() - Form Component", "file_type": "code", "source_file": "graphify-out/obsidian/AddRollsForm().md"},
+    {"id": "AddRollsPage_component", "label": "AddRollsPage() - Page Component", "file_type": "code", "source_file": "graphify-out/obsidian/AddRollsPage().md"},
+    {"id": "addRolls_function", "label": "addRolls() - Rolls Addition Function", "file_type": "code", "source_file": "graphify-out/obsidian/addRolls().md"},
+    {"id": "apppage_tsx", "label": "apppage.tsx - Entry Point", "file_type": "code", "source_file": "graphify-out/obsidian/apppage.tsx Entry Point.md"},
+    {"id": "BridesClient_component", "label": "BridesClient() - Component", "file_type": "code", "source_file": "graphify-out/obsidian/BridesClient().md"},
+    {"id": "BridesPage_component", "label": "BridesPage() - Page Component", "file_type": "code", "source_file": "graphify-out/obsidian/BridesPage().md"}
+  ],
+  "edges": [
+    {"source": "AddRollsForm_component", "target": "addRolls_function", "relation": "calls", "confidence": "INFERRED", "confidence_score": 0.85},
+    {"source": "AddRollsPage_component", "target": "AddRollsForm_component", "relation": "references", "confidence": "INFERRED", "confidence_score": 0.85},
+    {"source": "apppage_tsx", "target": "AddRollsPage_component", "relation": "references", "confidence": "INFERRED", "confidence_score": 0.75},
+    {"source": "BridesPage_component", "target": "BridesClient_component", "relation": "references", "confidence": "INFERRED", "confidence_score": 0.85}
+  ],
+  "hyperedges": [
+    {"id": "rolls_workflow", "label": "Rolls Management Workflow", "nodes": ["AddRollsPage_component", "AddRollsForm_component", "addRolls_function"], "relation": "form", "confidence": "INFERRED", "confidence_score": 0.85}
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

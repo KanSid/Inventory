@@ -42,7 +42,6 @@ interface ProductSummary {
 interface CategoryRef {
   id: string;
   name: string;
-  color: string;
 }
 
 interface Props {
@@ -210,20 +209,16 @@ export function ProductsClient({ products, categories, canEdit }: Props) {
                         )}
                       </TableCell>
                       <TableCell>
-                        <Link href={`/products/${p.id}`} className="font-medium text-rose-600 hover:underline">
+                        <Link href={`/products/${p.item_code}`} className="font-medium text-rose-600 hover:underline">
                           {p.item_code}
                         </Link>
                       </TableCell>
                       <TableCell>
-                        <Link href={`/products/${p.id}`}>{p.description}</Link>
+                        <Link href={`/products/${p.item_code}`}>{p.description}</Link>
                       </TableCell>
                       <TableCell>
                         {cat && (
-                          <span
-                            className="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-medium"
-                            style={{ backgroundColor: cat.color + "20", color: cat.color }}
-                          >
-                            <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: cat.color }} />
+                          <span className="inline-block rounded-full bg-neutral-100 px-2.5 py-0.5 text-xs font-medium text-neutral-700">
                             {cat.name}
                           </span>
                         )}

@@ -27,6 +27,13 @@ export async function createShipment(data: ShipmentFormData) {
 
   if (shipError) return { error: { supplier_id: [shipError.message] } };
 
+  // Fetch supplier name for logging
+  const { data: supplier } = await supabase
+    .from("suppliers")
+    .select("name")
+    .eq("id", parsed.data.supplier_id)
+    .single();
+
   // Create shipment items
   const items = parsed.data.items.map((item) => {
     const qtyMeters = item.input_unit === "yards"
@@ -94,13 +101,27 @@ export async function receiveShipment(shipmentId: string) {
     })
     .eq("id", shipmentId);
 
+  // Get shipment info for logging
+  const { data: shipmentData } = await supabase
+    .from("shipments")
+    .select("shipment_number, suppliers(name)")
+    .eq("id", shipmentId)
+    .single();
+
+  const shipmentInfo = shipmentData as any;
+  const supplierData = shipmentInfo?.suppliers as any;
+
   // Log activity
   await supabase.from("inventory_activity_log").insert({
     user_id: user.id,
     action_type: "shipment_received",
     entity_type: "shipment",
     entity_id: shipmentId,
-    details: { items_count: items.length },
+    details: {
+      shipment: shipmentInfo?.shipment_number ?? "Unknown",
+      supplier: supplierData?.name ?? "Unknown",
+      items_count: items.length,
+    },
   });
 
   revalidatePath("/shipments");

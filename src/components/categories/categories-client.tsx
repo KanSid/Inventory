@@ -29,7 +29,6 @@ export function CategoriesClient({ categories, productCounts, canEdit, canDelete
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Category | null>(null);
   const [name, setName] = useState("");
-  const [color, setColor] = useState("#C82A5F");
   const [description, setDescription] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -38,7 +37,6 @@ export function CategoriesClient({ categories, productCounts, canEdit, canDelete
   function openCreate() {
     setEditing(null);
     setName("");
-    setColor("#C82A5F");
     setDescription("");
     setError("");
     setOpen(true);
@@ -47,7 +45,6 @@ export function CategoriesClient({ categories, productCounts, canEdit, canDelete
   function openEdit(cat: Category) {
     setEditing(cat);
     setName(cat.name);
-    setColor(cat.color);
     setDescription(cat.description || "");
     setError("");
     setOpen(true);
@@ -58,7 +55,7 @@ export function CategoriesClient({ categories, productCounts, canEdit, canDelete
     setLoading(true);
     setError("");
 
-    const data = { name, color, description: description || null };
+    const data = { name, description: description || null };
     const result = editing
       ? await updateCategory(editing.id, data)
       : await createCategory(data);
@@ -115,24 +112,6 @@ export function CategoriesClient({ categories, productCounts, canEdit, canDelete
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="color">Color</Label>
-                    <div className="flex items-center gap-3">
-                      <input
-                        type="color"
-                        id="color"
-                        value={color}
-                        onChange={(e) => setColor(e.target.value)}
-                        className="h-10 w-14 cursor-pointer rounded border"
-                      />
-                      <Input
-                        value={color}
-                        onChange={(e) => setColor(e.target.value)}
-                        className="flex-1 font-mono"
-                        maxLength={7}
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
                     <Label htmlFor="desc">Description (optional)</Label>
                     <Textarea
                       id="desc"
@@ -168,13 +147,7 @@ export function CategoriesClient({ categories, productCounts, canEdit, canDelete
           {categories.map((cat) => (
             <Card key={cat.id}>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <div className="flex items-center gap-3">
-                  <div
-                    className="h-4 w-4 rounded-full"
-                    style={{ backgroundColor: cat.color }}
-                  />
-                  <CardTitle className="text-base">{cat.name}</CardTitle>
-                </div>
+                <CardTitle className="text-base">{cat.name}</CardTitle>
                 {canEdit && (
                   <div className="flex gap-1">
                     <Button

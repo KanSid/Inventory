@@ -12,10 +12,10 @@ export async function createAdjustment(data: AdjustmentFormData) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: { roll_id: ["Not authenticated"] } };
 
-  // Get current roll
+  // Get current roll with readable info
   const { data: roll } = await supabase
     .from("rolls")
-    .select("current_length_m, status, product_id")
+    .select("current_length_m, status, product_id, roll_number, products(item_code)")
     .eq("id", parsed.data.roll_id)
     .single();
 
@@ -60,12 +60,15 @@ export async function createAdjustment(data: AdjustmentFormData) {
   await supabase.from("rolls").update(updates).eq("id", parsed.data.roll_id);
 
   // Log activity
+  const rollData = roll as any;
+  const productData = rollData?.products as any;
   await supabase.from("inventory_activity_log").insert({
     user_id: user.id,
     action_type: "adjustment_made",
     entity_type: "adjustment",
     details: {
-      roll_id: parsed.data.roll_id,
+      product: productData?.item_code ?? "Unknown",
+      roll: rollData?.roll_number ?? "Unknown",
       type: parsed.data.adjustment_type,
       quantity: parsed.data.quantity,
       reason: parsed.data.reason,

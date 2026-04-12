@@ -82,7 +82,11 @@ export function AdjustmentForm({ products }: Props) {
           <div className="space-y-2">
             <Label>Product</Label>
             <Select value={productId} onValueChange={(v) => setProductId(v ?? "")} required>
-              <SelectTrigger><SelectValue placeholder="Select product" /></SelectTrigger>
+              <SelectTrigger>
+                <SelectValue placeholder="Select product">
+                  {productId ? products.find(p => p.id === productId)?.item_code : undefined}
+                </SelectValue>
+              </SelectTrigger>
               <SelectContent>
                 {products.map((p) => <SelectItem key={p.id} value={p.id}>{p.item_code} — {p.description}</SelectItem>)}
               </SelectContent>
@@ -92,7 +96,11 @@ export function AdjustmentForm({ products }: Props) {
           <div className="space-y-2">
             <Label>Roll</Label>
             <Select value={rollId} onValueChange={(v) => setRollId(v ?? "")} required disabled={!productId}>
-              <SelectTrigger><SelectValue placeholder={productId ? "Select roll" : "Select product first"} /></SelectTrigger>
+              <SelectTrigger>
+                <SelectValue placeholder={productId ? "Select roll" : "Select product first"}>
+                  {rollId ? rolls.find(r => r.id === rollId)?.roll_number : undefined}
+                </SelectValue>
+              </SelectTrigger>
               <SelectContent>
                 {rolls.map((r) => (
                   <SelectItem key={r.id} value={r.id}>

@@ -6,8 +6,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { addRolls } from "@/actions/product";
+import { addVariableRolls } from "@/actions/product";
+import type { RollEntry } from "@/validators/product";
 
 interface Props {
   productId: string;
@@ -16,74 +24,127 @@ interface Props {
 
 export function AddRollsForm({ productId, itemCode }: Props) {
   const router = useRouter();
-  const [numRolls, setNumRolls] = useState("1");
-  const [lengthPerRoll, setLengthPerRoll] = useState("");
-  const [receivedDate, setReceivedDate] = useState(new Date().toISOString().split("T")[0]);
+  const [rolls, setRolls] = useState<RollEntry[]>([
+    { length: "", unit: "meters" },
+  ]);
+  const [receivedDate, setReceivedDate] = useState(
+    new Date().toISOString().split("T")[0]
+  );
   const [notes, setNotes] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  function addRollField() {
+    setRolls([...rolls, { length: "", unit: "meters" }]);
+  }
+
+  function removeRollField(index: number) {
+    if (rolls.length > 1) {
+      setRolls(rolls.filter((_, i) => i !== index));
+    }
+  }
+
+  function updateRoll(index: number, field: keyof RollEntry, value: string | number) {
+    const updated = [...rolls];
+    updated[index] = { ...updated[index], [field]: value };
+    setRolls(updated);
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError("");
 
-    const result = await addRolls({
+    const result = await addVariableRolls({
       product_id: productId,
-      num_rolls: Number(numRolls),
-      length_per_roll: Number(lengthPerRoll),
+      rolls: rolls.map((r) => ({
+        length: Number(r.length),
+        unit: r.unit as "meters" | "yards",
+      })),
       received_date: receivedDate,
       notes: notes || null,
     });
 
     if ("error" in result) {
       const err = result.error;
-      const msg = typeof err === "string"
-        ? err
-        : Object.values(err as Record<string, string[]>).flat().join(", ");
+      const msg =
+        typeof err === "string"
+          ? err
+          : Object.values(err as Record<string, string[]>).flat().join(", ");
       setError(msg);
       setLoading(false);
       return;
     }
 
-    router.push(`/products/${productId}`);
+    router.push(`/products/${itemCode}`);
   }
 
   return (
-    <Card className="max-w-lg">
+    <Card className="max-w-2xl">
       <CardHeader>
-        <CardTitle>
-          Add rolls to {itemCode}
-        </CardTitle>
+        <CardTitle>Add rolls to {itemCode}</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-2">
-              <Label htmlFor="num_rolls">Number of Rolls</Label>
-              <Input
-                id="num_rolls"
-                type="number"
-                min="1"
-                max="50"
-                value={numRolls}
-                onChange={(e) => setNumRolls(e.target.value)}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="length">Length per Roll (meters)</Label>
-              <Input
-                id="length"
-                type="number"
-                step="0.5"
-                min="0.5"
-                value={lengthPerRoll}
-                onChange={(e) => setLengthPerRoll(e.target.value)}
-                placeholder="e.g. 12.5"
-                required
-              />
-            </div>
+          <div className="space-y-3">
+            <Label>Rolls</Label>
+            {rolls.map((roll, index) => (
+              <div key={index} className="flex gap-2 items-end">
+                <div className="flex-1 grid gap-2 sm:grid-cols-2">
+                  <div>
+                    <Label htmlFor={`length-${index}`} className="text-xs">
+                      Length
+                    </Label>
+                    <Input
+                      id={`length-${index}`}
+                      type="number"
+                      step="0.5"
+                      min="0.5"
+                      placeholder="e.g. 12.5"
+                      value={roll.length}
+                      onChange={(e) => updateRoll(index, "length", e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor={`unit-${index}`} className="text-xs">
+                      Unit
+                    </Label>
+                    <Select
+                      value={roll.unit}
+                      onValueChange={(v) => updateRoll(index, "unit", v)}
+                    >
+                      <SelectTrigger id={`unit-${index}`}>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="meters">Meters</SelectItem>
+                        <SelectItem value="yards">Yards</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => removeRollField(index)}
+                  disabled={rolls.length === 1}
+                  className="h-9"
+                >
+                  Remove
+                </Button>
+              </div>
+            ))}
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={addRollField}
+              className="mt-2"
+            >
+              + Add Another Roll
+            </Button>
           </div>
 
           <div className="space-y-2">
@@ -110,16 +171,20 @@ export function AddRollsForm({ productId, itemCode }: Props) {
           {error && <p className="text-sm text-red-500">{error}</p>}
 
           <p className="text-sm text-muted-foreground">
-            This will create {numRolls} roll(s) numbered {itemCode}-R?
-            {Number(numRolls) > 1 ? ` through ${itemCode}-R?` : ""}, each {lengthPerRoll || "?"}m.
+            This will create {rolls.length} roll(s) numbered {itemCode}-R1,{" "}
+            {itemCode}-R2, etc.
           </p>
 
           <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={() => router.back()}>
               Cancel
             </Button>
-            <Button type="submit" className="bg-rose-600 hover:bg-rose-700" disabled={loading}>
-              {loading ? "Adding..." : `Add ${numRolls} Roll(s)`}
+            <Button
+              type="submit"
+              className="bg-rose-600 hover:bg-rose-700"
+              disabled={loading}
+            >
+              {loading ? "Adding..." : `Add ${rolls.length} Roll(s)`}
             </Button>
           </div>
         </form>

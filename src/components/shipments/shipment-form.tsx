@@ -91,7 +91,11 @@ export function ShipmentForm({ suppliers, products }: Props) {
             <div className="space-y-2">
               <Label>Supplier</Label>
               <Select value={supplierId} onValueChange={(v) => setSupplierId(v ?? "")} required>
-                <SelectTrigger><SelectValue placeholder="Select supplier" /></SelectTrigger>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select supplier">
+                    {supplierId ? suppliers.find(s => s.id === supplierId)?.name : undefined}
+                  </SelectValue>
+                </SelectTrigger>
                 <SelectContent>
                   {suppliers.map((s) => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}
                 </SelectContent>
@@ -116,9 +120,13 @@ export function ShipmentForm({ suppliers, products }: Props) {
                 <div className="sm:col-span-2">
                   <Label className="text-xs">Product</Label>
                   <Select value={item.product_id} onValueChange={(v) => updateItem(idx, "product_id", v ?? "")} required>
-                    <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select">
+                        {item.product_id ? products.find(p => p.id === item.product_id)?.item_code : undefined}
+                      </SelectValue>
+                    </SelectTrigger>
                     <SelectContent>
-                      {products.map((p) => <SelectItem key={p.id} value={p.id}>{p.item_code}</SelectItem>)}
+                      {products.map((p) => <SelectItem key={p.id} value={p.id}>{p.item_code} — {p.description}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 </div>

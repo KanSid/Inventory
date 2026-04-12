@@ -25,7 +25,7 @@
       "source_file": "src\\lib\\supabase\\middleware.ts",
       "source_location": "L1",
       "id": "middleware",
-      "community": 2
+      "community": 6
     },
     {
       "label": "middleware()",
@@ -33,7 +33,7 @@
       "source_file": "src\\middleware.ts",
       "source_location": "L4",
       "id": "middleware_middleware",
-      "community": 2
+      "community": 6
     },
     {
       "label": "adjustment.ts",
@@ -41,7 +41,7 @@
       "source_file": "src\\validators\\adjustment.ts",
       "source_location": "L1",
       "id": "adjustment",
-      "community": 6
+      "community": 2
     },
     {
       "label": "createAdjustment()",
@@ -49,7 +49,7 @@
       "source_file": "src\\actions\\adjustment.ts",
       "source_location": "L7",
       "id": "adjustment_createadjustment",
-      "community": 6
+      "community": 2
     },
     {
       "label": "bride.ts",
@@ -57,7 +57,7 @@
       "source_file": "src\\validators\\bride.ts",
       "source_location": "L1",
       "id": "bride",
-      "community": 2
+      "community": 6
     },
     {
       "label": "createBride()",
@@ -65,7 +65,7 @@
       "source_file": "src\\actions\\bride.ts",
       "source_location": "L7",
       "id": "bride_createbride",
-      "community": 2
+      "community": 6
     },
     {
       "label": "updateBride()",
@@ -73,7 +73,7 @@
       "source_file": "src\\actions\\bride.ts",
       "source_location": "L30",
       "id": "bride_updatebride",
-      "community": 2
+      "community": 6
     },
     {
       "label": "category.ts",
@@ -81,7 +81,7 @@
       "source_file": "src\\validators\\category.ts",
       "source_location": "L1",
       "id": "category",
-      "community": 9
+      "community": 10
     },
     {
       "label": "createCategory()",
@@ -89,7 +89,7 @@
       "source_file": "src\\actions\\category.ts",
       "source_location": "L7",
       "id": "category_createcategory",
-      "community": 9
+      "community": 10
     },
     {
       "label": "updateCategory()",
@@ -97,7 +97,7 @@
       "source_file": "src\\actions\\category.ts",
       "source_location": "L23",
       "id": "category_updatecategory",
-      "community": 9
+      "community": 10
     },
     {
       "label": "deleteCategory()",
@@ -105,7 +105,7 @@
       "source_file": "src\\actions\\category.ts",
       "source_location": "L39",
       "id": "category_deletecategory",
-      "community": 9
+      "community": 10
     },
     {
       "label": "product.ts",
@@ -113,7 +113,7 @@
       "source_file": "src\\validators\\product.ts",
       "source_location": "L1",
       "id": "product",
-      "community": 1
+      "community": 2
     },
     {
       "label": "createProduct()",
@@ -121,7 +121,7 @@
       "source_file": "src\\actions\\product.ts",
       "source_location": "L7",
       "id": "product_createproduct",
-      "community": 1
+      "community": 2
     },
     {
       "label": "updateProduct()",
@@ -129,7 +129,7 @@
       "source_file": "src\\actions\\product.ts",
       "source_location": "L35",
       "id": "product_updateproduct",
-      "community": 1
+      "community": 2
     },
     {
       "label": "togglePhaseOut()",
@@ -137,7 +137,7 @@
       "source_file": "src\\actions\\product.ts",
       "source_location": "L64",
       "id": "product_togglephaseout",
-      "community": 1
+      "community": 2
     },
     {
       "label": "addRolls()",
@@ -145,7 +145,15 @@
       "source_file": "src\\actions\\product.ts",
       "source_location": "L78",
       "id": "product_addrolls",
-      "community": 1
+      "community": 2
+    },
+    {
+      "label": "addVariableRolls()",
+      "file_type": "code",
+      "source_file": "src\\actions\\product.ts",
+      "source_location": "L109",
+      "id": "product_addvariablerolls",
+      "community": 2
     },
     {
       "label": "shipment.ts",
@@ -153,7 +161,7 @@
       "source_file": "src\\validators\\shipment.ts",
       "source_location": "L1",
       "id": "shipment",
-      "community": 11
+      "community": 5
     },
     {
       "label": "createShipment()",
@@ -161,23 +169,23 @@
       "source_file": "src\\actions\\shipment.ts",
       "source_location": "L7",
       "id": "shipment_createshipment",
-      "community": 11
+      "community": 5
     },
     {
       "label": "receiveShipment()",
       "file_type": "code",
       "source_file": "src\\actions\\shipment.ts",
-      "source_location": "L53",
+      "source_location": "L60",
       "id": "shipment_receiveshipment",
-      "community": 11
+      "community": 5
     },
     {
       "label": "cancelShipment()",
       "file_type": "code",
       "source_file": "src\\actions\\shipment.ts",
-      "source_location": "L112",
+      "source_location": "L133",
       "id": "shipment_cancelshipment",
-      "community": 11
+      "community": 5
     },
     {
       "label": "supplier.ts",
@@ -185,7 +193,7 @@
       "source_file": "src\\validators\\supplier.ts",
       "source_location": "L1",
       "id": "supplier",
-      "community": 2
+      "community": 11
     },
     {
       "label": "createSupplier()",
@@ -193,7 +201,7 @@
       "source_file": "src\\actions\\supplier.ts",
       "source_location": "L7",
       "id": "supplier_createsupplier",
-      "community": 2
+      "community": 11
     },
     {
       "label": "updateSupplier()",
@@ -201,7 +209,7 @@
       "source_file": "src\\actions\\supplier.ts",
       "source_location": "L31",
       "id": "supplier_updatesupplier",
-      "community": 2
+      "community": 11
     },
     {
       "label": "toggleSupplierActive()",
@@ -209,7 +217,7 @@
       "source_file": "src\\actions\\supplier.ts",
       "source_location": "L55",
       "id": "supplier_togglesupplieractive",
-      "community": 2
+      "community": 11
     },
     {
       "label": "upload.ts",
@@ -233,7 +241,7 @@
       "source_file": "src\\validators\\usage.ts",
       "source_location": "L1",
       "id": "usage",
-      "community": 2
+      "community": 6
     },
     {
       "label": "logUsage()",
@@ -241,7 +249,7 @@
       "source_file": "src\\actions\\usage.ts",
       "source_location": "L7",
       "id": "usage_logusage",
-      "community": 2
+      "community": 6
     },
     {
       "label": "layout.tsx",
@@ -249,7 +257,7 @@
       "source_file": "src\\app\\(dashboard)\\layout.tsx",
       "source_location": "L1",
       "id": "layout",
-      "community": 10
+      "community": 1
     },
     {
       "label": "page.tsx",
@@ -281,7 +289,15 @@
       "source_file": "src\\app\\(dashboard)\\layout.tsx",
       "source_location": "L6",
       "id": "layout_dashboardlayout",
-      "community": 10
+      "community": 1
+    },
+    {
+      "label": "loading.tsx",
+      "file_type": "code",
+      "source_file": "src\\app\\(dashboard)\\loading.tsx",
+      "source_location": "L1",
+      "id": "loading",
+      "community": 14
     },
     {
       "label": "NewAdjustmentPage()",
@@ -337,7 +353,7 @@
       "source_file": "src\\lib\\supabase\\client.ts",
       "source_location": "L1",
       "id": "client",
-      "community": 4
+      "community": 1
     },
     {
       "label": "AdjustmentReportClient()",
@@ -345,7 +361,7 @@
       "source_file": "src\\app\\(dashboard)\\reports\\adjustments\\client.tsx",
       "source_location": "L6",
       "id": "client_adjustmentreportclient",
-      "community": 4
+      "community": 1
     },
     {
       "label": "AdjustmentReportPage()",
@@ -361,7 +377,7 @@
       "source_file": "src\\app\\(dashboard)\\reports\\inventory\\client.tsx",
       "source_location": "L6",
       "id": "client_inventoryreportclient",
-      "community": 4
+      "community": 1
     },
     {
       "label": "InventoryReportPage()",
@@ -377,7 +393,7 @@
       "source_file": "src\\app\\(dashboard)\\reports\\shipments\\client.tsx",
       "source_location": "L6",
       "id": "client_shipmentreportclient",
-      "community": 4
+      "community": 1
     },
     {
       "label": "ShipmentReportPage()",
@@ -393,7 +409,7 @@
       "source_file": "src\\app\\(dashboard)\\reports\\usage\\client.tsx",
       "source_location": "L6",
       "id": "client_usagereportclient",
-      "community": 4
+      "community": 1
     },
     {
       "label": "UsageReportPage()",
@@ -409,6 +425,22 @@
       "source_file": "src\\app\\(dashboard)\\settings\\page.tsx",
       "source_location": "L8",
       "id": "page_settingspage",
+      "community": 0
+    },
+    {
+      "label": "isUuid()",
+      "file_type": "code",
+      "source_file": "src\\app\\(dashboard)\\settings\\activity-log\\page.tsx",
+      "source_location": "L87",
+      "id": "page_isuuid",
+      "community": 0
+    },
+    {
+      "label": "resolveDetailValue()",
+      "file_type": "code",
+      "source_file": "src\\app\\(dashboard)\\settings\\activity-log\\page.tsx",
+      "source_location": "L169",
+      "id": "page_resolvedetailvalue",
       "community": 0
     },
     {
@@ -529,7 +561,7 @@
       "source_file": "src\\app\\api\\health\\route.ts",
       "source_location": "L1",
       "id": "route",
-      "community": 2
+      "community": 6
     },
     {
       "label": "GET()",
@@ -537,7 +569,7 @@
       "source_file": "src\\app\\api\\health\\route.ts",
       "source_location": "L6",
       "id": "route_get",
-      "community": 2
+      "community": 6
     },
     {
       "label": "adjustment-form.tsx",
@@ -545,7 +577,7 @@
       "source_file": "src\\components\\adjustments\\adjustment-form.tsx",
       "source_location": "L1",
       "id": "adjustment_form",
-      "community": 6
+      "community": 2
     },
     {
       "label": "handleSubmit()",
@@ -553,7 +585,7 @@
       "source_file": "src\\components\\adjustments\\adjustment-form.tsx",
       "source_location": "L56",
       "id": "adjustment_form_handlesubmit",
-      "community": 6
+      "community": 2
     },
     {
       "label": "brides-client.tsx",
@@ -561,7 +593,7 @@
       "source_file": "src\\components\\brides\\brides-client.tsx",
       "source_location": "L1",
       "id": "brides_client",
-      "community": 7
+      "community": 4
     },
     {
       "label": "BridesClient()",
@@ -569,7 +601,7 @@
       "source_file": "src\\components\\brides\\brides-client.tsx",
       "source_location": "L34",
       "id": "brides_client_bridesclient",
-      "community": 7
+      "community": 4
     },
     {
       "label": "categories-client.tsx",
@@ -577,39 +609,39 @@
       "source_file": "src\\components\\categories\\categories-client.tsx",
       "source_location": "L1",
       "id": "categories_client",
-      "community": 9
+      "community": 10
     },
     {
       "label": "openCreate()",
       "file_type": "code",
       "source_file": "src\\components\\categories\\categories-client.tsx",
-      "source_location": "L38",
+      "source_location": "L37",
       "id": "categories_client_opencreate",
-      "community": 9
+      "community": 10
     },
     {
       "label": "openEdit()",
       "file_type": "code",
       "source_file": "src\\components\\categories\\categories-client.tsx",
-      "source_location": "L47",
+      "source_location": "L45",
       "id": "categories_client_openedit",
-      "community": 9
+      "community": 10
     },
     {
       "label": "handleSubmit()",
       "file_type": "code",
       "source_file": "src\\components\\categories\\categories-client.tsx",
-      "source_location": "L56",
+      "source_location": "L53",
       "id": "categories_client_handlesubmit",
-      "community": 9
+      "community": 10
     },
     {
       "label": "handleDelete()",
       "file_type": "code",
       "source_file": "src\\components\\categories\\categories-client.tsx",
-      "source_location": "L78",
+      "source_location": "L75",
       "id": "categories_client_handledelete",
-      "community": 9
+      "community": 10
     },
     {
       "label": "shipment-timeline-chart.tsx",
@@ -649,7 +681,7 @@
       "source_file": "src\\components\\layout\\dashboard-shell.tsx",
       "source_location": "L1",
       "id": "dashboard_shell",
-      "community": 10
+      "community": 1
     },
     {
       "label": "DashboardShell()",
@@ -657,7 +689,7 @@
       "source_file": "src\\components\\layout\\dashboard-shell.tsx",
       "source_location": "L14",
       "id": "dashboard_shell_dashboardshell",
-      "community": 10
+      "community": 1
     },
     {
       "label": "sidebar.tsx",
@@ -665,7 +697,7 @@
       "source_file": "src\\components\\layout\\sidebar.tsx",
       "source_location": "L1",
       "id": "sidebar",
-      "community": 10
+      "community": 1
     },
     {
       "label": "topbar.tsx",
@@ -673,7 +705,7 @@
       "source_file": "src\\components\\layout\\topbar.tsx",
       "source_location": "L1",
       "id": "topbar",
-      "community": 10
+      "community": 1
     },
     {
       "label": "Topbar()",
@@ -681,7 +713,7 @@
       "source_file": "src\\components\\layout\\topbar.tsx",
       "source_location": "L12",
       "id": "topbar_topbar",
-      "community": 10
+      "community": 1
     },
     {
       "label": "add-rolls-form.tsx",
@@ -689,15 +721,39 @@
       "source_file": "src\\components\\products\\add-rolls-form.tsx",
       "source_location": "L1",
       "id": "add_rolls_form",
-      "community": 1
+      "community": 2
     },
     {
-      "label": "AddRollsForm()",
+      "label": "addRollField()",
       "file_type": "code",
       "source_file": "src\\components\\products\\add-rolls-form.tsx",
-      "source_location": "L17",
-      "id": "add_rolls_form_addrollsform",
-      "community": 1
+      "source_location": "L37",
+      "id": "add_rolls_form_addrollfield",
+      "community": 2
+    },
+    {
+      "label": "removeRollField()",
+      "file_type": "code",
+      "source_file": "src\\components\\products\\add-rolls-form.tsx",
+      "source_location": "L41",
+      "id": "add_rolls_form_removerollfield",
+      "community": 2
+    },
+    {
+      "label": "updateRoll()",
+      "file_type": "code",
+      "source_file": "src\\components\\products\\add-rolls-form.tsx",
+      "source_location": "L47",
+      "id": "add_rolls_form_updateroll",
+      "community": 2
+    },
+    {
+      "label": "handleSubmit()",
+      "file_type": "code",
+      "source_file": "src\\components\\products\\add-rolls-form.tsx",
+      "source_location": "L53",
+      "id": "add_rolls_form_handlesubmit",
+      "community": 2
     },
     {
       "label": "product-form.tsx",
@@ -705,7 +761,7 @@
       "source_file": "src\\components\\products\\product-form.tsx",
       "source_location": "L1",
       "id": "product_form",
-      "community": 1
+      "community": 2
     },
     {
       "label": "handleFileChange()",
@@ -713,7 +769,7 @@
       "source_file": "src\\components\\products\\product-form.tsx",
       "source_location": "L42",
       "id": "product_form_handlefilechange",
-      "community": 1
+      "community": 2
     },
     {
       "label": "handleSubmit()",
@@ -721,7 +777,7 @@
       "source_file": "src\\components\\products\\product-form.tsx",
       "source_location": "L63",
       "id": "product_form_handlesubmit",
-      "community": 1
+      "community": 2
     },
     {
       "label": "products-client.tsx",
@@ -729,23 +785,23 @@
       "source_file": "src\\components\\products\\products-client.tsx",
       "source_location": "L1",
       "id": "products_client",
-      "community": 7
+      "community": 4
     },
     {
       "label": "toggleSort()",
       "file_type": "code",
       "source_file": "src\\components\\products\\products-client.tsx",
-      "source_location": "L102",
+      "source_location": "L101",
       "id": "products_client_togglesort",
-      "community": 7
+      "community": 4
     },
     {
       "label": "sortIndicator()",
       "file_type": "code",
       "source_file": "src\\components\\products\\products-client.tsx",
-      "source_location": "L107",
+      "source_location": "L106",
       "id": "products_client_sortindicator",
-      "community": 7
+      "community": 4
     },
     {
       "label": "export-buttons.tsx",
@@ -841,7 +897,7 @@
       "source_file": "src\\components\\shared\\page-header.tsx",
       "source_location": "L1",
       "id": "page_header",
-      "community": 7
+      "community": 4
     },
     {
       "label": "status-badge.tsx",
@@ -849,7 +905,7 @@
       "source_file": "src\\components\\shared\\status-badge.tsx",
       "source_location": "L1",
       "id": "status_badge",
-      "community": 7
+      "community": 4
     },
     {
       "label": "StatusBadge()",
@@ -857,7 +913,7 @@
       "source_file": "src\\components\\shared\\status-badge.tsx",
       "source_location": "L18",
       "id": "status_badge_statusbadge",
-      "community": 7
+      "community": 4
     },
     {
       "label": "receive-button.tsx",
@@ -865,7 +921,7 @@
       "source_file": "src\\components\\shipments\\receive-button.tsx",
       "source_location": "L1",
       "id": "receive_button",
-      "community": 11
+      "community": 5
     },
     {
       "label": "ReceiveShipmentButton()",
@@ -873,7 +929,7 @@
       "source_file": "src\\components\\shipments\\receive-button.tsx",
       "source_location": "L9",
       "id": "receive_button_receiveshipmentbutton",
-      "community": 11
+      "community": 5
     },
     {
       "label": "shipment-form.tsx",
@@ -881,7 +937,7 @@
       "source_file": "src\\components\\shipments\\shipment-form.tsx",
       "source_location": "L1",
       "id": "shipment_form",
-      "community": 1
+      "community": 5
     },
     {
       "label": "addItem()",
@@ -889,7 +945,7 @@
       "source_file": "src\\components\\shipments\\shipment-form.tsx",
       "source_location": "L40",
       "id": "shipment_form_additem",
-      "community": 1
+      "community": 5
     },
     {
       "label": "removeItem()",
@@ -897,7 +953,7 @@
       "source_file": "src\\components\\shipments\\shipment-form.tsx",
       "source_location": "L44",
       "id": "shipment_form_removeitem",
-      "community": 1
+      "community": 5
     },
     {
       "label": "updateItem()",
@@ -905,7 +961,7 @@
       "source_file": "src\\components\\shipments\\shipment-form.tsx",
       "source_location": "L49",
       "id": "shipment_form_updateitem",
-      "community": 1
+      "community": 5
     },
     {
       "label": "handleSubmit()",
@@ -913,7 +969,7 @@
       "source_file": "src\\components\\shipments\\shipment-form.tsx",
       "source_location": "L55",
       "id": "shipment_form_handlesubmit",
-      "community": 1
+      "community": 5
     },
     {
       "label": "supplier-form.tsx",
@@ -921,7 +977,7 @@
       "source_file": "src\\components\\suppliers\\supplier-form.tsx",
       "source_location": "L1",
       "id": "supplier_form",
-      "community": 1
+      "community": 11
     },
     {
       "label": "SupplierForm()",
@@ -929,7 +985,7 @@
       "source_file": "src\\components\\suppliers\\supplier-form.tsx",
       "source_location": "L17",
       "id": "supplier_form_supplierform",
-      "community": 1
+      "community": 11
     },
     {
       "label": "avatar.tsx",
@@ -1017,7 +1073,7 @@
       "source_file": "src\\components\\ui\\dialog.tsx",
       "source_location": "L1",
       "id": "dialog",
-      "community": 5
+      "community": 7
     },
     {
       "label": "Dialog()",
@@ -1025,7 +1081,7 @@
       "source_file": "src\\components\\ui\\dialog.tsx",
       "source_location": "L10",
       "id": "dialog_dialog",
-      "community": 5
+      "community": 7
     },
     {
       "label": "DialogTrigger()",
@@ -1033,7 +1089,7 @@
       "source_file": "src\\components\\ui\\dialog.tsx",
       "source_location": "L14",
       "id": "dialog_dialogtrigger",
-      "community": 5
+      "community": 7
     },
     {
       "label": "DialogPortal()",
@@ -1041,7 +1097,7 @@
       "source_file": "src\\components\\ui\\dialog.tsx",
       "source_location": "L18",
       "id": "dialog_dialogportal",
-      "community": 5
+      "community": 7
     },
     {
       "label": "DialogClose()",
@@ -1049,7 +1105,7 @@
       "source_file": "src\\components\\ui\\dialog.tsx",
       "source_location": "L22",
       "id": "dialog_dialogclose",
-      "community": 5
+      "community": 7
     },
     {
       "label": "cn()",
@@ -1057,7 +1113,7 @@
       "source_file": "src\\components\\ui\\dialog.tsx",
       "source_location": "L55",
       "id": "dialog_cn",
-      "community": 5
+      "community": 7
     },
     {
       "label": "dropdown-menu.tsx",
@@ -1113,7 +1169,7 @@
       "source_file": "src\\components\\ui\\input.tsx",
       "source_location": "L1",
       "id": "input",
-      "community": 1
+      "community": 4
     },
     {
       "label": "Input()",
@@ -1121,7 +1177,7 @@
       "source_file": "src\\components\\ui\\input.tsx",
       "source_location": "L6",
       "id": "input_input",
-      "community": 1
+      "community": 4
     },
     {
       "label": "label.tsx",
@@ -1129,7 +1185,7 @@
       "source_file": "src\\components\\ui\\label.tsx",
       "source_location": "L1",
       "id": "label",
-      "community": 1
+      "community": 2
     },
     {
       "label": "cn()",
@@ -1137,7 +1193,7 @@
       "source_file": "src\\components\\ui\\label.tsx",
       "source_location": "L11",
       "id": "label_cn",
-      "community": 1
+      "community": 2
     },
     {
       "label": "select.tsx",
@@ -1145,7 +1201,7 @@
       "source_file": "src\\components\\ui\\select.tsx",
       "source_location": "L1",
       "id": "select",
-      "community": 6
+      "community": 9
     },
     {
       "label": "SelectGroup()",
@@ -1153,7 +1209,7 @@
       "source_file": "src\\components\\ui\\select.tsx",
       "source_location": "L11",
       "id": "select_selectgroup",
-      "community": 6
+      "community": 9
     },
     {
       "label": "SelectValue()",
@@ -1161,7 +1217,7 @@
       "source_file": "src\\components\\ui\\select.tsx",
       "source_location": "L21",
       "id": "select_selectvalue",
-      "community": 6
+      "community": 9
     },
     {
       "label": "SelectTrigger()",
@@ -1169,7 +1225,7 @@
       "source_file": "src\\components\\ui\\select.tsx",
       "source_location": "L31",
       "id": "select_selecttrigger",
-      "community": 6
+      "community": 9
     },
     {
       "label": "SelectContent()",
@@ -1177,7 +1233,7 @@
       "source_file": "src\\components\\ui\\select.tsx",
       "source_location": "L59",
       "id": "select_selectcontent",
-      "community": 6
+      "community": 9
     },
     {
       "label": "SelectLabel()",
@@ -1185,7 +1241,7 @@
       "source_file": "src\\components\\ui\\select.tsx",
       "source_location": "L98",
       "id": "select_selectlabel",
-      "community": 6
+      "community": 9
     },
     {
       "label": "SelectItem()",
@@ -1193,7 +1249,7 @@
       "source_file": "src\\components\\ui\\select.tsx",
       "source_location": "L111",
       "id": "select_selectitem",
-      "community": 6
+      "community": 9
     },
     {
       "label": "SelectSeparator()",
@@ -1201,7 +1257,7 @@
       "source_file": "src\\components\\ui\\select.tsx",
       "source_location": "L139",
       "id": "select_selectseparator",
-      "community": 6
+      "community": 9
     },
     {
       "label": "SelectScrollUpButton()",
@@ -1209,7 +1265,7 @@
       "source_file": "src\\components\\ui\\select.tsx",
       "source_location": "L152",
       "id": "select_selectscrollupbutton",
-      "community": 6
+      "community": 9
     },
     {
       "label": "SelectScrollDownButton()",
@@ -1217,7 +1273,7 @@
       "source_file": "src\\components\\ui\\select.tsx",
       "source_location": "L171",
       "id": "select_selectscrolldownbutton",
-      "community": 6
+      "community": 9
     },
     {
       "label": "separator.tsx",
@@ -1241,7 +1297,7 @@
       "source_file": "src\\components\\ui\\sheet.tsx",
       "source_location": "L1",
       "id": "sheet",
-      "community": 5
+      "community": 7
     },
     {
       "label": "Sheet()",
@@ -1249,7 +1305,7 @@
       "source_file": "src\\components\\ui\\sheet.tsx",
       "source_location": "L10",
       "id": "sheet_sheet",
-      "community": 5
+      "community": 7
     },
     {
       "label": "SheetTrigger()",
@@ -1257,7 +1313,7 @@
       "source_file": "src\\components\\ui\\sheet.tsx",
       "source_location": "L14",
       "id": "sheet_sheettrigger",
-      "community": 5
+      "community": 7
     },
     {
       "label": "SheetClose()",
@@ -1265,7 +1321,7 @@
       "source_file": "src\\components\\ui\\sheet.tsx",
       "source_location": "L18",
       "id": "sheet_sheetclose",
-      "community": 5
+      "community": 7
     },
     {
       "label": "SheetPortal()",
@@ -1273,7 +1329,7 @@
       "source_file": "src\\components\\ui\\sheet.tsx",
       "source_location": "L22",
       "id": "sheet_sheetportal",
-      "community": 5
+      "community": 7
     },
     {
       "label": "cn()",
@@ -1281,7 +1337,7 @@
       "source_file": "src\\components\\ui\\sheet.tsx",
       "source_location": "L55",
       "id": "sheet_cn",
-      "community": 5
+      "community": 7
     },
     {
       "label": "SheetTitle()",
@@ -1289,7 +1345,7 @@
       "source_file": "src\\components\\ui\\sheet.tsx",
       "source_location": "L103",
       "id": "sheet_sheettitle",
-      "community": 5
+      "community": 7
     },
     {
       "label": "SheetDescription()",
@@ -1297,7 +1353,7 @@
       "source_file": "src\\components\\ui\\sheet.tsx",
       "source_location": "L116",
       "id": "sheet_sheetdescription",
-      "community": 5
+      "community": 7
     },
     {
       "label": "table.tsx",
@@ -1305,7 +1361,7 @@
       "source_file": "src\\components\\ui\\table.tsx",
       "source_location": "L1",
       "id": "table",
-      "community": 7
+      "community": 4
     },
     {
       "label": "Table()",
@@ -1313,7 +1369,7 @@
       "source_file": "src\\components\\ui\\table.tsx",
       "source_location": "L7",
       "id": "table_table",
-      "community": 7
+      "community": 4
     },
     {
       "label": "TableHeader()",
@@ -1321,7 +1377,7 @@
       "source_file": "src\\components\\ui\\table.tsx",
       "source_location": "L22",
       "id": "table_tableheader",
-      "community": 7
+      "community": 4
     },
     {
       "label": "TableBody()",
@@ -1329,7 +1385,7 @@
       "source_file": "src\\components\\ui\\table.tsx",
       "source_location": "L32",
       "id": "table_tablebody",
-      "community": 7
+      "community": 4
     },
     {
       "label": "cn()",
@@ -1337,7 +1393,7 @@
       "source_file": "src\\components\\ui\\table.tsx",
       "source_location": "L46",
       "id": "table_cn",
-      "community": 7
+      "community": 4
     },
     {
       "label": "textarea.tsx",
@@ -1345,7 +1401,7 @@
       "source_file": "src\\components\\ui\\textarea.tsx",
       "source_location": "L1",
       "id": "textarea",
-      "community": 1
+      "community": 2
     },
     {
       "label": "cn()",
@@ -1353,7 +1409,7 @@
       "source_file": "src\\components\\ui\\textarea.tsx",
       "source_location": "L9",
       "id": "textarea_cn",
-      "community": 1
+      "community": 2
     },
     {
       "label": "tooltip.tsx",
@@ -1377,7 +1433,7 @@
       "source_file": "src\\components\\usage\\usage-form.tsx",
       "source_location": "L1",
       "id": "usage_form",
-      "community": 2
+      "community": 6
     },
     {
       "label": "UsageForm()",
@@ -1385,7 +1441,7 @@
       "source_file": "src\\components\\usage\\usage-form.tsx",
       "source_location": "L40",
       "id": "usage_form_usageform",
-      "community": 2
+      "community": 6
     },
     {
       "label": "constants.ts",
@@ -1393,7 +1449,7 @@
       "source_file": "src\\lib\\constants.ts",
       "source_location": "L1",
       "id": "constants",
-      "community": 7
+      "community": 4
     },
     {
       "label": "utils.ts",
@@ -1441,7 +1497,7 @@
       "source_file": "src\\lib\\exports\\adjustment-export.ts",
       "source_location": "L1",
       "id": "adjustment_export",
-      "community": 4
+      "community": 1
     },
     {
       "label": "exportAdjustmentPdf()",
@@ -1449,7 +1505,7 @@
       "source_file": "src\\lib\\exports\\adjustment-export.ts",
       "source_location": "L14",
       "id": "adjustment_export_exportadjustmentpdf",
-      "community": 4
+      "community": 1
     },
     {
       "label": "exportAdjustmentExcel()",
@@ -1457,7 +1513,7 @@
       "source_file": "src\\lib\\exports\\adjustment-export.ts",
       "source_location": "L94",
       "id": "adjustment_export_exportadjustmentexcel",
-      "community": 4
+      "community": 1
     },
     {
       "label": "inventory-export.ts",
@@ -1465,7 +1521,7 @@
       "source_file": "src\\lib\\exports\\inventory-export.ts",
       "source_location": "L1",
       "id": "inventory_export",
-      "community": 4
+      "community": 1
     },
     {
       "label": "exportInventoryPdf()",
@@ -1473,7 +1529,7 @@
       "source_file": "src\\lib\\exports\\inventory-export.ts",
       "source_location": "L12",
       "id": "inventory_export_exportinventorypdf",
-      "community": 4
+      "community": 1
     },
     {
       "label": "exportInventoryExcel()",
@@ -1481,7 +1537,7 @@
       "source_file": "src\\lib\\exports\\inventory-export.ts",
       "source_location": "L92",
       "id": "inventory_export_exportinventoryexcel",
-      "community": 4
+      "community": 1
     },
     {
       "label": "shipment-export.ts",
@@ -1489,7 +1545,7 @@
       "source_file": "src\\lib\\exports\\shipment-export.ts",
       "source_location": "L1",
       "id": "shipment_export",
-      "community": 4
+      "community": 1
     },
     {
       "label": "exportShipmentPdf()",
@@ -1497,7 +1553,7 @@
       "source_file": "src\\lib\\exports\\shipment-export.ts",
       "source_location": "L13",
       "id": "shipment_export_exportshipmentpdf",
-      "community": 4
+      "community": 1
     },
     {
       "label": "exportShipmentExcel()",
@@ -1505,7 +1561,7 @@
       "source_file": "src\\lib\\exports\\shipment-export.ts",
       "source_location": "L92",
       "id": "shipment_export_exportshipmentexcel",
-      "community": 4
+      "community": 1
     },
     {
       "label": "usage-export.ts",
@@ -1513,7 +1569,7 @@
       "source_file": "src\\lib\\exports\\usage-export.ts",
       "source_location": "L1",
       "id": "usage_export",
-      "community": 4
+      "community": 1
     },
     {
       "label": "exportUsagePdf()",
@@ -1521,7 +1577,7 @@
       "source_file": "src\\lib\\exports\\usage-export.ts",
       "source_location": "L12",
       "id": "usage_export_exportusagepdf",
-      "community": 4
+      "community": 1
     },
     {
       "label": "exportUsageExcel()",
@@ -1529,7 +1585,7 @@
       "source_file": "src\\lib\\exports\\usage-export.ts",
       "source_location": "L90",
       "id": "usage_export_exportusageexcel",
-      "community": 4
+      "community": 1
     },
     {
       "label": "createClient()",
@@ -1537,7 +1593,7 @@
       "source_file": "src\\lib\\supabase\\client.ts",
       "source_location": "L3",
       "id": "client_createclient",
-      "community": 4
+      "community": 1
     },
     {
       "label": "updateSession()",
@@ -1545,7 +1601,7 @@
       "source_file": "src\\lib\\supabase\\middleware.ts",
       "source_location": "L4",
       "id": "middleware_updatesession",
-      "community": 2
+      "community": 6
     },
     {
       "label": "server.ts",
@@ -1553,7 +1609,7 @@
       "source_file": "src\\lib\\supabase\\server.ts",
       "source_location": "L1",
       "id": "server",
-      "community": 2
+      "community": 6
     },
     {
       "label": "createClient()",
@@ -1561,7 +1617,7 @@
       "source_file": "src\\lib\\supabase\\server.ts",
       "source_location": "L4",
       "id": "server_createclient",
-      "community": 2
+      "community": 6
     },
     {
       "label": "createAdminClient()",
@@ -1569,7 +1625,7 @@
       "source_file": "src\\lib\\supabase\\server.ts",
       "source_location": "L30",
       "id": "server_createadminclient",
-      "community": 2
+      "community": 6
     },
     {
       "label": "index.ts",
@@ -1577,7 +1633,7 @@
       "source_file": "src\\types\\index.ts",
       "source_location": "L1",
       "id": "index",
-      "community": 14
+      "community": 15
     }
   ],
   "links": [
@@ -1894,10 +1950,22 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\actions\\product.ts",
+      "source_location": "L109",
+      "weight": 1.0,
+      "_src": "product",
+      "_tgt": "product_addvariablerolls",
+      "source": "product",
+      "target": "product_addvariablerolls",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src\\components\\products\\add-rolls-form.tsx",
-      "source_location": "L10",
+      "source_location": "L18",
       "weight": 1.0,
       "_src": "add_rolls_form",
       "_tgt": "product",
@@ -1957,7 +2025,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\actions\\shipment.ts",
-      "source_location": "L53",
+      "source_location": "L60",
       "weight": 1.0,
       "_src": "shipment",
       "_tgt": "shipment_receiveshipment",
@@ -1969,7 +2037,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\actions\\shipment.ts",
-      "source_location": "L112",
+      "source_location": "L133",
       "weight": 1.0,
       "_src": "shipment",
       "_tgt": "shipment_cancelshipment",
@@ -2614,6 +2682,30 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\app\\(dashboard)\\settings\\activity-log\\page.tsx",
+      "source_location": "L87",
+      "weight": 1.0,
+      "_src": "page",
+      "_tgt": "page_isuuid",
+      "source": "page",
+      "target": "page_isuuid",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\app\\(dashboard)\\settings\\activity-log\\page.tsx",
+      "source_location": "L169",
+      "weight": 1.0,
+      "_src": "page",
+      "_tgt": "page_resolvedetailvalue",
+      "source": "page",
+      "target": "page_resolvedetailvalue",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src\\app\\(dashboard)\\settings\\admin\\page.tsx",
@@ -2935,6 +3027,18 @@
       "_tgt": "client_createclient",
       "source": "client",
       "target": "client_createclient",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\app\\(dashboard)\\settings\\activity-log\\page.tsx",
+      "source_location": "L170",
+      "weight": 1.0,
+      "_src": "page_resolvedetailvalue",
+      "_tgt": "page_isuuid",
+      "source": "page_isuuid",
+      "target": "page_resolvedetailvalue",
       "confidence_score": 1.0
     },
     {
@@ -3385,7 +3489,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\components\\categories\\categories-client.tsx",
-      "source_location": "L38",
+      "source_location": "L37",
       "weight": 1.0,
       "_src": "categories_client",
       "_tgt": "categories_client_opencreate",
@@ -3397,7 +3501,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\components\\categories\\categories-client.tsx",
-      "source_location": "L47",
+      "source_location": "L45",
       "weight": 1.0,
       "_src": "categories_client",
       "_tgt": "categories_client_openedit",
@@ -3409,7 +3513,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\components\\categories\\categories-client.tsx",
-      "source_location": "L56",
+      "source_location": "L53",
       "weight": 1.0,
       "_src": "categories_client",
       "_tgt": "categories_client_handlesubmit",
@@ -3421,7 +3525,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\components\\categories\\categories-client.tsx",
-      "source_location": "L78",
+      "source_location": "L75",
       "weight": 1.0,
       "_src": "categories_client",
       "_tgt": "categories_client_handledelete",
@@ -3604,6 +3708,18 @@
       "source_location": "L9",
       "weight": 1.0,
       "_src": "add_rolls_form",
+      "_tgt": "select",
+      "source": "add_rolls_form",
+      "target": "select",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\products\\add-rolls-form.tsx",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_src": "add_rolls_form",
       "_tgt": "card",
       "source": "add_rolls_form",
       "target": "card",
@@ -3613,12 +3729,48 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\components\\products\\add-rolls-form.tsx",
-      "source_location": "L17",
+      "source_location": "L37",
       "weight": 1.0,
       "_src": "add_rolls_form",
-      "_tgt": "add_rolls_form_addrollsform",
+      "_tgt": "add_rolls_form_addrollfield",
       "source": "add_rolls_form",
-      "target": "add_rolls_form_addrollsform",
+      "target": "add_rolls_form_addrollfield",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\products\\add-rolls-form.tsx",
+      "source_location": "L41",
+      "weight": 1.0,
+      "_src": "add_rolls_form",
+      "_tgt": "add_rolls_form_removerollfield",
+      "source": "add_rolls_form",
+      "target": "add_rolls_form_removerollfield",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\products\\add-rolls-form.tsx",
+      "source_location": "L47",
+      "weight": 1.0,
+      "_src": "add_rolls_form",
+      "_tgt": "add_rolls_form_updateroll",
+      "source": "add_rolls_form",
+      "target": "add_rolls_form_updateroll",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\products\\add-rolls-form.tsx",
+      "source_location": "L53",
+      "weight": 1.0,
+      "_src": "add_rolls_form",
+      "_tgt": "add_rolls_form_handlesubmit",
+      "source": "add_rolls_form",
+      "target": "add_rolls_form_handlesubmit",
       "confidence_score": 1.0
     },
     {
@@ -3817,7 +3969,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\components\\products\\products-client.tsx",
-      "source_location": "L102",
+      "source_location": "L101",
       "weight": 1.0,
       "_src": "products_client",
       "_tgt": "products_client_togglesort",
@@ -3829,7 +3981,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\components\\products\\products-client.tsx",
-      "source_location": "L107",
+      "source_location": "L106",
       "weight": 1.0,
       "_src": "products_client",
       "_tgt": "products_client_sortindicator",

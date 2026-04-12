@@ -83,6 +83,41 @@ export default async function ActivityLogPage({
 
   const { data: logs, count } = await query;
 
+  // Resolve any UUID values stored in details (from older log entries)
+  const isUuid = (v: unknown): v is string =>
+    typeof v === "string" && v.length === 36 && v.includes("-");
+
+  const rollIds = new Set<string>();
+  const brideIds = new Set<string>();
+  const productIds = new Set<string>();
+
+  for (const log of logs ?? []) {
+    const d = log.details as Record<string, unknown> | null;
+    if (!d) continue;
+    if (isUuid(d.roll)) rollIds.add(d.roll);
+    if (isUuid(d.roll_id)) rollIds.add(d.roll_id);
+    if (isUuid(d.bride)) brideIds.add(d.bride);
+    if (isUuid(d.bride_id)) brideIds.add(d.bride_id);
+    if (isUuid(d.product)) productIds.add(d.product);
+    if (isUuid(d.product_id)) productIds.add(d.product_id);
+  }
+
+  const [rollsRes, bridesRes, productsRes] = await Promise.all([
+    rollIds.size > 0
+      ? supabase.from("rolls").select("id, roll_number").in("id", [...rollIds])
+      : { data: [] },
+    brideIds.size > 0
+      ? supabase.from("brides").select("id, name").in("id", [...brideIds])
+      : { data: [] },
+    productIds.size > 0
+      ? supabase.from("products").select("id, item_code").in("id", [...productIds])
+      : { data: [] },
+  ]);
+
+  const rollMap = Object.fromEntries((rollsRes.data ?? []).map((r) => [r.id, r.roll_number]));
+  const brideMap = Object.fromEntries((bridesRes.data ?? []).map((b) => [b.id, b.name]));
+  const productMap = Object.fromEntries((productsRes.data ?? []).map((p) => [p.id, p.item_code]));
+
   // Load users for filter dropdown
   const { data: users } = await supabase
     .from("profiles")
@@ -131,10 +166,26 @@ export default async function ActivityLogPage({
                     const actor = log.profiles as { full_name: string; role: string } | null;
                     const label = ACTION_LABELS[log.action_type] ?? log.action_type;
                     const colorClass = ACTION_COLORS[log.action_type] ?? "bg-neutral-100 text-neutral-600";
+                    const resolveDetailValue = (k: string, v: unknown): string => {
+                      if (!isUuid(v)) return String(v);
+                      if (k === "roll" || k === "roll_id") return rollMap[v] ?? v;
+                      if (k === "bride" || k === "bride_id") return brideMap[v] ?? v;
+                      if (k === "product" || k === "product_id") return productMap[v] ?? v;
+                      return v;
+                    };
+                    const KEY_ORDER = ["roll", "roll_id", "bride", "bride_id", "product", "product_id", "quantity_used", "remaining"];
                     const detailsStr = log.details && Object.keys(log.details).length > 0
                       ? Object.entries(log.details as Record<string, unknown>)
-                          .slice(0, 3)
-                          .map(([k, v]) => `${k}: ${String(v)}`)
+                          .sort(([a], [b]) => {
+                            const ai = KEY_ORDER.indexOf(a);
+                            const bi = KEY_ORDER.indexOf(b);
+                            return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+                          })
+                          .slice(0, 5)
+                          .map(([k, v]) => {
+                            const readableKey = k.replace(/_/g, " ").replace(/id$/i, "");
+                            return `${readableKey}: ${resolveDetailValue(k, v)}`;
+                          })
                           .join(" · ")
                       : "—";
                     return (

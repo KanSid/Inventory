@@ -4,13 +4,13 @@ import { PageHeader } from "@/components/shared/page-header";
 import { AddRollsForm } from "@/components/products/add-rolls-form";
 
 export default async function AddRollsPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
+  const { id: itemCode } = await params;
   const supabase = await createClient();
 
   const { data: product } = await supabase
     .from("products")
     .select("id, item_code, description")
-    .eq("id", id)
+    .eq("item_code", itemCode)
     .single();
 
   if (!product) notFound();

@@ -24,7 +24,11 @@
       "Bash(ls \"/d/Kannan/coding/d_aisle_inventory/src/app/\\(dashboard\\)/adjustments/\")",
       "Bash(cat \"/d/Kannan/coding/d_aisle_inventory/src/app/\\(dashboard\\)/adjustments/page.tsx\")",
       "Bash(ls \"/d/Kannan/coding/d_aisle_inventory/src/app/\\(dashboard\\)/reports/\")",
-      "Bash(cat \"/d/Kannan/coding/d_aisle_inventory/src/app/\\(dashboard\\)/reports/page.tsx\")"
+      "Bash(cat \"/d/Kannan/coding/d_aisle_inventory/src/app/\\(dashboard\\)/reports/page.tsx\")",
+      "Bash(py -c \"import graphify\")",
+      "Bash(py -c \"import sys; open\\(''.graphify_python'', ''w''\\).write\\(sys.executable\\)\")",
+      "mcp__3d454847-1e89-4eed-ad15-f76ba914fc7c__list_migrations",
+      "Bash(py -c \"from graphify.watch import _rebuild_code; from pathlib import Path; _rebuild_code\\(Path\\(''''.''''\\)\\)\")"
     ]
   }
 }
