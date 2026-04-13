@@ -20,6 +20,7 @@ export default async function AddRollsPage({ params }: { params: Promise<{ id: s
       <PageHeader
         title="Add Rolls"
         description={`${product.item_code} — ${product.description}`}
+
       />
       <AddRollsForm productId={product.id} itemCode={product.item_code} />
     </div>

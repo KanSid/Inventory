@@ -36,6 +36,7 @@ export default async function ShipmentDetailPage({ params }: { params: Promise<{
       <PageHeader
         title={shipment.shipment_number}
         description={`From ${supplier?.name ?? "Unknown"}`}
+
         action={
           canEdit && shipment.status === "pending" ? (
             <ReceiveShipmentButton shipmentId={id} />

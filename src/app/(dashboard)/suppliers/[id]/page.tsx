@@ -32,6 +32,7 @@ export default async function SupplierDetailPage({ params }: { params: Promise<{
       <PageHeader
         title={supplier.name}
         description={supplier.contact_person || undefined}
+
         action={
           isAdmin ? (
             <Link href={`/suppliers/${id}/edit`}>

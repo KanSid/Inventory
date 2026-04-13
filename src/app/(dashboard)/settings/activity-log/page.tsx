@@ -133,6 +133,7 @@ export default async function ActivityLogPage({
       <PageHeader
         title="Activity Log"
         description="Immutable timeline of all system events"
+
       />
 
       <ActivityLogFilters

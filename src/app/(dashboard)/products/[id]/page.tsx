@@ -32,20 +32,20 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
 
   const productId = product.id;
 
-  const [
-    { data: rolls },
-    { data: usage },
-    { data: summary },
-  ] = await Promise.all([
+  const [{ data: rolls }, { data: summary }] = await Promise.all([
     supabase.from("rolls").select("*").eq("product_id", productId).order("roll_number"),
-    supabase
-      .from("stock_usage")
-      .select("*, brides(name), rolls(roll_number)")
-      .eq("rolls.product_id", productId)
-      .order("usage_date", { ascending: false })
-      .limit(20),
     supabase.from("product_stock_summary").select("*").eq("id", productId).single(),
   ]);
+
+  const rollIds = (rolls ?? []).map((r) => r.id);
+  const { data: usage } = rollIds.length > 0
+    ? await supabase
+        .from("stock_usage")
+        .select("*, brides(name), rolls(roll_number)")
+        .in("roll_id", rollIds)
+        .order("usage_date", { ascending: false })
+        .limit(20)
+    : { data: [] };
 
   const { data: { user } } = await supabase.auth.getUser();
   const { data: profile } = await supabase
@@ -63,6 +63,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
       <PageHeader
         title={product.item_code}
         description={product.description}
+
         action={
           canEdit ? (
             <div className="flex gap-2">

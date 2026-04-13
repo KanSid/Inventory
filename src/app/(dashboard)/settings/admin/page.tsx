@@ -23,6 +23,7 @@ export default async function AdminSettingsPage() {
       <PageHeader
         title="Admin Settings"
         description="System-wide configuration and preferences"
+
       />
       <AdminSettingsForm config={config} />
     </div>

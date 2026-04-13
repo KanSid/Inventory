@@ -41,6 +41,7 @@ export default async function InventoryReportPage() {
       <PageHeader
         title="Inventory Snapshot"
         description="Current stock levels across all products"
+
       />
 
       <Card>
