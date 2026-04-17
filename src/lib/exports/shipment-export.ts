@@ -3,7 +3,7 @@ import * as XLSX from "xlsx";
 
 export interface ShipmentRow {
   shipment_number: string;
-  supplier_name: string;
+  supplier_count: number;
   status: string;
   received_date: string | null;
   item_count: number;
@@ -29,7 +29,7 @@ export async function exportShipmentPdf(data: ShipmentRow[], fileName: string = 
   // Table data
   const tableData = data.map((row) => [
     row.shipment_number,
-    row.supplier_name,
+    row.supplier_count > 0 ? `${row.supplier_count}` : "—",
     row.status.charAt(0).toUpperCase() + row.status.slice(1),
     row.received_date ? new Date(row.received_date).toLocaleDateString() : "Pending",
     row.item_count.toString(),
@@ -38,8 +38,8 @@ export async function exportShipmentPdf(data: ShipmentRow[], fileName: string = 
 
   // Create table
   const startY = margin + 20;
-  const columns = ["Shipment #", "Supplier", "Status", "Received", "Items", "Total (m)"];
-  const columnWidths = [25, 40, 20, 25, 15, 20];
+  const columns = ["Shipment #", "Suppliers", "Status", "Received", "Items", "Total (m)"];
+  const columnWidths = [25, 25, 20, 25, 15, 20];
 
   // Header
   let currentY = startY;
@@ -92,7 +92,7 @@ export async function exportShipmentPdf(data: ShipmentRow[], fileName: string = 
 export async function exportShipmentExcel(data: ShipmentRow[], fileName: string = "shipment-history") {
   const exportData = data.map((row) => ({
     "Shipment #": row.shipment_number,
-    Supplier: row.supplier_name,
+    Suppliers: row.supplier_count > 0 ? row.supplier_count : "—",
     Status: row.status.charAt(0).toUpperCase() + row.status.slice(1),
     "Received Date": row.received_date ? new Date(row.received_date).toLocaleDateString() : "Pending",
     "Item Count": row.item_count,

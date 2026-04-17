@@ -11,7 +11,7 @@ export default async function ProductsPage() {
 
   const { data: categories } = await supabase
     .from("categories")
-    .select("id, name, color")
+    .select("id, name")
     .order("name");
 
   const { data: { user } } = await supabase.auth.getUser();

@@ -18,7 +18,7 @@ export async function createShipment(data: ShipmentFormData) {
     .from("shipments")
     .insert({
       shipment_number: shipmentNumber,
-      supplier_id: parsed.data.supplier_id,
+      supplier_id: parsed.data.supplier_id || null,
       expected_date: parsed.data.expected_date || null,
       notes: parsed.data.notes || null,
     })
@@ -27,21 +27,15 @@ export async function createShipment(data: ShipmentFormData) {
 
   if (shipError) return { error: { supplier_id: [shipError.message] } };
 
-  // Fetch supplier name for logging
-  const { data: supplier } = await supabase
-    .from("suppliers")
-    .select("name")
-    .eq("id", parsed.data.supplier_id)
-    .single();
-
-  // Create shipment items
+  // Create shipment items with per-item supplier_id
   const items = parsed.data.items.map((item) => {
     const qtyMeters = item.input_unit === "yards"
       ? item.quantity * 0.9144
-      : item.quantity;
+      : item.quantity; // pairs stored as-is, no conversion
     return {
       shipment_id: shipment.id,
       product_id: item.product_id,
+      supplier_id: item.supplier_id || null,
       quantity: item.quantity,
       input_unit: item.input_unit,
       quantity_in_meters: qtyMeters,
@@ -104,12 +98,27 @@ export async function receiveShipment(shipmentId: string) {
   // Get shipment info for logging
   const { data: shipmentData } = await supabase
     .from("shipments")
-    .select("shipment_number, suppliers(name)")
+    .select("shipment_number")
     .eq("id", shipmentId)
     .single();
 
-  const shipmentInfo = shipmentData as any;
-  const supplierData = shipmentInfo?.suppliers as any;
+  // Get unique suppliers from items
+  const { data: itemsWithSuppliers } = await supabase
+    .from("shipment_items")
+    .select("supplier_id, suppliers(name)")
+    .eq("shipment_id", shipmentId);
+
+  const suppliersSet = new Set<string>();
+  const itemsWithSuppliers_typed = itemsWithSuppliers as any[];
+  if (itemsWithSuppliers_typed) {
+    itemsWithSuppliers_typed.forEach((item) => {
+      if (item.suppliers?.name) {
+        suppliersSet.add(item.suppliers.name);
+      }
+    });
+  }
+
+  const suppliersList = Array.from(suppliersSet);
 
   // Log activity
   await supabase.from("inventory_activity_log").insert({
@@ -118,8 +127,9 @@ export async function receiveShipment(shipmentId: string) {
     entity_type: "shipment",
     entity_id: shipmentId,
     details: {
-      shipment: shipmentInfo?.shipment_number ?? "Unknown",
-      supplier: supplierData?.name ?? "Unknown",
+      shipment: shipmentData?.shipment_number ?? "Unknown",
+      supplier_count: suppliersList.length,
+      suppliers: suppliersList,
       items_count: items.length,
     },
   });

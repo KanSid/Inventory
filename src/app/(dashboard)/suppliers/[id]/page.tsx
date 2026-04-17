@@ -17,11 +17,23 @@ export default async function SupplierDetailPage({ params }: { params: Promise<{
   const { data: supplier } = await supabase.from("suppliers").select("*").eq("id", id).single();
   if (!supplier) notFound();
 
-  const { data: shipments } = await supabase
-    .from("shipments")
-    .select("*")
-    .eq("supplier_id", id)
-    .order("created_at", { ascending: false });
+  // Fetch shipments that contain items from this supplier
+  const { data: shipmentsWithItems } = await supabase
+    .from("shipment_items")
+    .select("shipment_id")
+    .eq("supplier_id", id);
+
+  const shipmentIds = Array.from(new Set(shipmentsWithItems?.map(item => item.shipment_id) ?? []));
+
+  let shipments = [];
+  if (shipmentIds.length > 0) {
+    const { data } = await supabase
+      .from("shipments")
+      .select("*")
+      .in("id", shipmentIds)
+      .order("created_at", { ascending: false });
+    shipments = data ?? [];
+  }
 
   const { data: { user } } = await supabase.auth.getUser();
   const { data: profile } = await supabase.from("profiles").select("role").eq("id", user!.id).single();

@@ -17,17 +17,28 @@ export default async function ShipmentReportPage() {
 
   const { data: shipments } = await supabase
     .from("shipments")
-    .select("id, shipment_number, status, received_date, created_at, suppliers(name), shipment_items(quantity_in_meters)")
+    .select("id, shipment_number, status, received_date, created_at, shipment_items(quantity_in_meters, suppliers(name))")
     .order("created_at", { ascending: false });
 
-  const shipmentData = (shipments ?? []).map((s: any) => ({
-    shipment_number: s.shipment_number,
-    supplier_name: s.suppliers?.name || "Unknown",
-    status: s.status,
-    received_date: s.received_date || s.created_at,
-    item_count: s.shipment_items?.length || 0,
-    total_meters: (s.shipment_items ?? []).reduce((sum: number, item: any) => sum + (item.quantity_in_meters || 0), 0),
-  }));
+  const shipmentData = (shipments ?? []).map((s: any) => {
+    const items = s.shipment_items ?? [];
+    const supplierSet = new Set<string>();
+    items.forEach((item: any) => {
+      if (item.suppliers?.name) {
+        supplierSet.add(item.suppliers.name);
+      }
+    });
+    const supplierCount = supplierSet.size;
+
+    return {
+      shipment_number: s.shipment_number,
+      supplier_count: supplierCount,
+      status: s.status,
+      received_date: s.received_date || s.created_at,
+      item_count: items.length || 0,
+      total_meters: items.reduce((sum: number, item: any) => sum + (item.quantity_in_meters || 0), 0),
+    };
+  });
 
   return (
     <div className="space-y-6">
@@ -44,7 +55,7 @@ export default async function ShipmentReportPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Shipment #</TableHead>
-                  <TableHead>Supplier</TableHead>
+                  <TableHead>Suppliers</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Date</TableHead>
                   <TableHead className="text-right">Items</TableHead>
@@ -59,24 +70,31 @@ export default async function ShipmentReportPage() {
                     </TableCell>
                   </TableRow>
                 ) : (
-                  shipmentData.map((s, idx) => (
-                    <TableRow key={idx}>
-                      <TableCell className="font-medium">{s.shipment_number}</TableCell>
-                      <TableCell>{s.supplier_name}</TableCell>
-                      <TableCell>
-                        <span className={`text-xs font-medium px-2 py-1 rounded ${
-                          s.status === "received" ? "bg-emerald-100 text-emerald-700" :
-                          s.status === "pending" ? "bg-amber-100 text-amber-700" :
-                          "bg-red-100 text-red-700"
-                        }`}>
-                          {s.status.charAt(0).toUpperCase() + s.status.slice(1)}
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-sm">{formatDate(s.received_date)}</TableCell>
-                      <TableCell className="text-right text-sm">{s.item_count}</TableCell>
-                      <TableCell className="text-right">{s.total_meters}m</TableCell>
-                    </TableRow>
-                  ))
+                  shipmentData.map((s, idx) => {
+                    const supplierCountText = s.supplier_count === 1 ? "1 supplier" : `${s.supplier_count} suppliers`;
+                    return (
+                      <TableRow key={idx}>
+                        <TableCell className="font-medium">{s.shipment_number}</TableCell>
+                        <TableCell>
+                          <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700">
+                            {s.supplier_count > 0 ? supplierCountText : "—"}
+                          </span>
+                        </TableCell>
+                        <TableCell>
+                          <span className={`text-xs font-medium px-2 py-1 rounded ${
+                            s.status === "received" ? "bg-emerald-100 text-emerald-700" :
+                            s.status === "pending" ? "bg-amber-100 text-amber-700" :
+                            "bg-red-100 text-red-700"
+                          }`}>
+                            {s.status.charAt(0).toUpperCase() + s.status.slice(1)}
+                          </span>
+                        </TableCell>
+                        <TableCell className="text-sm">{formatDate(s.received_date)}</TableCell>
+                        <TableCell className="text-right text-sm">{s.item_count}</TableCell>
+                        <TableCell className="text-right">{s.total_meters}m</TableCell>
+                      </TableRow>
+                    );
+                  })
                 )}
               </TableBody>
             </Table>

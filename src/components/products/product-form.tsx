@@ -32,6 +32,7 @@ export function ProductForm({ categories, product }: Props) {
   const [categoryId, setCategoryId] = useState(product?.category_id ?? "");
   const [subType, setSubType] = useState(product?.sub_type ?? "");
   const [imageUrl, setImageUrl] = useState(product?.image_url ?? "");
+  const [stockUnit, setStockUnit] = useState<"roll" | "pair">(product?.stock_unit ?? "roll");
   const [lowStockThreshold, setLowStockThreshold] = useState(String(product?.low_stock_threshold ?? 10));
   const [notes, setNotes] = useState(product?.notes ?? "");
   const [errors, setErrors] = useState<Record<string, string[]>>({});
@@ -71,6 +72,7 @@ export function ProductForm({ categories, product }: Props) {
       category_id: categoryId,
       sub_type: subType || null,
       image_url: imageUrl || null,
+      stock_unit: stockUnit.toLowerCase() as "roll" | "pair",
       low_stock_threshold: Number(lowStockThreshold),
       notes: notes || null,
     };
@@ -154,16 +156,34 @@ export function ProductForm({ categories, product }: Props) {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="low_stock_threshold">Low Stock Threshold (meters)</Label>
-              <Input
-                id="low_stock_threshold"
-                type="number"
-                step="0.5"
-                min="0"
-                value={lowStockThreshold}
-                onChange={(e) => setLowStockThreshold(e.target.value)}
-              />
+              <Label>Stock Unit</Label>
+                <Select value={stockUnit} onValueChange={(v) => setStockUnit(v as "roll" | "pair")}>
+                  <SelectTrigger>
+                    {/* Explicitly render the capitalized version of the state */}
+                    <SelectValue>
+                      {stockUnit === "roll" ? "Roll" : "Pair"}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="roll">Roll</SelectItem>
+                    <SelectItem value="pair">Pair</SelectItem>
+                  </SelectContent>
+                </Select>
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="low_stock_threshold">
+              Low Stock Threshold ({stockUnit === "pair" ? "pairs" : "meters"})
+            </Label>
+            <Input
+              id="low_stock_threshold"
+              type="number"
+              step={stockUnit === "pair" ? "1" : "0.5"}
+              min="0"
+              value={lowStockThreshold}
+              onChange={(e) => setLowStockThreshold(e.target.value)}
+            />
           </div>
 
           <div className="space-y-2">

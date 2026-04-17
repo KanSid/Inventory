@@ -13,6 +13,11 @@ export function formatLength(meters: number): string {
   return `${meters.toFixed(1)}m`;
 }
 
+export function formatQuantity(value: number, stockUnit: "roll" | "pair"): string {
+  if (stockUnit === "pair") return `${Math.round(value)} pair${Math.round(value) !== 1 ? "s" : ""}`;
+  return formatLength(value);
+}
+
 export function formatDate(dateString: string): string {
   return new Date(dateString).toLocaleDateString("en-IN", {
     day: "2-digit",

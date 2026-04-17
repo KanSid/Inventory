@@ -20,12 +20,14 @@ import type { RollEntry } from "@/validators/product";
 interface Props {
   productId: string;
   itemCode: string;
+  stockUnit: "roll" | "pair";
 }
 
-export function AddRollsForm({ productId, itemCode }: Props) {
+export function AddRollsForm({ productId, itemCode, stockUnit }: Props) {
   const router = useRouter();
+  const isPair = stockUnit === "pair";
   const [rolls, setRolls] = useState<RollEntry[]>([
-    { length: "", unit: "meters" },
+    { length: "", unit: isPair ? "pairs" : "meters" },
   ]);
   const [receivedDate, setReceivedDate] = useState(
     new Date().toISOString().split("T")[0]
@@ -35,7 +37,7 @@ export function AddRollsForm({ productId, itemCode }: Props) {
   const [loading, setLoading] = useState(false);
 
   function addRollField() {
-    setRolls([...rolls, { length: "", unit: "meters" }]);
+    setRolls([...rolls, { length: "", unit: isPair ? "pairs" : "meters" }]);
   }
 
   function removeRollField(index: number) {
@@ -87,42 +89,44 @@ export function AddRollsForm({ productId, itemCode }: Props) {
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-3">
-            <Label>Rolls</Label>
+            <Label>{isPair ? "Pairs" : "Rolls"}</Label>
             {rolls.map((roll, index) => (
               <div key={index} className="flex gap-2 items-end">
                 <div className="flex-1 grid gap-2 sm:grid-cols-2">
                   <div>
                     <Label htmlFor={`length-${index}`} className="text-xs">
-                      Length
+                      {isPair ? "Quantity (pairs)" : "Length"}
                     </Label>
                     <Input
                       id={`length-${index}`}
                       type="number"
-                      step="0.5"
-                      min="0.5"
-                      placeholder="e.g. 12.5"
+                      step={isPair ? "1" : "0.5"}
+                      min={isPair ? "1" : "0.5"}
+                      placeholder={isPair ? "e.g. 10" : "e.g. 12.5"}
                       value={roll.length}
                       onChange={(e) => updateRoll(index, "length", e.target.value)}
                       required
                     />
                   </div>
-                  <div>
-                    <Label htmlFor={`unit-${index}`} className="text-xs">
-                      Unit
-                    </Label>
-                    <Select
-                      value={roll.unit}
-                      onValueChange={(v) => v && updateRoll(index, "unit", v)}
-                    >
-                      <SelectTrigger id={`unit-${index}`}>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="meters">Meters</SelectItem>
-                        <SelectItem value="yards">Yards</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  {!isPair && (
+                    <div>
+                      <Label htmlFor={`unit-${index}`} className="text-xs">
+                        Unit
+                      </Label>
+                      <Select
+                        value={roll.unit}
+                        onValueChange={(v) => v && updateRoll(index, "unit", v)}
+                      >
+                        <SelectTrigger id={`unit-${index}`}>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="meters">Meters</SelectItem>
+                          <SelectItem value="yards">Yards</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
                 </div>
                 <Button
                   type="button"
@@ -143,7 +147,7 @@ export function AddRollsForm({ productId, itemCode }: Props) {
               onClick={addRollField}
               className="mt-2"
             >
-              + Add Another Roll
+              + Add Another {isPair ? "Batch" : "Roll"}
             </Button>
           </div>
 
@@ -171,8 +175,9 @@ export function AddRollsForm({ productId, itemCode }: Props) {
           {error && <p className="text-sm text-red-500">{error}</p>}
 
           <p className="text-sm text-muted-foreground">
-            This will create {rolls.length} roll(s) numbered {itemCode}-R1,{" "}
-            {itemCode}-R2, etc.
+            {isPair
+              ? `This will create ${rolls.length} pair batch(es) numbered ${itemCode}-P1, ${itemCode}-P2, etc.`
+              : `This will create ${rolls.length} roll(s) numbered ${itemCode}-R1, ${itemCode}-R2, etc.`}
           </p>
 
           <div className="flex justify-end gap-2">
@@ -184,7 +189,7 @@ export function AddRollsForm({ productId, itemCode }: Props) {
               className="bg-rose-600 hover:bg-rose-700"
               disabled={loading}
             >
-              {loading ? "Adding..." : `Add ${rolls.length} Roll(s)`}
+              {loading ? "Adding..." : isPair ? `Add ${rolls.length} Batch(es)` : `Add ${rolls.length} Roll(s)`}
             </Button>
           </div>
         </form>

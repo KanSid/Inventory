@@ -6,6 +6,7 @@ export const productSchema = z.object({
   category_id: z.string().uuid("Select a category"),
   sub_type: z.string().max(100).nullable().optional(),
   image_url: z.string().url("Must be a valid URL").nullable().optional(),
+  stock_unit: z.enum(["roll", "pair"]).default("roll"),
   low_stock_threshold: z.coerce.number().min(0, "Must be 0 or more").default(10),
   notes: z.string().max(1000).nullable().optional(),
 });
@@ -34,12 +35,12 @@ export type AddRollsFormData = z.infer<typeof addRollsSchema>;
 // New schema for variable-length rolls
 export const rollEntrySchema = z.object({
   length: z.coerce.number().positive("Length must be positive"),
-  unit: z.enum(["meters", "yards"], { message: "Select meters or yards" }),
+  unit: z.enum(["meters", "yards", "pairs"], { message: "Select a unit" }),
 });
 
 export type RollEntry = {
   length: string | number;
-  unit: "meters" | "yards";
+  unit: "meters" | "yards" | "pairs";
 };
 
 export const addVariableRollsSchema = z.object({

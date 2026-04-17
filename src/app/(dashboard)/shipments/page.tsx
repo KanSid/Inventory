@@ -14,7 +14,7 @@ export default async function ShipmentsPage() {
 
   const { data: shipments } = await supabase
     .from("shipments")
-    .select("*, suppliers(name)")
+    .select("*, shipment_items(supplier_id, suppliers(name))")
     .order("created_at", { ascending: false });
 
   const { data: { user } } = await supabase.auth.getUser();
@@ -59,7 +59,15 @@ export default async function ShipmentsPage() {
                 </TableRow>
               ) : (
                 shipments.map((s) => {
-                  const supplier = s.suppliers as { name: string } | null;
+                  const items = s.shipment_items as any[] || [];
+                  const uniqueSuppliers = new Set(
+                    items
+                      .filter((item) => item.suppliers?.name)
+                      .map((item) => item.suppliers.name)
+                  );
+                  const supplierCount = uniqueSuppliers.size;
+                  const supplierCountText = supplierCount === 1 ? "1 supplier" : `${supplierCount} suppliers`;
+
                   return (
                     <TableRow key={s.id}>
                       <TableCell>
@@ -67,7 +75,11 @@ export default async function ShipmentsPage() {
                           {s.shipment_number}
                         </Link>
                       </TableCell>
-                      <TableCell>{supplier?.name ?? "—"}</TableCell>
+                      <TableCell>
+                        <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700">
+                          {supplierCount > 0 ? supplierCountText : "—"}
+                        </span>
+                      </TableCell>
                       <TableCell>
                         <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
                           s.status === "received" ? "bg-emerald-100 text-emerald-700" :

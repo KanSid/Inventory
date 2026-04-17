@@ -9,7 +9,7 @@ export default async function AddRollsPage({ params }: { params: Promise<{ id: s
 
   const { data: product } = await supabase
     .from("products")
-    .select("id, item_code, description")
+    .select("id, item_code, description, stock_unit")
     .eq("item_code", itemCode)
     .single();
 
@@ -22,7 +22,7 @@ export default async function AddRollsPage({ params }: { params: Promise<{ id: s
         description={`${product.item_code} — ${product.description}`}
 
       />
-      <AddRollsForm productId={product.id} itemCode={product.item_code} />
+      <AddRollsForm productId={product.id} itemCode={product.item_code} stockUnit={product.stock_unit ?? "roll"} />
     </div>
   );
 }

@@ -14,7 +14,7 @@ export default async function ShipmentDetailPage({ params }: { params: Promise<{
 
   const { data: shipment } = await supabase
     .from("shipments")
-    .select("*, suppliers(name)")
+    .select("*")
     .eq("id", id)
     .single();
 
@@ -22,20 +22,18 @@ export default async function ShipmentDetailPage({ params }: { params: Promise<{
 
   const { data: items } = await supabase
     .from("shipment_items")
-    .select("*, products(item_code, description)")
+    .select("*, products(item_code, description), suppliers(name)")
     .eq("shipment_id", id);
 
   const { data: { user } } = await supabase.auth.getUser();
   const { data: profile } = await supabase.from("profiles").select("role").eq("id", user!.id).single();
   const canEdit = profile?.role === "admin" || profile?.role === "inventory_manager";
 
-  const supplier = shipment.suppliers as { name: string } | null;
-
   return (
     <div className="space-y-6">
       <PageHeader
         title={shipment.shipment_number}
-        description={`From ${supplier?.name ?? "Unknown"}`}
+        description="Shipment details and items"
 
         action={
           canEdit && shipment.status === "pending" ? (
@@ -78,6 +76,7 @@ export default async function ShipmentDetailPage({ params }: { params: Promise<{
             <TableHeader>
               <TableRow>
                 <TableHead>Product</TableHead>
+                <TableHead>Supplier</TableHead>
                 <TableHead className="text-right">Quantity</TableHead>
                 <TableHead>Unit</TableHead>
                 <TableHead className="text-right">In Meters</TableHead>
@@ -87,14 +86,16 @@ export default async function ShipmentDetailPage({ params }: { params: Promise<{
             <TableBody>
               {!items || items.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="py-8 text-center text-muted-foreground">No items.</TableCell>
+                  <TableCell colSpan={6} className="py-8 text-center text-muted-foreground">No items.</TableCell>
                 </TableRow>
               ) : (
                 items.map((item) => {
                   const product = item.products as { item_code: string; description: string } | null;
+                  const supplier = item.suppliers as { name: string } | null;
                   return (
                     <TableRow key={item.id}>
                       <TableCell className="font-medium">{product?.item_code} — {product?.description}</TableCell>
+                      <TableCell>{supplier?.name ?? "—"}</TableCell>
                       <TableCell className="text-right">{item.quantity}</TableCell>
                       <TableCell>{item.input_unit}</TableCell>
                       <TableCell className="text-right">{formatLength(item.quantity_in_meters)}</TableCell>

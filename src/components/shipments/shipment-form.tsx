@@ -15,30 +15,30 @@ import { createShipment } from "@/actions/shipment";
 
 interface Props {
   suppliers: { id: string; name: string }[];
-  products: { id: string; item_code: string; description: string }[];
+  products: { id: string; item_code: string; description: string; stock_unit: string }[];
 }
 
 interface LineItem {
+  supplier_id: string;
   product_id: string;
   quantity: string;
-  input_unit: "meters" | "yards";
+  input_unit: "meters" | "yards" | "pairs";
   num_rolls: string;
   notes: string;
 }
 
 export function ShipmentForm({ suppliers, products }: Props) {
   const router = useRouter();
-  const [supplierId, setSupplierId] = useState("");
   const [expectedDate, setExpectedDate] = useState("");
   const [notes, setNotes] = useState("");
   const [items, setItems] = useState<LineItem[]>([
-    { product_id: "", quantity: "", input_unit: "meters", num_rolls: "1", notes: "" },
+    { supplier_id: "", product_id: "", quantity: "", input_unit: "meters", num_rolls: "1", notes: "" },
   ]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   function addItem() {
-    setItems([...items, { product_id: "", quantity: "", input_unit: "meters", num_rolls: "1", notes: "" }]);
+    setItems([...items, { supplier_id: "", product_id: "", quantity: "", input_unit: "meters", num_rolls: "1", notes: "" }]);
   }
 
   function removeItem(idx: number) {
@@ -49,6 +49,16 @@ export function ShipmentForm({ suppliers, products }: Props) {
   function updateItem(idx: number, field: keyof LineItem, value: string) {
     const updated = [...items];
     updated[idx] = { ...updated[idx], [field]: value };
+    // When product changes, auto-set input_unit to match stock_unit
+    if (field === "product_id") {
+      const product = products.find((p) => p.id === value);
+      if (product?.stock_unit === "pair") {
+        updated[idx].input_unit = "pairs";
+        updated[idx].num_rolls = "1";
+      } else {
+        updated[idx].input_unit = "meters";
+      }
+    }
     setItems(updated);
   }
 
@@ -58,10 +68,11 @@ export function ShipmentForm({ suppliers, products }: Props) {
     setError("");
 
     const result = await createShipment({
-      supplier_id: supplierId,
+      supplier_id: null,
       expected_date: expectedDate || null,
       notes: notes || null,
       items: items.map((item) => ({
+        supplier_id: item.supplier_id || null,
         product_id: item.product_id,
         quantity: Number(item.quantity),
         input_unit: item.input_unit,
@@ -87,20 +98,7 @@ export function ShipmentForm({ suppliers, products }: Props) {
       <CardHeader><CardTitle>Create Shipment</CardTitle></CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-2">
-              <Label>Supplier</Label>
-              <Select value={supplierId} onValueChange={(v) => setSupplierId(v ?? "")} required>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select supplier">
-                    {supplierId ? suppliers.find(s => s.id === supplierId)?.name : undefined}
-                  </SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  {suppliers.map((s) => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            </div>
+          <div className="grid gap-4 sm:grid-cols-1">
             <div className="space-y-2">
               <Label>Expected Date</Label>
               <Input type="date" value={expectedDate} onChange={(e) => setExpectedDate(e.target.value)} />
@@ -116,9 +114,25 @@ export function ShipmentForm({ suppliers, products }: Props) {
             </div>
 
             {items.map((item, idx) => (
-              <div key={idx} className="grid gap-3 rounded-lg border p-3 sm:grid-cols-5">
+              <div key={idx} className="grid gap-5 rounded-lg border p-5 sm:grid-cols-6">
+                {/* Supplier */}
+                <div>
+                  <Label className="text-xs mb-1.5 block pl-2">Supplier</Label>
+                  <Select value={item.supplier_id} onValueChange={(v) => updateItem(idx, "supplier_id", v ?? "")}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select">
+                        {item.supplier_id ? suppliers.find(s => s.id === item.supplier_id)?.name : undefined}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {suppliers.map((s) => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Product */}
                 <div className="sm:col-span-2">
-                  <Label className="text-xs">Product</Label>
+                  <Label className="text-xs mb-1.5 block pl-2">Product</Label>
                   <Select value={item.product_id} onValueChange={(v) => updateItem(idx, "product_id", v ?? "")} required>
                     <SelectTrigger>
                       <SelectValue placeholder="Select">
@@ -130,36 +144,60 @@ export function ShipmentForm({ suppliers, products }: Props) {
                     </SelectContent>
                   </Select>
                 </div>
+
+                {/* Quantity */}
                 <div>
-                  <Label className="text-xs">Quantity</Label>
-                  <Input type="number" step="0.5" min="0.5" value={item.quantity} onChange={(e) => updateItem(idx, "quantity", e.target.value)} required />
+                  <Label className="text-xs mb-1.5 block pl-2">
+                    {item.input_unit === "pairs" ? "Qty (pairs)" : "Quantity"}
+                  </Label>
+                  <Input
+                    type="number"
+                    step={item.input_unit === "pairs" ? "1" : "0.5"}
+                    min={item.input_unit === "pairs" ? "1" : "0.5"}
+                    value={item.quantity}
+                    onChange={(e) => updateItem(idx, "quantity", e.target.value)}
+                    required
+                  />
                 </div>
-                <div>
-                  <Label className="text-xs">Unit</Label>
-                  <Select value={item.input_unit} onValueChange={(v) => updateItem(idx, "input_unit", v ?? "meters")}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="meters">Meters</SelectItem>
-                      <SelectItem value="yards">Yards</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+
+                {/* Unit — hidden for pairs */}
+                {item.input_unit !== "pairs" && (
+                  <div>
+                    <Label className="text-xs mb-1.5 block pl-2">Unit</Label>
+                    <Select value={item.input_unit} onValueChange={(v) => updateItem(idx, "input_unit", v ?? "meters")}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="meters">Meters</SelectItem>
+                        <SelectItem value="yards">Yards</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+
+                {/* Rolls / Batches & Remove Button */}
                 <div className="flex items-end gap-2">
                   <div className="flex-1">
-                    <Label className="text-xs">Rolls</Label>
+                    <Label className="text-xs mb-1.5 block">
+                      {item.input_unit === "pairs" ? "Batches" : "Rolls"}
+                    </Label>
                     <Input type="number" min="1" max="100" value={item.num_rolls} onChange={(e) => updateItem(idx, "num_rolls", e.target.value)} required />
                   </div>
                   {items.length > 1 && (
-                    <Button type="button" variant="ghost" size="icon" className="mb-0 text-red-500" onClick={() => removeItem(idx)}>
-                      <Trash2 size={14} />
+                    <Button 
+                      type="button" 
+                      variant="ghost" 
+                      size="icon" 
+                      className="text-red-500 flex-shrink-0" 
+                      onClick={() => removeItem(idx)}
+                    >
+                      <Trash2 size={16} />
                     </Button>
                   )}
                 </div>
               </div>
             ))}
-          </div>
-
-          <div className="space-y-2">
+            </div>
+          <div className="space-y-2 mt-4">
             <Label>Notes</Label>
             <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} />
           </div>

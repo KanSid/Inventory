@@ -171,10 +171,10 @@ export function ProductsClient({ products, categories, canEdit }: Props) {
                 <TableHead className="cursor-pointer" onClick={() => toggleSort("item_code")}>
                   Code{sortIndicator("item_code")}
                 </TableHead>
+                <TableHead>Category</TableHead>
                 <TableHead className="cursor-pointer" onClick={() => toggleSort("description")}>
                   Description{sortIndicator("description")}
                 </TableHead>
-                <TableHead>Category</TableHead>
                 <TableHead>Sub-type</TableHead>
                 <TableHead className="cursor-pointer text-right" onClick={() => toggleSort("total_stock_m")}>
                   Stock{sortIndicator("total_stock_m")}
@@ -214,14 +214,16 @@ export function ProductsClient({ products, categories, canEdit }: Props) {
                         </Link>
                       </TableCell>
                       <TableCell>
-                        <Link href={`/products/${p.item_code}`}>{p.description}</Link>
-                      </TableCell>
-                      <TableCell>
-                        {cat && (
+                        {cat ? (
                           <span className="inline-block rounded-full bg-neutral-100 px-2.5 py-0.5 text-xs font-medium text-neutral-700">
                             {cat.name}
                           </span>
+                        ) : (
+                          <span className="text-muted-foreground">—</span>
                         )}
+                      </TableCell>
+                      <TableCell>
+                        <Link href={`/products/${p.item_code}`}>{p.description}</Link>
                       </TableCell>
                       <TableCell className="text-muted-foreground">{p.sub_type || "—"}</TableCell>
                       <TableCell className="text-right font-medium">

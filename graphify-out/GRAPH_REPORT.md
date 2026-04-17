@@ -1,13 +1,13 @@
-# Graph Report - .  (2026-04-12)
+# Graph Report - .  (2026-04-14)
 
 ## Corpus Check
-- 107 files ï¿½ ~33,886 words
+- 109 files · ~34,342 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 203 nodes ï¿½ 317 edges ï¿½ 16 communities detected
-- Extraction: 100% EXTRACTED ï¿½ 0% INFERRED ï¿½ 0% AMBIGUOUS
-- Token cost: 0 input ï¿½ 0 output
+- 205 nodes · 320 edges · 16 communities detected
+- Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
+- Token cost: 0 input · 0 output
 
 ## God Nodes (most connected - your core abstractions)
 1. `getAdminUser()` - 4 edges
@@ -27,11 +27,11 @@ Cohesion: 0.07
 Nodes (2): isUuid(), resolveDetailValue()
 
 ### Community 1 - "Community 1"
-Cohesion: 0.08
+Cohesion: 0.1
 Nodes (0): 
 
 ### Community 2 - "Community 2"
-Cohesion: 0.1
+Cohesion: 0.08
 Nodes (0): 
 
 ### Community 3 - "Community 3"
@@ -39,19 +39,19 @@ Cohesion: 0.12
 Nodes (0): 
 
 ### Community 4 - "Community 4"
-Cohesion: 0.15
+Cohesion: 0.13
 Nodes (0): 
 
 ### Community 5 - "Community 5"
-Cohesion: 0.16
+Cohesion: 0.15
 Nodes (0): 
 
 ### Community 6 - "Community 6"
-Cohesion: 0.17
+Cohesion: 0.15
 Nodes (0): 
 
 ### Community 7 - "Community 7"
-Cohesion: 0.15
+Cohesion: 0.2
 Nodes (0): 
 
 ### Community 8 - "Community 8"
@@ -59,11 +59,11 @@ Cohesion: 0.24
 Nodes (4): changeUserRole(), getAdminUser(), initiatePasswordReset(), toggleUserActive()
 
 ### Community 9 - "Community 9"
-Cohesion: 0.22
+Cohesion: 0.25
 Nodes (0): 
 
 ### Community 10 - "Community 10"
-Cohesion: 0.25
+Cohesion: 0.4
 Nodes (0): 
 
 ### Community 11 - "Community 11"
@@ -87,11 +87,11 @@ Cohesion: 1.0
 Nodes (0): 
 
 ## Knowledge Gaps
-- **Thin community `Community 12`** (1 nodes): `next-env.d.ts`
+- **Thin community `Community 12`** (2 nodes): `loading.tsx`, `ReportsLoading()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 13`** (1 nodes): `next.config.ts`
+- **Thin community `Community 13`** (1 nodes): `next-env.d.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 14`** (1 nodes): `loading.tsx`
+- **Thin community `Community 14`** (1 nodes): `next.config.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 - **Thin community `Community 15`** (1 nodes): `index.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
@@ -102,8 +102,10 @@ _Questions this graph is uniquely positioned to answer:_
 - **Should `Community 0` be split into smaller, more focused modules?**
   _Cohesion score 0.07 - nodes in this community are weakly interconnected._
 - **Should `Community 1` be split into smaller, more focused modules?**
-  _Cohesion score 0.08 - nodes in this community are weakly interconnected._
-- **Should `Community 2` be split into smaller, more focused modules?**
   _Cohesion score 0.1 - nodes in this community are weakly interconnected._
+- **Should `Community 2` be split into smaller, more focused modules?**
+  _Cohesion score 0.08 - nodes in this community are weakly interconnected._
 - **Should `Community 3` be split into smaller, more focused modules?**
   _Cohesion score 0.12 - nodes in this community are weakly interconnected._
+- **Should `Community 4` be split into smaller, more focused modules?**
+  _Cohesion score 0.13 - nodes in this community are weakly interconnected._

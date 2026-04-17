@@ -17,6 +17,7 @@ export async function createProduct(data: ProductFormData) {
       category_id: parsed.data.category_id,
       sub_type: parsed.data.sub_type || null,
       image_url: parsed.data.image_url || null,
+      stock_unit: parsed.data.stock_unit,
       low_stock_threshold: parsed.data.low_stock_threshold,
       notes: parsed.data.notes || null,
     })
@@ -45,6 +46,7 @@ export async function updateProduct(id: string, data: ProductFormData) {
       category_id: parsed.data.category_id,
       sub_type: parsed.data.sub_type || null,
       image_url: parsed.data.image_url || null,
+      stock_unit: parsed.data.stock_unit,
       low_stock_threshold: parsed.data.low_stock_threshold,
       notes: parsed.data.notes || null,
       updated_at: new Date().toISOString(),
@@ -116,7 +118,7 @@ export async function addVariableRolls(data: AddVariableRollsFormData) {
   let insertedCount = 0;
   for (const roll of parsed.data.rolls) {
     const lengthInMeters =
-      roll.unit === "yards" ? roll.length * 0.9144 : roll.length;
+      roll.unit === "yards" ? roll.length * 0.9144 : roll.length; // pairs stored as-is
 
     const { data: rollNum } = await supabase.rpc("generate_roll_number", {
       p_product_id: parsed.data.product_id,

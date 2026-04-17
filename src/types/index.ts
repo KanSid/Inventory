@@ -37,6 +37,7 @@ export interface Product {
   category_id: string;
   sub_type: string | null;
   image_url: string | null;
+  stock_unit: "roll" | "pair";
   low_stock_threshold: number;
   is_phased_out: boolean;
   notes: string | null;
@@ -95,12 +96,13 @@ export interface StockUsage {
 }
 
 export type ShipmentStatus = "pending" | "received" | "cancelled";
-export type InputUnit = "meters" | "yards";
+export type InputUnit = "meters" | "yards" | "pairs";
+export type StockUnit = "roll" | "pair";
 
 export interface Shipment {
   id: string;
   shipment_number: string;
-  supplier_id: string;
+  supplier_id: string | null;
   status: ShipmentStatus;
   expected_date: string | null;
   received_date: string | null;
@@ -117,6 +119,7 @@ export interface ShipmentItem {
   id: string;
   shipment_id: string;
   product_id: string;
+  supplier_id: string | null;
   quantity: number;
   input_unit: InputUnit;
   quantity_in_meters: number;
@@ -125,6 +128,7 @@ export interface ShipmentItem {
   created_at: string;
   // Joined
   product?: Product;
+  supplier?: Supplier;
 }
 
 export type AdjustmentType = "addition" | "deduction" | "damage" | "correction";

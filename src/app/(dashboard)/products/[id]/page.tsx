@@ -14,8 +14,9 @@ import {
 } from "@/components/ui/table";
 import { PageHeader } from "@/components/shared/page-header";
 import { StatusBadge } from "@/components/shared/status-badge";
+import { ProductImageViewer } from "@/components/products/product-image-viewer";
 import { Pencil, Plus } from "lucide-react";
-import { formatLength, formatDate } from "@/lib/utils";
+import { formatQuantity, formatDate } from "@/lib/utils";
 
 export default async function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id: itemCode } = await params;
@@ -55,6 +56,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     .single();
   const canEdit = profile?.role === "admin" || profile?.role === "inventory_manager";
 
+  const stockUnit: "roll" | "pair" = (product.stock_unit ?? "roll") as "roll" | "pair";
   const cat = product.categories as { name: string } | null;
   const stockStatus = (summary?.stock_status ?? "out_of_stock") as "in_stock" | "low_stock" | "out_of_stock" | "phased_out";
 
@@ -70,7 +72,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
               <Link href={`/products/${product.item_code}/rolls/add`}>
                 <Button className="bg-rose-600 hover:bg-rose-700">
                   <Plus size={16} className="mr-2" />
-                  Add Rolls
+                  {stockUnit === "pair" ? "Add Pairs" : "Add Rolls"}
                 </Button>
               </Link>
               <Link href={`/products/${product.item_code}/edit`}>
@@ -84,38 +86,46 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
         }
       />
 
-      {/* Info Card */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardContent className="pt-6">
-            <p className="text-sm text-muted-foreground">Category</p>
-            {cat && (
-              <span className="mt-1 inline-block rounded-full bg-neutral-100 px-2.5 py-0.5 text-xs font-medium text-neutral-700">
-                {cat.name}
-              </span>
-            )}
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <p className="text-sm text-muted-foreground">Total Stock</p>
-            <p className="text-2xl font-bold">{formatLength(summary?.total_stock_m ?? 0)}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <p className="text-sm text-muted-foreground">Active Rolls</p>
-            <p className="text-2xl font-bold">{summary?.active_roll_count ?? 0}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <p className="text-sm text-muted-foreground">Status</p>
-            <div className="mt-1">
-              <StatusBadge status={stockStatus} />
-            </div>
-          </CardContent>
-        </Card>
+      {/* Product Image and Info */}
+      <div className="flex flex-col lg:flex-row gap-6">
+        {/* Info Cards - Left Side */}
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 flex-1">
+          <Card>
+            <CardContent className="pt-6">
+              <p className="text-sm text-muted-foreground">Category</p>
+              {cat && (
+                <span className="mt-1 inline-block rounded-full bg-neutral-100 px-2.5 py-0.5 text-xs font-medium text-neutral-700">
+                  {cat.name}
+                </span>
+              )}
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-6">
+              <p className="text-sm text-muted-foreground">Total Stock</p>
+              <p className="text-2xl font-bold">{formatQuantity(summary?.total_stock_m ?? 0, stockUnit)}</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-6">
+              <p className="text-sm text-muted-foreground">{stockUnit === "pair" ? "Active Batches" : "Active Rolls"}</p>
+              <p className="text-2xl font-bold">{summary?.active_roll_count ?? 0}</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-6">
+              <p className="text-sm text-muted-foreground">Status</p>
+              <div className="mt-1">
+                <StatusBadge status={stockStatus} />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Product Image - Right Side */}
+        <div className="flex justify-center lg:justify-end">
+          <ProductImageViewer imageUrl={product.image_url} description={product.description} />
+        </div>
       </div>
 
       {product.sub_type && (
@@ -127,33 +137,33 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
       {/* Rolls Table */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Rolls ({rolls?.length ?? 0})</CardTitle>
+          <CardTitle className="text-lg">{stockUnit === "pair" ? "Batches" : "Rolls"} ({rolls?.length ?? 0})</CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Roll #</TableHead>
+                <TableHead>{stockUnit === "pair" ? "Batch #" : "Roll #"}</TableHead>
                 <TableHead className="text-right">Initial</TableHead>
                 <TableHead className="text-right">Remaining</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead>Full Roll</TableHead>
+                {stockUnit === "roll" && <TableHead>Full Roll</TableHead>}
                 <TableHead>Received</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {!rolls || rolls.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="py-8 text-center text-muted-foreground">
-                    No rolls yet. Add rolls to start tracking stock.
+                  <TableCell colSpan={stockUnit === "pair" ? 5 : 6} className="py-8 text-center text-muted-foreground">
+                    {stockUnit === "pair" ? "No batches yet. Add pairs to start tracking stock." : "No rolls yet. Add rolls to start tracking stock."}
                   </TableCell>
                 </TableRow>
               ) : (
                 rolls.map((r) => (
                   <TableRow key={r.id}>
                     <TableCell className="font-medium">{r.roll_number}</TableCell>
-                    <TableCell className="text-right">{formatLength(r.initial_length_m)}</TableCell>
-                    <TableCell className="text-right font-medium">{formatLength(r.current_length_m)}</TableCell>
+                    <TableCell className="text-right">{formatQuantity(r.initial_length_m, stockUnit)}</TableCell>
+                    <TableCell className="text-right font-medium">{formatQuantity(r.current_length_m, stockUnit)}</TableCell>
                     <TableCell>
                       <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
                         r.status === "active"
@@ -163,7 +173,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                         {r.status === "active" ? "Active" : "Finished"}
                       </span>
                     </TableCell>
-                    <TableCell>{r.is_full_roll ? "Yes" : "No"}</TableCell>
+                    {stockUnit === "roll" && <TableCell>{r.is_full_roll ? "Yes" : "No"}</TableCell>}
                     <TableCell>{formatDate(r.received_date)}</TableCell>
                   </TableRow>
                 ))
@@ -201,7 +211,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                     <TableCell>{formatDate(u.usage_date)}</TableCell>
                     <TableCell>{(u.brides as { name: string } | null)?.name ?? "—"}</TableCell>
                     <TableCell>{(u.rolls as { roll_number: string } | null)?.roll_number ?? "—"}</TableCell>
-                    <TableCell className="text-right font-medium">{formatLength(u.quantity_used)}</TableCell>
+                    <TableCell className="text-right font-medium">{formatQuantity(u.quantity_used, stockUnit)}</TableCell>
                   </TableRow>
                 ))
               )}
