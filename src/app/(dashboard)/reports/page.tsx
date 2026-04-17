@@ -18,7 +18,7 @@ export default function ReportsPage() {
       description: "Material consumption by product, bride, or date range",
       icon: BarChart3,
       href: "/reports/usage",
-      color: "text-primary",
+      color: "text-rose-600",
     },
     {
       title: "Shipment History",

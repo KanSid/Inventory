@@ -81,7 +81,7 @@ export function BridesClient({ brides, canEdit }: Props) {
         description={`${brides.length} bride(s)`}
         action={
           canEdit ? (
-            <Button onClick={() => setOpen(true)}>
+            <Button className="bg-rose-600 hover:bg-rose-700" onClick={() => setOpen(true)}>
               <Plus size={16} className="mr-2" />
               Add Bride
             </Button>
@@ -116,7 +116,7 @@ export function BridesClient({ brides, canEdit }: Props) {
             {error && <p className="text-sm text-red-500">{error}</p>}
             <div className="flex justify-end gap-2">
               <Button type="button" variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
-              <Button type="submit" disabled={loading}>
+              <Button type="submit" className="bg-rose-600 hover:bg-rose-700" disabled={loading}>
                 {loading ? "Saving..." : "Add Bride"}
               </Button>
             </div>
@@ -151,7 +151,7 @@ export function BridesClient({ brides, canEdit }: Props) {
                 filtered.map((b) => (
                   <TableRow key={b.id}>
                     <TableCell>
-                      <Link href={`/brides/${b.id}`} className="font-medium text-primary hover:underline">
+                      <Link href={`/brides/${b.id}`} className="font-medium text-rose-600 hover:underline">
                         {b.name}
                       </Link>
                     </TableCell>
