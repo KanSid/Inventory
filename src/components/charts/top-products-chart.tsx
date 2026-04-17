@@ -2,6 +2,7 @@
 
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ATELIER_CHART_COLORS } from "@/lib/constants";
 
 interface ProductUsageData {
   product: string;
@@ -36,7 +37,7 @@ export function TopProductsChart({ data }: { data: ProductUsageData[] }) {
             <XAxis dataKey="product" angle={-45} textAnchor="end" height={100} />
             <YAxis label={{ value: "Meters", angle: -90, position: "insideLeft" }} />
             <Tooltip formatter={(value) => `${value}m`} />
-            <Bar dataKey="totalUsed" fill="#C82A5F" name="Total Used (m)" />
+            <Bar dataKey="totalUsed" fill={ATELIER_CHART_COLORS.primary} name="Total Used (m)" />
           </BarChart>
         </ResponsiveContainer>
       </CardContent>

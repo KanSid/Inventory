@@ -24,11 +24,11 @@ export function Topbar({ onMenuClick }: TopbarProps) {
   }
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-white px-4 lg:px-6">
+    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border/50 bg-background/80 backdrop-blur-md px-4 lg:px-6">
       <div className="flex items-center gap-2">
         <button
           onClick={onMenuClick}
-          className="lg:hidden rounded-md p-2 text-neutral-600 hover:bg-neutral-100"
+          className="lg:hidden rounded-md p-2 text-muted-foreground hover:bg-muted"
         >
           <Menu size={20} />
         </button>
@@ -36,7 +36,7 @@ export function Topbar({ onMenuClick }: TopbarProps) {
         {isSubpage && (
           <button
             onClick={() => router.back()}
-            className="flex items-center gap-1 rounded-md px-2 py-1.5 text-sm text-neutral-500 hover:bg-neutral-100 hover:text-neutral-800 transition-colors"
+            className="flex items-center gap-1 rounded-md px-2 py-1.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
           >
             <ChevronLeft size={16} />
             Back
@@ -48,7 +48,7 @@ export function Topbar({ onMenuClick }: TopbarProps) {
         variant="ghost"
         size="sm"
         onClick={handleLogout}
-        className="text-neutral-600 hover:text-red-600"
+        className="text-muted-foreground hover:text-destructive"
       >
         <LogOut size={16} className="mr-2" />
         Sign out

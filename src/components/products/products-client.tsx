@@ -116,7 +116,7 @@ export function ProductsClient({ products, categories, canEdit }: Props) {
         action={
           canEdit ? (
             <Link href="/products/new">
-              <Button className="bg-rose-600 hover:bg-rose-700">
+              <Button>
                 <Plus size={16} className="mr-2" />
                 Add Product
               </Button>
@@ -196,7 +196,7 @@ export function ProductsClient({ products, categories, canEdit }: Props) {
                 filtered.map((p) => {
                   const cat = catMap[p.category_id];
                   return (
-                    <TableRow key={p.id} className="cursor-pointer hover:bg-neutral-50">
+                    <TableRow key={p.id} className="cursor-pointer hover:bg-muted/50">
                       <TableCell>
                         {p.image_url ? (
                           <img
@@ -205,17 +205,17 @@ export function ProductsClient({ products, categories, canEdit }: Props) {
                             className="h-9 w-9 rounded-md border object-cover"
                           />
                         ) : (
-                          <div className="h-9 w-9 rounded-md border bg-neutral-100" />
+                          <div className="h-9 w-9 rounded-md border bg-muted" />
                         )}
                       </TableCell>
                       <TableCell>
-                        <Link href={`/products/${p.item_code}`} className="font-medium text-rose-600 hover:underline">
+                        <Link href={`/products/${p.item_code}`} className="font-medium text-primary hover:underline">
                           {p.item_code}
                         </Link>
                       </TableCell>
                       <TableCell>
                         {cat ? (
-                          <span className="inline-block rounded-full bg-neutral-100 px-2.5 py-0.5 text-xs font-medium text-neutral-700">
+                          <span className="inline-block rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
                             {cat.name}
                           </span>
                         ) : (

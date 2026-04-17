@@ -2,6 +2,7 @@
 
 import { PieChart, Pie, Cell, Legend, Tooltip, ResponsiveContainer } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ATELIER_CHART_COLORS } from "@/lib/constants";
 
 interface StatusData {
   name: string;
@@ -56,11 +57,11 @@ export function StockStatusChart({ data }: { data: StatusData[] }) {
                 return `${labelMap[name] || name}: ${value}`;
               }}
               outerRadius={80}
-              fill="#8884d8"
+              fill={ATELIER_CHART_COLORS.primary}
               dataKey="value"
             >
               {data.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[entry.name] || "#8884D8"} />
+                <Cell key={`cell-${index}`} fill={COLORS[entry.name] || ATELIER_CHART_COLORS.primary} />
               ))}
             </Pie>
             <Tooltip formatter={(value) => value} />

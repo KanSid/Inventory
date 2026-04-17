@@ -1,11 +1,11 @@
-# Graph Report - .  (2026-04-14)
+# Graph Report - .  (2026-04-17)
 
 ## Corpus Check
-- 109 files · ~34,342 words
+- 109 files · ~34,788 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 205 nodes · 320 edges · 16 communities detected
+- 206 nodes · 325 edges · 16 communities detected
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
@@ -16,6 +16,8 @@
 4. `changeUserRole()` - 2 edges
 5. `toggleUserActive()` - 2 edges
 6. `initiatePasswordReset()` - 2 edges
+7. `formatLength()` - 2 edges
+8. `formatQuantity()` - 2 edges
 
 ## Surprising Connections (you probably didn't know these)
 - None detected - all connections are within the same source files.
@@ -27,7 +29,7 @@ Cohesion: 0.07
 Nodes (2): isUuid(), resolveDetailValue()
 
 ### Community 1 - "Community 1"
-Cohesion: 0.1
+Cohesion: 0.09
 Nodes (0): 
 
 ### Community 2 - "Community 2"
@@ -35,8 +37,8 @@ Cohesion: 0.08
 Nodes (0): 
 
 ### Community 3 - "Community 3"
-Cohesion: 0.12
-Nodes (0): 
+Cohesion: 0.11
+Nodes (2): formatLength(), formatQuantity()
 
 ### Community 4 - "Community 4"
 Cohesion: 0.13
@@ -47,7 +49,7 @@ Cohesion: 0.15
 Nodes (0): 
 
 ### Community 6 - "Community 6"
-Cohesion: 0.15
+Cohesion: 0.19
 Nodes (0): 
 
 ### Community 7 - "Community 7"
@@ -102,10 +104,10 @@ _Questions this graph is uniquely positioned to answer:_
 - **Should `Community 0` be split into smaller, more focused modules?**
   _Cohesion score 0.07 - nodes in this community are weakly interconnected._
 - **Should `Community 1` be split into smaller, more focused modules?**
-  _Cohesion score 0.1 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.09 - nodes in this community are weakly interconnected._
 - **Should `Community 2` be split into smaller, more focused modules?**
   _Cohesion score 0.08 - nodes in this community are weakly interconnected._
 - **Should `Community 3` be split into smaller, more focused modules?**
-  _Cohesion score 0.12 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.11 - nodes in this community are weakly interconnected._
 - **Should `Community 4` be split into smaller, more focused modules?**
   _Cohesion score 0.13 - nodes in this community are weakly interconnected._

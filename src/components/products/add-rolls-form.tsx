@@ -186,7 +186,6 @@ export function AddRollsForm({ productId, itemCode, stockUnit }: Props) {
             </Button>
             <Button
               type="submit"
-              className="bg-rose-600 hover:bg-rose-700"
               disabled={loading}
             >
               {loading ? "Adding..." : isPair ? `Add ${rolls.length} Batch(es)` : `Add ${rolls.length} Roll(s)`}

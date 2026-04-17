@@ -24,7 +24,7 @@ export default async function SuppliersPage() {
         action={
           isAdmin ? (
             <Link href="/suppliers/new">
-              <Button className="bg-rose-600 hover:bg-rose-700">
+              <Button>
                 <Plus size={16} className="mr-2" />
                 Add Supplier
               </Button>
@@ -56,7 +56,7 @@ export default async function SuppliersPage() {
                 suppliers.map((s) => (
                   <TableRow key={s.id}>
                     <TableCell>
-                      <Link href={`/suppliers/${s.id}`} className="font-medium text-rose-600 hover:underline">
+                      <Link href={`/suppliers/${s.id}`} className="font-medium text-primary hover:underline">
                         {s.name}
                       </Link>
                     </TableCell>
@@ -65,7 +65,7 @@ export default async function SuppliersPage() {
                     <TableCell>{s.email || "—"}</TableCell>
                     <TableCell>
                       <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
-                        s.is_active ? "bg-emerald-100 text-emerald-700" : "bg-neutral-100 text-neutral-500"
+                        s.is_active ? "bg-emerald-100 text-emerald-700" : "bg-muted text-muted-foreground"
                       }`}>
                         {s.is_active ? "Active" : "Inactive"}
                       </span>

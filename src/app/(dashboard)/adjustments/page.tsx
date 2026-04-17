@@ -30,7 +30,7 @@ export default async function AdjustmentsPage() {
         action={
           canEdit ? (
             <Link href="/adjustments/new">
-              <Button className="bg-rose-600 hover:bg-rose-700">
+              <Button>
                 <Plus size={16} className="mr-2" />
                 New Adjustment
               </Button>

@@ -2,6 +2,7 @@
 
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { CHART_COLOR_ARRAY } from "@/lib/constants";
 
 interface ConsumptionData {
   week: string;
@@ -24,7 +25,7 @@ export function StockConsumptionChart({ data }: { data: ConsumptionData[] }) {
   }
 
   const productCodes = Object.keys(data[0]).filter((k) => k !== "week");
-  const colors = ["#C82A5F", "#E85C8A", "#F08FA8", "#94C0D8", "#5B9FBE"];
+  const colors = CHART_COLOR_ARRAY;
 
   return (
     <Card>

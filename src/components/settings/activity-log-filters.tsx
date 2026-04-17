@@ -60,11 +60,11 @@ export function ActivityLogFilters({ users, actionTypes, currentFilters }: Activ
       <CardContent className="p-4">
         <form action={handleChange} className="flex flex-wrap gap-3 items-end">
           <div className="space-y-1">
-            <label className="text-xs font-medium text-neutral-600">User</label>
+            <label className="text-xs font-medium text-foreground">User</label>
             <select
               name="user_id"
               defaultValue={currentFilters.user_id ?? ""}
-              className="rounded border border-neutral-300 px-2 py-1.5 text-sm focus:border-rose-500 focus:outline-none min-w-[160px]"
+              className="rounded border border-input px-2 py-1.5 text-sm focus:border-primary focus:outline-none min-w-[160px]"
             >
               <option value="">All users</option>
               {users.map((u) => (
@@ -74,11 +74,11 @@ export function ActivityLogFilters({ users, actionTypes, currentFilters }: Activ
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-medium text-neutral-600">Action Type</label>
+            <label className="text-xs font-medium text-foreground">Action Type</label>
             <select
               name="action_type"
               defaultValue={currentFilters.action_type ?? ""}
-              className="rounded border border-neutral-300 px-2 py-1.5 text-sm focus:border-rose-500 focus:outline-none min-w-[160px]"
+              className="rounded border border-input px-2 py-1.5 text-sm focus:border-primary focus:outline-none min-w-[160px]"
             >
               <option value="">All actions</option>
               {actionTypes.map((a) => (
@@ -88,27 +88,27 @@ export function ActivityLogFilters({ users, actionTypes, currentFilters }: Activ
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-medium text-neutral-600">From Date</label>
+            <label className="text-xs font-medium text-foreground">From Date</label>
             <input
               type="date"
               name="from"
               defaultValue={currentFilters.from ?? ""}
-              className="rounded border border-neutral-300 px-2 py-1.5 text-sm focus:border-rose-500 focus:outline-none"
+              className="rounded border border-input px-2 py-1.5 text-sm focus:border-primary focus:outline-none"
             />
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-medium text-neutral-600">To Date</label>
+            <label className="text-xs font-medium text-foreground">To Date</label>
             <input
               type="date"
               name="to"
               defaultValue={currentFilters.to ?? ""}
-              className="rounded border border-neutral-300 px-2 py-1.5 text-sm focus:border-rose-500 focus:outline-none"
+              className="rounded border border-input px-2 py-1.5 text-sm focus:border-primary focus:outline-none"
             />
           </div>
 
           <div className="flex gap-2">
-            <Button type="submit" size="sm" disabled={isPending} className="bg-rose-600 hover:bg-rose-700">
+            <Button type="submit" size="sm" disabled={isPending}>
               Filter
             </Button>
             <Button

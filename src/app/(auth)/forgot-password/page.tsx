@@ -32,10 +32,10 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-neutral-50 px-4">
+    <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-2 text-center">
-          <h1 className="text-3xl font-bold tracking-tight text-rose-600">
+          <h1 className="text-3xl font-bold tracking-tight text-primary">
             D&apos;Aisle
           </h1>
           <p className="text-sm text-muted-foreground">Reset your password</p>
@@ -46,7 +46,7 @@ export default function ForgotPasswordPage() {
               <p className="text-sm text-muted-foreground">
                 Check your email for a password reset link.
               </p>
-              <a href="/login" className="text-sm text-rose-600 hover:underline">
+              <a href="/login" className="text-sm text-primary hover:underline">
                 Back to login
               </a>
             </div>
@@ -66,7 +66,7 @@ export default function ForgotPasswordPage() {
               {error && <p className="text-sm text-red-500">{error}</p>}
               <Button
                 type="submit"
-                className="w-full bg-rose-600 hover:bg-rose-700"
+                className="w-full"
                 disabled={loading}
               >
                 {loading ? "Sending..." : "Send reset link"}

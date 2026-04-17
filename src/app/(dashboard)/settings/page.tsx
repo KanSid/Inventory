@@ -20,7 +20,7 @@ export default async function SettingsPage() {
       description: "Inventory thresholds, notification preferences, and data retention policies",
       icon: SlidersHorizontal,
       href: "/settings/admin",
-      color: "text-rose-600",
+      color: "text-primary",
     },
     {
       title: "User Management",
@@ -57,7 +57,7 @@ export default async function SettingsPage() {
                 <CardDescription className="text-sm">{section.description}</CardDescription>
               </CardHeader>
               <CardContent>
-                <span className="text-sm text-rose-600 font-medium">Open →</span>
+                <span className="text-sm text-primary font-medium">Open →</span>
               </CardContent>
             </Card>
           </Link>

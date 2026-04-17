@@ -30,7 +30,7 @@ export default async function UsagePage() {
         action={
           canEdit ? (
             <Link href="/usage/new">
-              <Button className="bg-rose-600 hover:bg-rose-700">
+              <Button>
                 <Plus size={16} className="mr-2" />
                 Log Usage
               </Button>
@@ -66,12 +66,17 @@ export default async function UsagePage() {
                   const logger = u.profiles as { full_name: string } | null;
                   return (
                     <TableRow key={u.id}>
-                      <TableCell>{formatDate(u.usage_date)}</TableCell>
-                      <TableCell className="font-medium">{bride?.name ?? "—"}</TableCell>
-                      <TableCell>{roll?.products?.item_code} — {roll?.products?.description}</TableCell>
-                      <TableCell>{roll?.roll_number}</TableCell>
-                      <TableCell className="text-right font-medium">{formatLength(u.quantity_used)}</TableCell>
-                      <TableCell className="text-muted-foreground">{logger?.full_name ?? "—"}</TableCell>
+                      <TableCell className="text-sm text-muted-foreground">{formatDate(u.usage_date)}</TableCell>
+                      <TableCell className="font-serif">{bride?.name ?? "—"}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-2 h-2 rounded-full bg-primary/60 shrink-0" />
+                          <span className="font-serif">{roll?.products?.item_code} — {roll?.products?.description}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-sm text-muted-foreground">{roll?.roll_number}</TableCell>
+                      <TableCell className="text-right font-serif">{formatLength(u.quantity_used)}</TableCell>
+                      <TableCell className="text-sm text-muted-foreground">{logger?.full_name ?? "—"}</TableCell>
                     </TableRow>
                   );
                 })

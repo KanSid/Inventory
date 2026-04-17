@@ -90,7 +90,7 @@ export function CategoriesClient({ categories, productCounts, canEdit, canDelete
           canEdit ? (
             <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger
-                className="inline-flex items-center justify-center rounded-md bg-rose-600 px-4 py-2 text-sm font-medium text-white hover:bg-rose-700"
+                className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
                 onClick={openCreate}
               >
                 <Plus size={16} className="mr-2" />
@@ -125,7 +125,7 @@ export function CategoriesClient({ categories, productCounts, canEdit, canDelete
                     <Button type="button" variant="outline" onClick={() => setOpen(false)}>
                       Cancel
                     </Button>
-                    <Button type="submit" className="bg-rose-600 hover:bg-rose-700" disabled={loading}>
+                    <Button type="submit" disabled={loading}>
                       {loading ? "Saving..." : editing ? "Update" : "Create"}
                     </Button>
                   </div>

@@ -9,9 +9,9 @@ import { UserManagementActions } from "@/components/settings/user-management-act
 import { formatDate } from "@/lib/utils";
 
 const ROLE_COLORS: Record<string, string> = {
-  admin: "bg-rose-100 text-rose-700",
+  admin: "bg-primary/10 text-primary",
   inventory_manager: "bg-blue-100 text-blue-700",
-  viewer: "bg-neutral-100 text-neutral-600",
+  viewer: "bg-muted text-muted-foreground",
 };
 
 export default async function UsersPage() {
@@ -68,7 +68,7 @@ export default async function UsersPage() {
                       <TableRow key={u.id} className={!u.is_active ? "opacity-60" : undefined}>
                         <TableCell>
                           <div className="flex items-center gap-2">
-                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-rose-100 text-sm font-semibold text-rose-700 shrink-0">
+                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary shrink-0">
                               {(u.full_name || "?").charAt(0).toUpperCase()}
                             </div>
                             <div>
@@ -80,7 +80,7 @@ export default async function UsersPage() {
                           </div>
                         </TableCell>
                         <TableCell>
-                          <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${ROLE_COLORS[u.role] ?? "bg-neutral-100 text-neutral-600"}`}>
+                          <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${ROLE_COLORS[u.role] ?? "bg-muted text-muted-foreground"}`}>
                             {u.role.replace("_", " ")}
                           </span>
                         </TableCell>

@@ -49,7 +49,7 @@ export default async function ShipmentDetailPage({ params }: { params: Promise<{
             <span className={`mt-1 inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
               shipment.status === "received" ? "bg-emerald-100 text-emerald-700" :
               shipment.status === "pending" ? "bg-amber-100 text-amber-700" :
-              "bg-neutral-100 text-neutral-500"
+              "bg-muted text-muted-foreground"
             }`}>
               {shipment.status.charAt(0).toUpperCase() + shipment.status.slice(1)}
             </span>

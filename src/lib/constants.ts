@@ -35,3 +35,19 @@ export const STOCK_STATUS_COLORS = {
   out_of_stock: { bg: "bg-red-100", text: "text-red-700", dot: "bg-red-500" },
   phased_out: { bg: "bg-slate-100", text: "text-slate-600", dot: "bg-slate-400" },
 } as const;
+
+export const ATELIER_CHART_COLORS = {
+  primary: "#735b2c",      // Harvest Gold
+  secondary: "#a68b54",    // Light Gold
+  tertiary: "#c4a265",     // Bright Gold
+  complementary: "#5b8a72", // Muted Sage
+  accent: "#8b6e4e",       // Warm Bronze
+} as const;
+
+export const CHART_COLOR_ARRAY = [
+  ATELIER_CHART_COLORS.primary,
+  ATELIER_CHART_COLORS.secondary,
+  ATELIER_CHART_COLORS.tertiary,
+  ATELIER_CHART_COLORS.complementary,
+  ATELIER_CHART_COLORS.accent,
+] as const;

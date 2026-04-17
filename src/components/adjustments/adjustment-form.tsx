@@ -144,7 +144,7 @@ export function AdjustmentForm({ products }: Props) {
 
           <div className="flex justify-end gap-2 pt-2">
             <Button type="button" variant="outline" onClick={() => router.back()}>Cancel</Button>
-            <Button type="submit" className="bg-rose-600 hover:bg-rose-700" disabled={loading}>
+            <Button type="submit" disabled={loading}>
               {loading ? "Saving..." : "Submit Adjustment"}
             </Button>
           </div>

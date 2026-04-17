@@ -62,18 +62,22 @@ export function Sidebar({ role, fullName, open, onClose }: SidebarProps) {
 
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-neutral-900 text-neutral-200 transition-transform lg:translate-x-0 lg:static lg:z-auto",
+          "fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-sidebar text-sidebar-foreground transition-transform lg:translate-x-0 lg:static lg:z-auto",
           open ? "translate-x-0" : "-translate-x-full"
         )}
       >
-        {/* Logo */}
-        <div className="flex h-16 items-center justify-between px-6 border-b border-neutral-700">
-          <Link href="/dashboard" className="flex items-center gap-2">
-            <span className="text-xl font-bold text-rose-500">D&apos;Aisle</span>
-            <span className="text-xs text-neutral-400">Inventory</span>
-          </Link>
-          <button onClick={onClose} className="lg:hidden text-neutral-400 hover:text-white">
-            <X size={20} />
+        {/* Logo + Branding */}
+        <div className="flex items-start justify-between px-6 pt-6 pb-4 border-b border-sidebar-border">
+          <div className="space-y-0.5">
+            <Link href="/dashboard">
+              <span className="font-serif italic text-2xl text-primary tracking-tight">D&apos;Aisle</span>
+            </Link>
+            <p className="font-sans text-[10px] uppercase tracking-[0.15em] font-semibold text-sidebar-foreground/40">
+              Bridal Standard v1.0
+            </p>
+          </div>
+          <button onClick={onClose} className="lg:hidden mt-1 text-sidebar-foreground/60 hover:text-sidebar-foreground">
+            <X size={18} />
           </button>
         </div>
 
@@ -87,10 +91,10 @@ export function Sidebar({ role, fullName, open, onClose }: SidebarProps) {
                 href={item.href}
                 onClick={onClose}
                 className={cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-xs font-semibold uppercase tracking-[0.08em] transition-all duration-200",
                   isActive
-                    ? "bg-rose-600 text-white"
-                    : "text-neutral-400 hover:bg-neutral-800 hover:text-white"
+                    ? "bg-sidebar-primary text-sidebar-primary-foreground"
+                    : "text-sidebar-foreground/50 hover:bg-sidebar-accent hover:text-sidebar-foreground"
                 )}
               >
                 <item.icon size={18} />
@@ -101,7 +105,7 @@ export function Sidebar({ role, fullName, open, onClose }: SidebarProps) {
 
           {role === "admin" && (
             <>
-              <div className="my-3 border-t border-neutral-700" />
+              <div className="my-3 border-t border-sidebar-border" />
               {adminItems.map((item) => {
                 const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
                 return (
@@ -110,10 +114,10 @@ export function Sidebar({ role, fullName, open, onClose }: SidebarProps) {
                     href={item.href}
                     onClick={onClose}
                     className={cn(
-                      "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                      "flex items-center gap-3 rounded-lg px-3 py-2.5 text-xs font-semibold uppercase tracking-[0.08em] transition-all duration-200",
                       isActive
-                        ? "bg-rose-600 text-white"
-                        : "text-neutral-400 hover:bg-neutral-800 hover:text-white"
+                        ? "bg-sidebar-primary text-sidebar-primary-foreground"
+                        : "text-sidebar-foreground/50 hover:bg-sidebar-accent hover:text-sidebar-foreground"
                     )}
                   >
                     <item.icon size={18} />
@@ -125,15 +129,21 @@ export function Sidebar({ role, fullName, open, onClose }: SidebarProps) {
           )}
         </nav>
 
-        {/* User */}
-        <div className="border-t border-neutral-700 px-4 py-3">
+        {/* New Entry + User */}
+        <div className="border-t border-sidebar-border px-4 pt-4 pb-3 space-y-3">
+          <Link
+            href="/usage/new"
+            className="flex w-full items-center justify-center py-2.5 bg-primary text-primary-foreground rounded-lg text-[11px] font-bold uppercase tracking-widest hover:opacity-90 transition-opacity shadow-sm"
+          >
+            + New Entry
+          </Link>
           <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-rose-600 text-sm font-semibold text-white">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-sidebar-primary text-sm font-semibold text-sidebar-primary-foreground">
               {fullName.charAt(0).toUpperCase()}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="truncate text-sm font-medium text-white">{fullName}</p>
-              <p className="text-xs capitalize text-neutral-400">{role.replace("_", " ")}</p>
+              <p className="truncate text-sm font-medium text-sidebar-foreground">{fullName}</p>
+              <p className="text-[10px] capitalize text-sidebar-foreground/50 uppercase tracking-[0.08em]">{role.replace("_", " ")}</p>
             </div>
           </div>
         </div>

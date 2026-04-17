@@ -96,7 +96,7 @@ export default async function SupplierDetailPage({ params }: { params: Promise<{
                 shipments.map((s) => (
                   <TableRow key={s.id}>
                     <TableCell>
-                      <Link href={`/shipments/${s.id}`} className="font-medium text-rose-600 hover:underline">
+                      <Link href={`/shipments/${s.id}`} className="font-medium text-primary hover:underline">
                         {s.shipment_number}
                       </Link>
                     </TableCell>
@@ -104,7 +104,7 @@ export default async function SupplierDetailPage({ params }: { params: Promise<{
                       <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
                         s.status === "received" ? "bg-emerald-100 text-emerald-700" :
                         s.status === "pending" ? "bg-amber-100 text-amber-700" :
-                        "bg-neutral-100 text-neutral-500"
+                        "bg-muted text-muted-foreground"
                       }`}>
                         {s.status.charAt(0).toUpperCase() + s.status.slice(1)}
                       </span>

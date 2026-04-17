@@ -123,7 +123,7 @@ export function UsageForm({ brides: initialBrides, products }: Props) {
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label>Bride</Label>
-                <Button type="button" variant="link" className="h-auto p-0 text-xs text-rose-600" onClick={() => setBrideDialogOpen(true)}>
+                <Button type="button" variant="link" className="h-auto p-0 text-xs text-primary" onClick={() => setBrideDialogOpen(true)}>
                   + Quick add
                 </Button>
               </div>
@@ -213,7 +213,7 @@ export function UsageForm({ brides: initialBrides, products }: Props) {
 
             <div className="flex justify-end gap-2 pt-2">
               <Button type="button" variant="outline" onClick={() => router.back()}>Cancel</Button>
-              <Button type="submit" className="bg-rose-600 hover:bg-rose-700" disabled={loading}>
+              <Button type="submit" disabled={loading}>
                 {loading ? "Logging..." : "Log Usage"}
               </Button>
             </div>
@@ -238,7 +238,7 @@ export function UsageForm({ brides: initialBrides, products }: Props) {
             </div>
             <div className="flex justify-end gap-2">
               <Button type="button" variant="outline" onClick={() => setBrideDialogOpen(false)}>Cancel</Button>
-              <Button type="submit" className="bg-rose-600 hover:bg-rose-700" disabled={brideLoading}>
+              <Button type="submit" disabled={brideLoading}>
                 {brideLoading ? "Adding..." : "Add"}
               </Button>
             </div>

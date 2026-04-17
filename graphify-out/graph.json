@@ -41,7 +41,7 @@
       "source_file": "src\\validators\\adjustment.ts",
       "source_location": "L1",
       "id": "adjustment",
-      "community": 1
+      "community": 5
     },
     {
       "label": "createAdjustment()",
@@ -49,7 +49,7 @@
       "source_file": "src\\actions\\adjustment.ts",
       "source_location": "L7",
       "id": "adjustment_createadjustment",
-      "community": 1
+      "community": 5
     },
     {
       "label": "bride.ts",
@@ -127,7 +127,7 @@
       "label": "updateProduct()",
       "file_type": "code",
       "source_file": "src\\actions\\product.ts",
-      "source_location": "L35",
+      "source_location": "L36",
       "id": "product_updateproduct",
       "community": 7
     },
@@ -135,7 +135,7 @@
       "label": "togglePhaseOut()",
       "file_type": "code",
       "source_file": "src\\actions\\product.ts",
-      "source_location": "L64",
+      "source_location": "L66",
       "id": "product_togglephaseout",
       "community": 7
     },
@@ -143,7 +143,7 @@
       "label": "addRolls()",
       "file_type": "code",
       "source_file": "src\\actions\\product.ts",
-      "source_location": "L78",
+      "source_location": "L80",
       "id": "product_addrolls",
       "community": 7
     },
@@ -151,7 +151,7 @@
       "label": "addVariableRolls()",
       "file_type": "code",
       "source_file": "src\\actions\\product.ts",
-      "source_location": "L109",
+      "source_location": "L111",
       "id": "product_addvariablerolls",
       "community": 7
     },
@@ -225,7 +225,7 @@
       "source_file": "src\\actions\\upload.ts",
       "source_location": "L1",
       "id": "upload",
-      "community": 5
+      "community": 7
     },
     {
       "label": "uploadProductImage()",
@@ -233,7 +233,7 @@
       "source_file": "src\\actions\\upload.ts",
       "source_location": "L6",
       "id": "upload_uploadproductimage",
-      "community": 5
+      "community": 7
     },
     {
       "label": "usage.ts",
@@ -721,39 +721,39 @@
       "source_file": "src\\components\\products\\add-rolls-form.tsx",
       "source_location": "L1",
       "id": "add_rolls_form",
-      "community": 7
+      "community": 1
     },
     {
       "label": "addRollField()",
       "file_type": "code",
       "source_file": "src\\components\\products\\add-rolls-form.tsx",
-      "source_location": "L37",
+      "source_location": "L39",
       "id": "add_rolls_form_addrollfield",
-      "community": 7
+      "community": 1
     },
     {
       "label": "removeRollField()",
       "file_type": "code",
       "source_file": "src\\components\\products\\add-rolls-form.tsx",
-      "source_location": "L41",
+      "source_location": "L43",
       "id": "add_rolls_form_removerollfield",
-      "community": 7
+      "community": 1
     },
     {
       "label": "updateRoll()",
       "file_type": "code",
       "source_file": "src\\components\\products\\add-rolls-form.tsx",
-      "source_location": "L47",
+      "source_location": "L49",
       "id": "add_rolls_form_updateroll",
-      "community": 7
+      "community": 1
     },
     {
       "label": "handleSubmit()",
       "file_type": "code",
       "source_file": "src\\components\\products\\add-rolls-form.tsx",
-      "source_location": "L53",
+      "source_location": "L55",
       "id": "add_rolls_form_handlesubmit",
-      "community": 7
+      "community": 1
     },
     {
       "label": "product-form.tsx",
@@ -761,23 +761,23 @@
       "source_file": "src\\components\\products\\product-form.tsx",
       "source_location": "L1",
       "id": "product_form",
-      "community": 1
+      "community": 7
     },
     {
       "label": "handleFileChange()",
       "file_type": "code",
       "source_file": "src\\components\\products\\product-form.tsx",
-      "source_location": "L42",
+      "source_location": "L43",
       "id": "product_form_handlefilechange",
-      "community": 1
+      "community": 7
     },
     {
       "label": "handleSubmit()",
       "file_type": "code",
       "source_file": "src\\components\\products\\product-form.tsx",
-      "source_location": "L63",
+      "source_location": "L64",
       "id": "product_form_handlesubmit",
-      "community": 1
+      "community": 7
     },
     {
       "label": "product-image-viewer.tsx",
@@ -913,7 +913,7 @@
       "source_file": "src\\components\\shared\\status-badge.tsx",
       "source_location": "L1",
       "id": "status_badge",
-      "community": 6
+      "community": 0
     },
     {
       "label": "StatusBadge()",
@@ -921,7 +921,7 @@
       "source_file": "src\\components\\shared\\status-badge.tsx",
       "source_location": "L18",
       "id": "status_badge_statusbadge",
-      "community": 6
+      "community": 0
     },
     {
       "label": "receive-button.tsx",
@@ -975,7 +975,7 @@
       "label": "handleSubmit()",
       "file_type": "code",
       "source_file": "src\\components\\shipments\\shipment-form.tsx",
-      "source_location": "L55",
+      "source_location": "L65",
       "id": "shipment_form_handlesubmit",
       "community": 1
     },
@@ -1047,7 +1047,7 @@
       "label": "cn()",
       "file_type": "code",
       "source_file": "src\\components\\ui\\button.tsx",
-      "source_location": "L52",
+      "source_location": "L53",
       "id": "button_cn",
       "community": 4
     },
@@ -1457,7 +1457,7 @@
       "source_file": "src\\lib\\constants.ts",
       "source_location": "L1",
       "id": "constants",
-      "community": 6
+      "community": 0
     },
     {
       "label": "utils.ts",
@@ -1492,10 +1492,18 @@
       "community": 3
     },
     {
-      "label": "formatDate()",
+      "label": "formatQuantity()",
       "file_type": "code",
       "source_file": "src\\lib\\utils.ts",
       "source_location": "L16",
+      "id": "utils_formatquantity",
+      "community": 3
+    },
+    {
+      "label": "formatDate()",
+      "file_type": "code",
+      "source_file": "src\\lib\\utils.ts",
+      "source_location": "L21",
       "id": "utils_formatdate",
       "community": 3
     },
@@ -1925,7 +1933,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\actions\\product.ts",
-      "source_location": "L35",
+      "source_location": "L36",
       "weight": 1.0,
       "_src": "product",
       "_tgt": "product_updateproduct",
@@ -1937,7 +1945,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\actions\\product.ts",
-      "source_location": "L64",
+      "source_location": "L66",
       "weight": 1.0,
       "_src": "product",
       "_tgt": "product_togglephaseout",
@@ -1949,7 +1957,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\actions\\product.ts",
-      "source_location": "L78",
+      "source_location": "L80",
       "weight": 1.0,
       "_src": "product",
       "_tgt": "product_addrolls",
@@ -1961,7 +1969,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\actions\\product.ts",
-      "source_location": "L109",
+      "source_location": "L111",
       "weight": 1.0,
       "_src": "product",
       "_tgt": "product_addvariablerolls",
@@ -3580,6 +3588,18 @@
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
+      "source_file": "src\\components\\charts\\stock-consumption-chart.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_src": "stock_consumption_chart",
+      "_tgt": "constants",
+      "source": "stock_consumption_chart",
+      "target": "constants",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
       "source_file": "src\\components\\charts\\stock-status-chart.tsx",
       "source_location": "L4",
       "weight": 1.0,
@@ -3592,6 +3612,18 @@
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
+      "source_file": "src\\components\\charts\\stock-status-chart.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_src": "stock_status_chart",
+      "_tgt": "constants",
+      "source": "stock_status_chart",
+      "target": "constants",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
       "source_file": "src\\components\\charts\\top-products-chart.tsx",
       "source_location": "L4",
       "weight": 1.0,
@@ -3599,6 +3631,18 @@
       "_tgt": "card",
       "source": "top_products_chart",
       "target": "card",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\charts\\top-products-chart.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_src": "top_products_chart",
+      "_tgt": "constants",
+      "source": "top_products_chart",
+      "target": "constants",
       "confidence_score": 1.0
     },
     {
@@ -3749,7 +3793,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\components\\products\\add-rolls-form.tsx",
-      "source_location": "L37",
+      "source_location": "L39",
       "weight": 1.0,
       "_src": "add_rolls_form",
       "_tgt": "add_rolls_form_addrollfield",
@@ -3761,7 +3805,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\components\\products\\add-rolls-form.tsx",
-      "source_location": "L41",
+      "source_location": "L43",
       "weight": 1.0,
       "_src": "add_rolls_form",
       "_tgt": "add_rolls_form_removerollfield",
@@ -3773,7 +3817,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\components\\products\\add-rolls-form.tsx",
-      "source_location": "L47",
+      "source_location": "L49",
       "weight": 1.0,
       "_src": "add_rolls_form",
       "_tgt": "add_rolls_form_updateroll",
@@ -3785,7 +3829,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\components\\products\\add-rolls-form.tsx",
-      "source_location": "L53",
+      "source_location": "L55",
       "weight": 1.0,
       "_src": "add_rolls_form",
       "_tgt": "add_rolls_form_handlesubmit",
@@ -3869,7 +3913,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\components\\products\\product-form.tsx",
-      "source_location": "L42",
+      "source_location": "L43",
       "weight": 1.0,
       "_src": "product_form",
       "_tgt": "product_form_handlefilechange",
@@ -3881,7 +3925,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\components\\products\\product-form.tsx",
-      "source_location": "L63",
+      "source_location": "L64",
       "weight": 1.0,
       "_src": "product_form",
       "_tgt": "product_form_handlesubmit",
@@ -4349,7 +4393,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\components\\shipments\\shipment-form.tsx",
-      "source_location": "L55",
+      "source_location": "L65",
       "weight": 1.0,
       "_src": "shipment_form",
       "_tgt": "shipment_form_handlesubmit",
@@ -4529,7 +4573,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\components\\ui\\button.tsx",
-      "source_location": "L52",
+      "source_location": "L53",
       "weight": 1.0,
       "_src": "button",
       "_tgt": "button_cn",
@@ -5360,9 +5404,33 @@
       "source_location": "L16",
       "weight": 1.0,
       "_src": "utils",
+      "_tgt": "utils_formatquantity",
+      "source": "utils",
+      "target": "utils_formatquantity",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\utils.ts",
+      "source_location": "L21",
+      "weight": 1.0,
+      "_src": "utils",
       "_tgt": "utils_formatdate",
       "source": "utils",
       "target": "utils_formatdate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\utils.ts",
+      "source_location": "L18",
+      "weight": 1.0,
+      "_src": "utils_formatquantity",
+      "_tgt": "utils_formatlength",
+      "source": "utils_formatlength",
+      "target": "utils_formatquantity",
       "confidence_score": 1.0
     },
     {

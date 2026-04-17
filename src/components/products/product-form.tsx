@@ -244,7 +244,7 @@ export function ProductForm({ categories, product }: Props) {
             <Button type="button" variant="outline" onClick={() => router.back()}>
               Cancel
             </Button>
-            <Button type="submit" className="bg-rose-600 hover:bg-rose-700" disabled={loading || uploading}>
+            <Button type="submit" disabled={loading || uploading}>
               {loading ? "Saving..." : uploading ? "Uploading image..." : isEdit ? "Update Product" : "Create Product"}
             </Button>
           </div>

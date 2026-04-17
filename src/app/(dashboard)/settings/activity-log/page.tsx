@@ -34,7 +34,7 @@ const ACTION_COLORS: Record<string, string> = {
   user_deactivated: "bg-red-100 text-red-700",
   user_reactivated: "bg-emerald-100 text-emerald-700",
   user_password_reset: "bg-orange-100 text-orange-700",
-  config_updated: "bg-neutral-100 text-neutral-700",
+  config_updated: "bg-muted text-muted-foreground",
   report_exported: "bg-blue-50 text-blue-600",
 };
 
@@ -166,7 +166,7 @@ export default async function ActivityLogPage({
                   logs.map((log) => {
                     const actor = log.profiles as { full_name: string; role: string } | null;
                     const label = ACTION_LABELS[log.action_type] ?? log.action_type;
-                    const colorClass = ACTION_COLORS[log.action_type] ?? "bg-neutral-100 text-neutral-600";
+                    const colorClass = ACTION_COLORS[log.action_type] ?? "bg-muted text-muted-foreground";
                     const resolveDetailValue = (k: string, v: unknown): string => {
                       if (!isUuid(v)) return String(v);
                       if (k === "roll" || k === "roll_id") return rollMap[v] ?? v;
@@ -241,7 +241,7 @@ export default async function ActivityLogPage({
             {page > 1 && (
               <a
                 href={`?${new URLSearchParams({ ...params, page: String(page - 1) }).toString()}`}
-                className="rounded border px-3 py-1 hover:bg-neutral-100 transition-colors"
+                className="rounded border px-3 py-1 hover:bg-muted transition-colors"
               >
                 Previous
               </a>
@@ -249,7 +249,7 @@ export default async function ActivityLogPage({
             {page < totalPages && (
               <a
                 href={`?${new URLSearchParams({ ...params, page: String(page + 1) }).toString()}`}
-                className="rounded border px-3 py-1 hover:bg-neutral-100 transition-colors"
+                className="rounded border px-3 py-1 hover:bg-muted transition-colors"
               >
                 Next
               </a>

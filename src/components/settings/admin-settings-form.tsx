@@ -65,7 +65,7 @@ export function AdminSettingsForm({ config }: AdminSettingsFormProps) {
         <CardContent className="space-y-4">
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-1">
-              <label className="text-sm font-medium text-neutral-700" htmlFor="low_stock_threshold">
+              <label className="text-sm font-medium text-foreground" htmlFor="low_stock_threshold">
                 Low Stock Threshold (meters)
               </label>
               <input
@@ -75,12 +75,12 @@ export function AdminSettingsForm({ config }: AdminSettingsFormProps) {
                 step="0.1"
                 min="0"
                 defaultValue={defaults.low_stock_threshold}
-                className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:border-rose-500 focus:outline-none focus:ring-1 focus:ring-rose-500"
+                className="w-full rounded-md border border-input px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
               />
               <p className="text-xs text-muted-foreground">Products at or below this level show a low stock warning</p>
             </div>
             <div className="space-y-1">
-              <label className="text-sm font-medium text-neutral-700" htmlFor="reorder_point">
+              <label className="text-sm font-medium text-foreground" htmlFor="reorder_point">
                 Reorder Point (meters)
               </label>
               <input
@@ -90,7 +90,7 @@ export function AdminSettingsForm({ config }: AdminSettingsFormProps) {
                 step="0.1"
                 min="0"
                 defaultValue={defaults.reorder_point}
-                className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:border-rose-500 focus:outline-none focus:ring-1 focus:ring-rose-500"
+                className="w-full rounded-md border border-input px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
               />
               <p className="text-xs text-muted-foreground">Suggested stock level to trigger reorder action</p>
             </div>
@@ -105,14 +105,14 @@ export function AdminSettingsForm({ config }: AdminSettingsFormProps) {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-1">
-            <label className="text-sm font-medium text-neutral-700" htmlFor="default_user_role">
+            <label className="text-sm font-medium text-foreground" htmlFor="default_user_role">
               Default Role for New Users
             </label>
             <select
               id="default_user_role"
               name="default_user_role"
               defaultValue={defaults.default_user_role}
-              className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:border-rose-500 focus:outline-none focus:ring-1 focus:ring-rose-500"
+              className="w-full rounded-md border border-input px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             >
               <option value="viewer">Viewer (read-only)</option>
               <option value="inventory_manager">Inventory Manager</option>
@@ -134,21 +134,21 @@ export function AdminSettingsForm({ config }: AdminSettingsFormProps) {
               name="report_auto_export_enabled"
               type="checkbox"
               defaultChecked={defaults.report_auto_export_enabled}
-              className="h-4 w-4 rounded border-neutral-300 text-rose-600 focus:ring-rose-500"
+              className="h-4 w-4 rounded border-input text-primary focus:ring-primary"
             />
-            <label className="text-sm font-medium text-neutral-700" htmlFor="report_auto_export_enabled">
+            <label className="text-sm font-medium text-foreground" htmlFor="report_auto_export_enabled">
               Enable automatic report exports
             </label>
           </div>
           <div className="space-y-1">
-            <label className="text-sm font-medium text-neutral-700" htmlFor="report_auto_export_schedule">
+            <label className="text-sm font-medium text-foreground" htmlFor="report_auto_export_schedule">
               Export Schedule
             </label>
             <select
               id="report_auto_export_schedule"
               name="report_auto_export_schedule"
               defaultValue={defaults.report_auto_export_schedule}
-              className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:border-rose-500 focus:outline-none focus:ring-1 focus:ring-rose-500"
+              className="w-full rounded-md border border-input px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             >
               <option value="daily">Daily</option>
               <option value="weekly">Weekly</option>
@@ -175,9 +175,9 @@ export function AdminSettingsForm({ config }: AdminSettingsFormProps) {
                 name={name}
                 type="checkbox"
                 defaultChecked={checked}
-                className="h-4 w-4 rounded border-neutral-300 text-rose-600 focus:ring-rose-500"
+                className="h-4 w-4 rounded border-input text-primary focus:ring-primary"
               />
-              <label className="text-sm text-neutral-700" htmlFor={name}>{label}</label>
+              <label className="text-sm text-foreground" htmlFor={name}>{label}</label>
             </div>
           ))}
         </CardContent>
@@ -189,7 +189,7 @@ export function AdminSettingsForm({ config }: AdminSettingsFormProps) {
           <CardTitle className="text-base">Data Retention</CardTitle>
         </CardHeader>
         <CardContent className="space-y-1">
-          <label className="text-sm font-medium text-neutral-700" htmlFor="data_retention_days">
+          <label className="text-sm font-medium text-foreground" htmlFor="data_retention_days">
             Activity Log Retention (days)
           </label>
           <input
@@ -199,7 +199,7 @@ export function AdminSettingsForm({ config }: AdminSettingsFormProps) {
             min="30"
             max="3650"
             defaultValue={defaults.data_retention_days}
-            className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:border-rose-500 focus:outline-none focus:ring-1 focus:ring-rose-500"
+            className="w-full rounded-md border border-input px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
           />
           <p className="text-xs text-muted-foreground">Activity log entries older than this will be archived (minimum 30 days)</p>
         </CardContent>
@@ -216,7 +216,7 @@ export function AdminSettingsForm({ config }: AdminSettingsFormProps) {
         <Button
           type="submit"
           disabled={isPending}
-          className="bg-rose-600 hover:bg-rose-700 min-w-[120px]"
+          className="min-w-[120px]"
         >
           {isPending ? "Saving…" : "Save Settings"}
         </Button>

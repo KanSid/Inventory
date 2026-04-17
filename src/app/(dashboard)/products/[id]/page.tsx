@@ -70,7 +70,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
           canEdit ? (
             <div className="flex gap-2">
               <Link href={`/products/${product.item_code}/rolls/add`}>
-                <Button className="bg-rose-600 hover:bg-rose-700">
+                <Button>
                   <Plus size={16} className="mr-2" />
                   {stockUnit === "pair" ? "Add Pairs" : "Add Rolls"}
                 </Button>
@@ -94,7 +94,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
             <CardContent className="pt-6">
               <p className="text-sm text-muted-foreground">Category</p>
               {cat && (
-                <span className="mt-1 inline-block rounded-full bg-neutral-100 px-2.5 py-0.5 text-xs font-medium text-neutral-700">
+                <span className="mt-1 inline-block rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
                   {cat.name}
                 </span>
               )}
@@ -168,7 +168,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                       <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
                         r.status === "active"
                           ? "bg-emerald-100 text-emerald-700"
-                          : "bg-neutral-100 text-neutral-500"
+                          : "bg-muted text-muted-foreground"
                       }`}>
                         {r.status === "active" ? "Active" : "Finished"}
                       </span>

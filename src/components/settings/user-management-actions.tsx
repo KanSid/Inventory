@@ -78,7 +78,7 @@ export function UserManagementActions({ userId, currentRole, isActive }: UserMan
                   key={role}
                   onClick={() => handleRoleChange(role)}
                   disabled={role === currentRole}
-                  className="w-full px-3 py-2 text-left text-sm hover:bg-neutral-50 disabled:opacity-40 disabled:cursor-not-allowed capitalize"
+                  className="w-full px-3 py-2 text-left text-sm hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed capitalize"
                 >
                   {role.replace("_", " ")}
                   {role === currentRole && " (current)"}

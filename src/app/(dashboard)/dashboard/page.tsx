@@ -105,42 +105,47 @@ export default async function DashboardPage() {
     .map(([week, counts]) => ({ week, ...counts }));
 
   const stats = [
-    { label: "Active Products", value: productCount ?? 0, icon: Package, color: "text-rose-600" },
+    { label: "Active Products", value: productCount ?? 0, icon: Package, color: "text-primary" },
     { label: "Active Rolls", value: activeRollCount ?? 0, icon: ScrollText, color: "text-blue-600" },
     { label: "Low Stock Alerts", value: lowStockCount ?? 0, icon: AlertTriangle, color: "text-amber-500" },
     { label: "Shipments Received", value: recentShipmentCount ?? 0, icon: Truck, color: "text-emerald-600" },
   ];
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-neutral-800">Dashboard</h1>
-        <p className="text-sm text-muted-foreground">Overview of your inventory</p>
+    <div className="space-y-8">
+      {/* Editorial header */}
+      <div className="space-y-1">
+        <h1 className="font-serif text-3xl lg:text-4xl tracking-tight text-foreground">Inventory Overview</h1>
+        <p className="text-sm text-muted-foreground font-sans leading-relaxed">
+          Your atelier&apos;s digital pulse — materials, rolls, and shipments at a glance.
+        </p>
       </div>
 
+      {/* Stat cards — editorial bento style */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => (
-          <Card key={stat.label}>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
+          <div
+            key={stat.label}
+            className="bg-card rounded-lg p-6 shadow-sm flex flex-col gap-3"
+          >
+            <div className="flex items-center justify-between">
+              <p className="text-[10px] font-sans uppercase tracking-[0.15em] font-semibold text-muted-foreground">
                 {stat.label}
-              </CardTitle>
-              <stat.icon size={18} className={stat.color} />
-            </CardHeader>
-            <CardContent>
-              <p className="text-3xl font-bold">{stat.value}</p>
-            </CardContent>
-          </Card>
+              </p>
+              <stat.icon size={16} className={stat.color} />
+            </div>
+            <p className="font-serif text-4xl text-foreground">{stat.value}</p>
+          </div>
         ))}
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      {/* Charts — keep as is but wrapped in editorial cards */}
+      <div className="grid gap-6 lg:grid-cols-2">
         <StockStatusChart data={chartStatusData} />
         <ShipmentTimelineChart data={shipmentChartData} />
       </div>
 
       <StockConsumptionChart data={consumptionChartData} />
-
       <TopProductsChart data={topProductsData} />
     </div>
   );

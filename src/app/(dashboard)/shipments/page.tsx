@@ -29,7 +29,7 @@ export default async function ShipmentsPage() {
         action={
           canEdit ? (
             <Link href="/shipments/new">
-              <Button className="bg-rose-600 hover:bg-rose-700">
+              <Button>
                 <Plus size={16} className="mr-2" />
                 New Shipment
               </Button>
@@ -71,12 +71,12 @@ export default async function ShipmentsPage() {
                   return (
                     <TableRow key={s.id}>
                       <TableCell>
-                        <Link href={`/shipments/${s.id}`} className="font-medium text-rose-600 hover:underline">
+                        <Link href={`/shipments/${s.id}`} className="font-serif text-primary hover:underline">
                           {s.shipment_number}
                         </Link>
                       </TableCell>
                       <TableCell>
-                        <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700">
+                        <span className="inline-flex items-center rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
                           {supplierCount > 0 ? supplierCountText : "—"}
                         </span>
                       </TableCell>
@@ -84,7 +84,7 @@ export default async function ShipmentsPage() {
                         <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
                           s.status === "received" ? "bg-emerald-100 text-emerald-700" :
                           s.status === "pending" ? "bg-amber-100 text-amber-700" :
-                          "bg-neutral-100 text-neutral-500"
+                          "bg-muted text-muted-foreground"
                         }`}>
                           {s.status.charAt(0).toUpperCase() + s.status.slice(1)}
                         </span>
