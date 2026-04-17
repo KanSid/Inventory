@@ -74,14 +74,18 @@ export function BridesClient({ brides, canEdit }: Props) {
     setLoading(false);
   }
 
+  const today = new Date().toISOString().split("T")[0];
+  const upcoming = filtered.filter((b) => !b.wedding_date || b.wedding_date >= today);
+  const archived = filtered.filter((b) => b.wedding_date && b.wedding_date < today);
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <PageHeader
         title="Brides"
-        description={`${brides.length} bride(s)`}
+        description={`${brides.length} commission${brides.length !== 1 ? "s" : ""} on record`}
         action={
           canEdit ? (
-            <Button className="bg-rose-600 hover:bg-rose-700" onClick={() => setOpen(true)}>
+            <Button onClick={() => setOpen(true)}>
               <Plus size={16} className="mr-2" />
               Add Bride
             </Button>
@@ -116,7 +120,7 @@ export function BridesClient({ brides, canEdit }: Props) {
             {error && <p className="text-sm text-red-500">{error}</p>}
             <div className="flex justify-end gap-2">
               <Button type="button" variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
-              <Button type="submit" className="bg-rose-600 hover:bg-rose-700" disabled={loading}>
+              <Button type="submit" disabled={loading}>
                 {loading ? "Saving..." : "Add Bride"}
               </Button>
             </div>
@@ -129,42 +133,84 @@ export function BridesClient({ brides, canEdit }: Props) {
         <Input placeholder="Search brides..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
       </div>
 
-      <Card>
-        <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Phone</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Wedding Date</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filtered.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={4} className="py-12 text-center text-muted-foreground">
-                    {brides.length === 0 ? "No brides yet." : "No results."}
-                  </TableCell>
-                </TableRow>
-              ) : (
-                filtered.map((b) => (
-                  <TableRow key={b.id}>
-                    <TableCell>
-                      <Link href={`/brides/${b.id}`} className="font-medium text-rose-600 hover:underline">
-                        {b.name}
-                      </Link>
-                    </TableCell>
-                    <TableCell>{b.phone || "—"}</TableCell>
-                    <TableCell>{b.email || "—"}</TableCell>
-                    <TableCell>{b.wedding_date ? formatDate(b.wedding_date) : "—"}</TableCell>
+      {/* Active Commissions — card grid */}
+      {upcoming.length > 0 && (
+        <section className="space-y-4">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+            Active Commissions · {upcoming.length}
+          </p>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {upcoming.map((b) => (
+              <Link key={b.id} href={`/brides/${b.id}`}>
+                <div className="group rounded-lg bg-card border-0 shadow-sm p-5 space-y-3 hover:shadow-md transition-shadow cursor-pointer">
+                  <div className="flex items-start justify-between">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                      <span className="font-serif text-base text-primary">{b.name.charAt(0).toUpperCase()}</span>
+                    </div>
+                    <span className="text-[10px] font-semibold uppercase tracking-[0.1em] text-muted-foreground/60 group-hover:text-primary transition-colors">
+                      View →
+                    </span>
+                  </div>
+                  <div>
+                    <p className="font-serif text-lg text-foreground leading-tight">{b.name}</p>
+                    {b.phone && <p className="text-xs text-muted-foreground mt-0.5">{b.phone}</p>}
+                  </div>
+                  <div className="pt-1 border-t border-border/40">
+                    <p className="text-[10px] uppercase tracking-[0.1em] text-muted-foreground/60">Wedding</p>
+                    <p className="text-sm text-foreground mt-0.5">
+                      {b.wedding_date ? formatDate(b.wedding_date) : <span className="text-muted-foreground/50 italic">Not set</span>}
+                    </p>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Archived Commissions — table */}
+      {archived.length > 0 && (
+        <section className="space-y-4">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+            Archived Commissions · {archived.length}
+          </p>
+          <Card>
+            <CardContent className="p-0">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Phone</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>Wedding Date</TableHead>
                   </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+                </TableHeader>
+                <TableBody>
+                  {archived.map((b) => (
+                    <TableRow key={b.id}>
+                      <TableCell>
+                        <Link href={`/brides/${b.id}`} className="font-serif text-primary hover:underline">
+                          {b.name}
+                        </Link>
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">{b.phone || "—"}</TableCell>
+                      <TableCell className="text-muted-foreground">{b.email || "—"}</TableCell>
+                      <TableCell className="text-muted-foreground">{b.wedding_date ? formatDate(b.wedding_date) : "—"}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </section>
+      )}
+
+      {/* Empty state */}
+      {filtered.length === 0 && (
+        <div className="py-16 text-center text-muted-foreground">
+          {brides.length === 0 ? "No brides yet." : "No results."}
+        </div>
+      )}
     </div>
   );
 }

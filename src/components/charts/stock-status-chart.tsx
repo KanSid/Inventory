@@ -1,7 +1,7 @@
 "use client";
 
 import { PieChart, Pie, Cell, Legend, Tooltip, ResponsiveContainer } from "recharts";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { ATELIER_CHART_COLORS } from "@/lib/constants";
 
 interface StatusData {
@@ -13,22 +13,21 @@ export function StockStatusChart({ data }: { data: StatusData[] }) {
   if (!data || data.length === 0) {
     return (
       <Card>
-        <CardHeader>
-          <CardTitle>Stock Status Distribution</CardTitle>
-          <CardDescription>Products by inventory status</CardDescription>
-        </CardHeader>
-        <CardContent className="h-80 flex items-center justify-center text-muted-foreground">
-          No status data available
+        <CardContent className="p-6">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/60 mb-1">Stock Status</p>
+          <h3 className="font-serif text-lg text-foreground">Stock Status Distribution</h3>
+          <p className="text-sm text-muted-foreground mt-0.5 mb-6">Products by inventory status</p>
+          <div className="h-64 flex items-center justify-center text-muted-foreground text-sm">No status data available</div>
         </CardContent>
       </Card>
     );
   }
 
   const COLORS: { [key: string]: string } = {
-    in_stock: "#10B981",
-    low_stock: "#F59E0B",
-    out_of_stock: "#EF4444",
-    phased_out: "#9CA3AF",
+    in_stock: "#5b8a72",    // sage
+    low_stock: "#c4a265",   // bright gold
+    out_of_stock: "#735b2c", // harvest gold (dark)
+    phased_out: "#c8bfaf",  // warm gray
   };
 
   const labelMap: Record<string, string> = {
@@ -40,11 +39,11 @@ export function StockStatusChart({ data }: { data: StatusData[] }) {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Stock Status Distribution</CardTitle>
-        <CardDescription>Products by inventory status</CardDescription>
-      </CardHeader>
-      <CardContent>
+      <CardContent className="p-6">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/60 mb-1">Stock Status</p>
+        <h3 className="font-serif text-lg text-foreground">Stock Status Distribution</h3>
+        <p className="text-sm text-muted-foreground mt-0.5 mb-4">Products by inventory status</p>
+        <div>
         <ResponsiveContainer width="100%" height={300}>
           <PieChart>
             <Pie
@@ -64,9 +63,13 @@ export function StockStatusChart({ data }: { data: StatusData[] }) {
                 <Cell key={`cell-${index}`} fill={COLORS[entry.name] || ATELIER_CHART_COLORS.primary} />
               ))}
             </Pie>
-            <Tooltip formatter={(value) => value} />
+            <Tooltip
+              contentStyle={{ background: "#faf9f6", border: "none", borderRadius: 6, boxShadow: "0 2px 8px rgba(0,0,0,0.08)", fontSize: 12 }}
+              formatter={(value) => value}
+            />
           </PieChart>
         </ResponsiveContainer>
+        </div>
       </CardContent>
     </Card>
   );

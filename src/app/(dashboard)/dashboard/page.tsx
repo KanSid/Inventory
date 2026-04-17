@@ -1,6 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { Package, ScrollText, AlertTriangle, Truck } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Link from "next/link";
 import { StockConsumptionChart } from "@/components/charts/stock-consumption-chart";
 import { StockStatusChart } from "@/components/charts/stock-status-chart";
 import { TopProductsChart } from "@/components/charts/top-products-chart";
@@ -105,10 +104,10 @@ export default async function DashboardPage() {
     .map(([week, counts]) => ({ week, ...counts }));
 
   const stats = [
-    { label: "Active Products", value: productCount ?? 0, icon: Package, color: "text-primary" },
-    { label: "Active Rolls", value: activeRollCount ?? 0, icon: ScrollText, color: "text-blue-600" },
-    { label: "Low Stock Alerts", value: lowStockCount ?? 0, icon: AlertTriangle, color: "text-amber-500" },
-    { label: "Shipments Received", value: recentShipmentCount ?? 0, icon: Truck, color: "text-emerald-600" },
+    { label: "Active Products",   value: productCount ?? 0,        href: "/products" },
+    { label: "Active Rolls",      value: activeRollCount ?? 0,     href: "/products" },
+    { label: "Low Stock Alerts",  value: lowStockCount ?? 0,       href: "/reports/inventory" },
+    { label: "Shipments Received",value: recentShipmentCount ?? 0, href: "/shipments" },
   ];
 
   return (
@@ -121,20 +120,25 @@ export default async function DashboardPage() {
         </p>
       </div>
 
-      {/* Stat cards — editorial bento style */}
+      {/* Stat cards — editorial numbered style matching reports page */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {stats.map((stat) => (
-          <div
-            key={stat.label}
-            className="bg-card rounded-lg p-6 shadow-sm flex flex-col gap-3"
-          >
-            <div className="flex items-center justify-between">
-              <p className="text-[10px] font-sans uppercase tracking-[0.15em] font-semibold text-muted-foreground">
-                {stat.label}
+        {stats.map((stat, i) => (
+          <div key={stat.label} className="rounded-lg bg-card shadow-sm p-6 flex flex-col justify-between gap-5">
+            <div className="space-y-2">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/60">
+                {String(i + 1).padStart(2, "0")} · {stat.label}
               </p>
-              <stat.icon size={16} className={stat.color} />
+              <p className="font-serif text-5xl text-foreground leading-none">{stat.value}</p>
             </div>
-            <p className="font-serif text-4xl text-foreground">{stat.value}</p>
+            <div className="flex items-center">
+              <div className="h-px flex-1 bg-border/40" />
+              <Link
+                href={stat.href}
+                className="ml-4 text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground/50 hover:text-primary transition-colors"
+              >
+                View →
+              </Link>
+            </div>
           </div>
         ))}
       </div>
