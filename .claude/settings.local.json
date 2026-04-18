@@ -49,7 +49,10 @@
       "Bash(mkdir -p \"C:\\\\Users\\\\Sreelakshmi S\\\\Downloads\\\\stitch_bridal_gown_inventory_manager\\\\stitch_bridal_gown_inventory_manager\\\\supplier_directory\")",
       "Bash(curl -L -o \"C:\\\\Users\\\\Sreelakshmi S\\\\Downloads\\\\stitch_bridal_gown_inventory_manager\\\\stitch_bridal_gown_inventory_manager\\\\supplier_directory\\\\screen.png\" \"https://lh3.googleusercontent.com/aida/ADBb0ugTOGXR4gds3f6vogWoJb4kn10WaEIr4his2xkX77n32p9zmDhOnveeKrpu7q8lYSrQKXNJZevUcXsnwhaI7HMegfV3pWtfLzf2U8SmEY_xF4LDtfdhCpVPj360azdtFUAyMDgnCt8G2Jf2axHi78HieZv4VGvbHmuYXYw9gCY4Yay1vTO80-W2LfdGM--3i91KizB-WBAnD2aaEKz5A5JVFx6amxv85IThBWYIfjfFNPEGWm3zhUKH\")",
       "Bash(curl -L -o \"C:\\\\Users\\\\Sreelakshmi S\\\\Downloads\\\\stitch_bridal_gown_inventory_manager\\\\stitch_bridal_gown_inventory_manager\\\\supplier_directory\\\\code.html\" \"https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ6Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpZCiVodG1sXzRhYmZmZTk4MmExMjQzYTZiNjZmMGQxMzM3ZjRiYWI0EgsSBxCBoIjJ9hEYAZIBIgoKcHJvamVjdF9pZBIUQhIzMjA1MzE0MTEzMTU0ODQ0NTA&filename=&opi=89354086\")",
-      "Bash(curl -L -o \"C:/Users/Sreelakshmi S/Downloads/stitch_bridal_gown_inventory_manager/stitch_bridal_gown_inventory_manager/inventory_adjustments/screen.png\" \"https://lh3.googleusercontent.com/aida/ADBb0ujdAjFTwLMClPI87G5OiCJ2WGynNBNW2fnbgZBSY1GBE0A-Nn-ia9mHKTvjuLuqk01RgtjS4m8Kfwo4SgyzrrTdDsw2q5kz_e9l6Tl3x0RY5SkvZ7aB9SmEDGTZc4Favw6eZ4aTVDRiU7Wgqfg7CqZajmReQ2PFQNqbNEStk9dYdfimhVZTx_o2R6lMZDkiqKHY8U4yAR-GE-8OQUhNCFdartTE6DJpgLc0Pzug9ZAnTdv3EGkXyK4Zog\")"
+      "Bash(curl -L -o \"C:/Users/Sreelakshmi S/Downloads/stitch_bridal_gown_inventory_manager/stitch_bridal_gown_inventory_manager/inventory_adjustments/screen.png\" \"https://lh3.googleusercontent.com/aida/ADBb0ujdAjFTwLMClPI87G5OiCJ2WGynNBNW2fnbgZBSY1GBE0A-Nn-ia9mHKTvjuLuqk01RgtjS4m8Kfwo4SgyzrrTdDsw2q5kz_e9l6Tl3x0RY5SkvZ7aB9SmEDGTZc4Favw6eZ4aTVDRiU7Wgqfg7CqZajmReQ2PFQNqbNEStk9dYdfimhVZTx_o2R6lMZDkiqKHY8U4yAR-GE-8OQUhNCFdartTE6DJpgLc0Pzug9ZAnTdv3EGkXyK4Zog\")",
+      "Bash(py -c ' *)",
+      "Bash(mkdir -p graphify-out)",
+      "Bash(rm -f .graphify_detect.json .graphify_extract.json .graphify_ast.json .graphify_semantic.json .graphify_analysis.json .graphify_labels.json .graphify_python)"
     ]
   }
 }

@@ -1,16 +1,12 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
+import { getAdminUser } from "@/lib/auth";
 
 export async function saveAdminSettings(formData: FormData) {
-  const supabase = await createClient();
-
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { error: "Not authenticated" };
-
-  const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
-  if (profile?.role !== "admin") return { error: "Insufficient permissions" };
+  const admin = await getAdminUser();
+  if (!admin) return { error: "Insufficient permissions" };
+  const { supabase, user } = admin;
 
   const low_stock_threshold = parseFloat(formData.get("low_stock_threshold") as string);
   const reorder_point = parseFloat(formData.get("reorder_point") as string);

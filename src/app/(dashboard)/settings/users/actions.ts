@@ -1,22 +1,14 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createClient, createAdminClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/server";
+import { getAdminUser } from "@/lib/auth";
 
 const ROLE_HIERARCHY: Record<string, number> = {
   viewer: 0,
   inventory_manager: 1,
   admin: 2,
 };
-
-async function getAdminUser() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return null;
-  const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
-  if (profile?.role !== "admin") return null;
-  return { supabase, user, profile };
-}
 
 export async function changeUserRole(userId: string, newRole: string) {
   const admin = await getAdminUser();
