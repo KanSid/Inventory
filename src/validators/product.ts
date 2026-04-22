@@ -10,6 +10,7 @@ export const productSchema = z.object({
   design_family_id: z.string().uuid().nullable().optional(),
   comment: z.string().max(1000).nullable().optional(),
   low_stock_threshold: z.coerce.number().min(0, "Must be 0 or more").default(10),
+  is_phased_out: z.boolean().optional().default(false),
   supplier_ids: z.array(z.string().uuid()).optional().default([]),
 });
 

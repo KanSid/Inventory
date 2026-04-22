@@ -21,6 +21,7 @@ export async function createProduct(data: ProductFormData) {
       design_family_id: parsed.data.design_family_id || null,
       comment: parsed.data.comment || null,
       low_stock_threshold: parsed.data.low_stock_threshold,
+      is_phased_out: parsed.data.is_phased_out ?? false,
     })
     .select("id, item_code")
     .single();
@@ -58,6 +59,7 @@ export async function updateProduct(id: string, data: ProductFormData) {
       design_family_id: parsed.data.design_family_id || null,
       comment: parsed.data.comment || null,
       low_stock_threshold: parsed.data.low_stock_threshold,
+      is_phased_out: parsed.data.is_phased_out ?? false,
       updated_at: new Date().toISOString(),
     })
     .eq("id", id);

@@ -37,6 +37,7 @@ export function ProductForm({ categories, suppliers, productTypes, costingCatego
   const [designFamilyId, setDesignFamilyId] = useState(product?.design_family_id ?? "");
   const [comment, setComment] = useState(product?.comment ?? "");
   const [lowStockThreshold, setLowStockThreshold] = useState(String(product?.low_stock_threshold ?? 10));
+  const [isPhasedOut, setIsPhasedOut] = useState(product?.is_phased_out ?? false);
   const [selectedSupplierIds, setSelectedSupplierIds] = useState<string[]>(product?.supplier_ids ?? []);
   const [supplierSearch, setSupplierSearch] = useState("");
   const [errors, setErrors] = useState<Record<string, string[]>>({});
@@ -84,6 +85,7 @@ export function ProductForm({ categories, suppliers, productTypes, costingCatego
       design_family_id: designFamilyId || null,
       comment: comment || null,
       low_stock_threshold: Number(lowStockThreshold),
+      is_phased_out: isPhasedOut,
       supplier_ids: selectedSupplierIds,
     };
 
@@ -294,6 +296,17 @@ export function ProductForm({ categories, suppliers, productTypes, costingCatego
               rows={2}
             />
           </div>
+
+          {/* Phased Out */}
+          <label className="flex items-center gap-2 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={isPhasedOut}
+              onChange={(e) => setIsPhasedOut(e.target.checked)}
+              className="h-4 w-4 rounded border-gray-300"
+            />
+            <span className="text-sm font-medium">Phased out</span>
+          </label>
 
           <div className="flex justify-end gap-2 pt-2">
             <Button type="button" variant="outline" onClick={() => router.back()}>
