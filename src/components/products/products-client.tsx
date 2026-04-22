@@ -73,8 +73,7 @@ export function ProductsClient({ products, categories, canEdit }: Props) {
       list = list.filter(
         (p) =>
           p.item_code.toLowerCase().includes(q) ||
-          p.description.toLowerCase().includes(q) ||
-          (p.sub_type?.toLowerCase().includes(q) ?? false)
+          p.description.toLowerCase().includes(q)
       );
     }
 
