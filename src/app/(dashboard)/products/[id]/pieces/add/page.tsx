@@ -15,7 +15,7 @@ export default async function AddPiecesPage({ params }: { params: Promise<{ id: 
 
   if (!product) notFound();
 
-  const stockUnit = ((product.categories as { unit: string } | null)?.unit ?? "roll") as "roll" | "pieces";
+  const stockUnit = ((product.categories as unknown as { unit: string } | null)?.unit ?? "roll") as "roll" | "pieces";
   if (stockUnit !== "pieces") redirect(`/products/${itemCode}/rolls/add`);
 
   return (
