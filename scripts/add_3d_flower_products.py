@@ -8,7 +8,8 @@ import secrets
 import requests
 
 SUPABASE_URL = "https://yknooquxjgxocgepjzsg.supabase.co"
-SERVICE_ROLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlrbm9vcXV4amd4b2NnZXBqenNnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NTEzMDAzNSwiZXhwIjoyMDkwNzA2MDM1fQ.gGW8UiQ43i1ZcW2QBiZQX9H1KZDDvshq9XQAZr5T904"
+SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
+
 
 HEADERS = {
     "apikey": SERVICE_ROLE_KEY,
