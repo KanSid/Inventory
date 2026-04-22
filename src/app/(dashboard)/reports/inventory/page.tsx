@@ -29,10 +29,11 @@ export default async function InventoryReportPage() {
     .order("products.item_code");
 
   const inventoryData = (inventory ?? []).map((item: any) => ({
-    item_code: item.products?.item_code || "Unknown",
-    description: item.products?.description || "",
-    total_stock_m: item.total_stock_m || 0,
-    active_roll_count: item.active_roll_count || 0,
+    item_code: item.item_code || item.products?.item_code || "Unknown",
+    description: item.description || item.products?.description || "",
+    total_stock: item.total_stock || 0,
+    active_count: item.active_count || 0,
+    stock_unit: item.stock_unit || "roll",
     stock_status: item.stock_status || "unknown",
   }));
 
@@ -57,7 +58,7 @@ export default async function InventoryReportPage() {
                   <TableHead>Code</TableHead>
                   <TableHead>Description</TableHead>
                   <TableHead className="text-right">Total Stock</TableHead>
-                  <TableHead className="text-right">Rolls</TableHead>
+                  <TableHead className="text-right">Entries</TableHead>
                   <TableHead>Status</TableHead>
                 </TableRow>
               </TableHeader>
@@ -73,8 +74,10 @@ export default async function InventoryReportPage() {
                     <TableRow key={item.item_code}>
                       <TableCell className="font-medium">{item.item_code}</TableCell>
                       <TableCell className="text-muted-foreground">{item.description}</TableCell>
-                      <TableCell className="text-right">{item.total_stock_m}m</TableCell>
-                      <TableCell className="text-right">{item.active_roll_count}</TableCell>
+                      <TableCell className="text-right">
+                        {item.stock_unit === "pieces" ? `${Math.round(item.total_stock)} pcs` : `${item.total_stock.toFixed(1)}m`}
+                      </TableCell>
+                      <TableCell className="text-right">{item.active_count}</TableCell>
                       <TableCell>
                         <span className={`text-xs font-medium px-2 py-1 rounded ${
                           item.stock_status === "in_stock" ? "bg-emerald-100 text-emerald-700" :

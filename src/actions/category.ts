@@ -39,7 +39,6 @@ export async function updateCategory(id: string, data: CategoryFormData) {
 export async function deleteCategory(id: string) {
   const supabase = await createClient();
 
-  // Check if any products use this category
   const { count } = await supabase
     .from("products")
     .select("*", { count: "exact", head: true })

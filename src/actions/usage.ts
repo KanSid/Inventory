@@ -12,69 +12,84 @@ export async function logUsage(data: UsageFormData) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: { bride_id: ["Not authenticated"] } };
 
-  // Validate quantity against roll remaining and fetch readable info
-  const { data: roll } = await supabase
-    .from("rolls")
-    .select("current_length_m, status, roll_number, product_id, products(item_code)")
-    .eq("id", parsed.data.roll_id)
-    .single();
-
-  if (!roll) return { error: { roll_id: ["Roll not found"] } };
-  if (roll.status === "finished") return { error: { roll_id: ["Roll is already finished"] } };
-  if (parsed.data.quantity_used > roll.current_length_m) {
-    return { error: { quantity_used: [`Exceeds remaining stock (${roll.current_length_m}m)`] } };
-  }
+  const { bride_id, roll_id, batch_id, quantity_used, usage_date, notes } = parsed.data;
 
   // Fetch bride name
-  const { data: bride } = await supabase
-    .from("brides")
-    .select("name")
-    .eq("id", parsed.data.bride_id)
-    .single();
+  const { data: bride } = await supabase.from("brides").select("name").eq("id", bride_id).single();
 
-  // Insert usage
-  const { error: usageError } = await supabase
-    .from("stock_usage")
-    .insert({
-      bride_id: parsed.data.bride_id,
-      roll_id: parsed.data.roll_id,
-      quantity_used: parsed.data.quantity_used,
-      logged_by: user.id,
-      usage_date: parsed.data.usage_date,
-      notes: parsed.data.notes || null,
+  if (roll_id) {
+    const { data: roll } = await supabase
+      .from("rolls")
+      .select("current_length_m, status, roll_number, product_id, products(item_code)")
+      .eq("id", roll_id)
+      .single();
+
+    if (!roll) return { error: { roll_id: ["Roll not found"] } };
+    if (roll.status === "finished") return { error: { roll_id: ["Roll is already finished"] } };
+    if (quantity_used > roll.current_length_m) {
+      return { error: { quantity_used: [`Exceeds remaining stock (${roll.current_length_m}m)`] } };
+    }
+
+    const { error: usageError } = await supabase.from("stock_usage").insert({
+      bride_id, roll_id, batch_id: null, quantity_used, logged_by: user.id, usage_date, notes: notes || null,
     });
+    if (usageError) return { error: { bride_id: [usageError.message] } };
 
-  if (usageError) return { error: { bride_id: [usageError.message] } };
+    const newLength = Math.max(0, roll.current_length_m - quantity_used);
+    await supabase.from("rolls").update({
+      current_length_m: newLength,
+      is_full_roll: false,
+      status: newLength <= 0 ? "finished" : "active",
+      updated_at: new Date().toISOString(),
+    }).eq("id", roll_id);
 
-  // Deduct from roll
-  const newLength = roll.current_length_m - parsed.data.quantity_used;
-  const updates: Record<string, unknown> = {
-    current_length_m: newLength,
-    is_full_roll: false,
-    updated_at: new Date().toISOString(),
-  };
-  if (newLength <= 0) {
-    updates.status = "finished";
-    updates.current_length_m = 0;
+    const rollData = roll as any;
+    await supabase.from("inventory_activity_log").insert({
+      user_id: user.id, action_type: "stock_used", entity_type: "usage",
+      details: {
+        bride: bride?.name ?? "Unknown",
+        product: rollData?.products?.item_code ?? "Unknown",
+        roll: rollData?.roll_number ?? "Unknown",
+        quantity_used, remaining: newLength,
+      },
+    });
+  } else {
+    const { data: batch } = await supabase
+      .from("piece_batches")
+      .select("current_count, status, batch_number, product_id, products(item_code)")
+      .eq("id", batch_id!)
+      .single();
+
+    if (!batch) return { error: { roll_id: ["Batch not found"] } };
+    if (batch.status === "finished") return { error: { roll_id: ["Batch is already finished"] } };
+    const qtyInt = Math.round(quantity_used);
+    if (qtyInt > batch.current_count) {
+      return { error: { quantity_used: [`Exceeds remaining stock (${batch.current_count} pcs)`] } };
+    }
+
+    const { error: usageError } = await supabase.from("stock_usage").insert({
+      bride_id, roll_id: null, batch_id: batch_id!, quantity_used: qtyInt, logged_by: user.id, usage_date, notes: notes || null,
+    });
+    if (usageError) return { error: { bride_id: [usageError.message] } };
+
+    const newCount = batch.current_count - qtyInt;
+    await supabase.from("piece_batches").update({
+      current_count: newCount,
+      status: newCount <= 0 ? "finished" : "active",
+      updated_at: new Date().toISOString(),
+    }).eq("id", batch_id!);
+
+    const batchData = batch as any;
+    await supabase.from("inventory_activity_log").insert({
+      user_id: user.id, action_type: "stock_used", entity_type: "usage",
+      details: {
+        bride: bride?.name ?? "Unknown",
+        product: batchData?.products?.item_code ?? "Unknown",
+        batch: batchData?.batch_number ?? "Unknown",
+        quantity_used: qtyInt, remaining: newCount,
+      },
+    });
   }
-
-  await supabase.from("rolls").update(updates).eq("id", parsed.data.roll_id);
-
-  // Log activity
-  const rollData = roll as any;
-  const productData = rollData?.products as any;
-  await supabase.from("inventory_activity_log").insert({
-    user_id: user.id,
-    action_type: "stock_used",
-    entity_type: "usage",
-    details: {
-      bride: bride?.name ?? "Unknown",
-      product: productData?.item_code ?? "Unknown",
-      roll: rollData?.roll_number ?? "Unknown",
-      quantity_used: parsed.data.quantity_used,
-      remaining: newLength,
-    },
-  });
 
   revalidatePath("/usage");
   revalidatePath("/products");

@@ -23,17 +23,24 @@ import {
 import { logUsage } from "@/actions/usage";
 import { createBride } from "@/actions/bride";
 import { createClient } from "@/lib/supabase/client";
-import { formatLength } from "@/lib/utils";
+import { formatQuantity } from "@/lib/utils";
+
+interface ProductRow {
+  id: string;
+  item_code: string;
+  description: string;
+  categories: { unit: string } | null;
+}
 
 interface Props {
   brides: { id: string; name: string }[];
-  products: { id: string; item_code: string; description: string }[];
+  products: ProductRow[];
 }
 
-interface Roll {
+interface StockEntry {
   id: string;
-  roll_number: string;
-  current_length_m: number;
+  number: string; // roll_number or batch_number
+  qty: number;    // current_length_m or current_count
   status: string;
 }
 
@@ -44,36 +51,51 @@ export function UsageForm({ brides: initialBrides, products }: Props) {
   const [brides, setBrides] = useState(initialBrides);
   const [brideId, setBrideId] = useState("");
   const [productId, setProductId] = useState("");
-  const [rollId, setRollId] = useState("");
+  const [entryId, setEntryId] = useState("");
   const [quantity, setQuantity] = useState("");
   const [usageDate, setUsageDate] = useState(new Date().toISOString().split("T")[0]);
   const [notes, setNotes] = useState("");
-  const [rolls, setRolls] = useState<Roll[]>([]);
+  const [entries, setEntries] = useState<StockEntry[]>([]);
   const [errors, setErrors] = useState<Record<string, string[]>>({});
   const [loading, setLoading] = useState(false);
 
-  // Quick-add bride dialog
   const [brideDialogOpen, setBrideDialogOpen] = useState(false);
   const [newBrideName, setNewBrideName] = useState("");
   const [newBridePhone, setNewBridePhone] = useState("");
   const [brideLoading, setBrideLoading] = useState(false);
 
-  // Load rolls when product changes
-  useEffect(() => {
-    if (!productId) { setRolls([]); setRollId(""); return; }
-    supabase
-      .from("rolls")
-      .select("id, roll_number, current_length_m, status")
-      .eq("product_id", productId)
-      .eq("status", "active")
-      .order("roll_number")
-      .then(({ data }) => {
-        setRolls(data ?? []);
-        setRollId("");
-      });
-  }, [productId, supabase]);
+  const selectedProduct = products.find((p) => p.id === productId);
+  const stockUnit = (selectedProduct?.categories?.unit ?? "roll") as "roll" | "pieces";
+  const isRoll = stockUnit === "roll";
 
-  const selectedRoll = rolls.find((r) => r.id === rollId);
+  useEffect(() => {
+    if (!productId) { setEntries([]); setEntryId(""); return; }
+    if (isRoll) {
+      supabase
+        .from("rolls")
+        .select("id, roll_number, current_length_m, status")
+        .eq("product_id", productId)
+        .eq("status", "active")
+        .order("roll_number")
+        .then(({ data }) => {
+          setEntries((data ?? []).map((r) => ({ id: r.id, number: r.roll_number, qty: r.current_length_m, status: r.status })));
+          setEntryId("");
+        });
+    } else {
+      supabase
+        .from("piece_batches")
+        .select("id, batch_number, current_count, status")
+        .eq("product_id", productId)
+        .eq("status", "active")
+        .order("batch_number")
+        .then(({ data }) => {
+          setEntries((data ?? []).map((b) => ({ id: b.id, number: b.batch_number, qty: b.current_count, status: b.status })));
+          setEntryId("");
+        });
+    }
+  }, [productId, isRoll]);
+
+  const selectedEntry = entries.find((e) => e.id === entryId);
 
   async function handleQuickAddBride(e: React.FormEvent) {
     e.preventDefault();
@@ -96,7 +118,8 @@ export function UsageForm({ brides: initialBrides, products }: Props) {
 
     const result = await logUsage({
       bride_id: brideId,
-      roll_id: rollId,
+      roll_id: isRoll ? entryId : null,
+      batch_id: !isRoll ? entryId : null,
       quantity_used: Number(quantity),
       usage_date: usageDate,
       notes: notes || null,
@@ -159,19 +182,19 @@ export function UsageForm({ brides: initialBrides, products }: Props) {
               </Select>
             </div>
 
-            {/* Roll */}
+            {/* Roll / Batch */}
             <div className="space-y-2">
-              <Label>Roll</Label>
-              <Select value={rollId} onValueChange={(v) => setRollId(v ?? "")} required disabled={!productId}>
+              <Label>{isRoll ? "Roll" : "Batch"}</Label>
+              <Select value={entryId} onValueChange={(v) => setEntryId(v ?? "")} required disabled={!productId}>
                 <SelectTrigger>
-                  <SelectValue placeholder={productId ? "Select roll" : "Select a product first"}>
-                    {rollId ? rolls.find(r => r.id === rollId)?.roll_number : undefined}
+                  <SelectValue placeholder={productId ? `Select ${isRoll ? "roll" : "batch"}` : "Select a product first"}>
+                    {entryId ? entries.find(e => e.id === entryId)?.number : undefined}
                   </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
-                  {rolls.map((r) => (
-                    <SelectItem key={r.id} value={r.id}>
-                      {r.roll_number} — {formatLength(r.current_length_m)} remaining
+                  {entries.map((e) => (
+                    <SelectItem key={e.id} value={e.id}>
+                      {e.number} — {formatQuantity(e.qty, stockUnit)} remaining
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -182,20 +205,20 @@ export function UsageForm({ brides: initialBrides, products }: Props) {
             {/* Quantity */}
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label>Quantity (meters)</Label>
+                <Label>{isRoll ? "Quantity (meters)" : "Quantity (pieces)"}</Label>
                 <Input
                   type="number"
-                  step="0.5"
-                  min="0.5"
-                  max={selectedRoll?.current_length_m}
+                  step={isRoll ? "0.5" : "1"}
+                  min={isRoll ? "0.5" : "1"}
+                  max={selectedEntry?.qty}
                   value={quantity}
                   onChange={(e) => setQuantity(e.target.value)}
                   placeholder=" "
                   required
                 />
-                {selectedRoll && (
+                {selectedEntry && (
                   <p className="text-xs text-muted-foreground">
-                    Max: {formatLength(selectedRoll.current_length_m)}
+                    Max: {formatQuantity(selectedEntry.qty, stockUnit)}
                   </p>
                 )}
                 {errors.quantity_used && <p className="text-xs text-red-500">{errors.quantity_used[0]}</p>}
@@ -221,7 +244,6 @@ export function UsageForm({ brides: initialBrides, products }: Props) {
         </CardContent>
       </Card>
 
-      {/* Quick-add bride dialog */}
       <Dialog open={brideDialogOpen} onOpenChange={setBrideDialogOpen}>
         <DialogContent>
           <DialogHeader>

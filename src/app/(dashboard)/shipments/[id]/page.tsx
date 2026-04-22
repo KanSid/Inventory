@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/table";
 import { PageHeader } from "@/components/shared/page-header";
 import { ReceiveShipmentButton } from "@/components/shipments/receive-button";
-import { formatDate, formatLength } from "@/lib/utils";
+import { formatDate, formatQuantity } from "@/lib/utils";
 
 export default async function ShipmentDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -22,7 +22,7 @@ export default async function ShipmentDetailPage({ params }: { params: Promise<{
 
   const { data: items } = await supabase
     .from("shipment_items")
-    .select("*, products(item_code, description), suppliers(name)")
+    .select("*, products(item_code, description, categories(unit)), suppliers(name)")
     .eq("shipment_id", id);
 
   const { data: { user } } = await supabase.auth.getUser();
@@ -42,7 +42,7 @@ export default async function ShipmentDetailPage({ params }: { params: Promise<{
         }
       />
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2">
         <Card>
           <CardContent className="pt-6">
             <p className="text-sm text-muted-foreground">Status</p>
@@ -57,14 +57,8 @@ export default async function ShipmentDetailPage({ params }: { params: Promise<{
         </Card>
         <Card>
           <CardContent className="pt-6">
-            <p className="text-sm text-muted-foreground">Expected</p>
-            <p className="font-medium">{shipment.expected_date ? formatDate(shipment.expected_date) : "—"}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <p className="text-sm text-muted-foreground">Received</p>
-            <p className="font-medium">{shipment.received_date ? formatDate(shipment.received_date) : "—"}</p>
+            <p className="text-sm text-muted-foreground">Date</p>
+            <p className="font-medium">{shipment.date ? formatDate(shipment.date) : "—"}</p>
           </CardContent>
         </Card>
       </div>
@@ -90,16 +84,17 @@ export default async function ShipmentDetailPage({ params }: { params: Promise<{
                 </TableRow>
               ) : (
                 items.map((item) => {
-                  const product = item.products as { item_code: string; description: string } | null;
+                  const product = item.products as { item_code: string; description: string; categories: { unit: string } | null } | null;
                   const supplier = item.suppliers as { name: string } | null;
+                  const stockUnit = (product?.categories?.unit ?? "roll") as "roll" | "pieces";
                   return (
                     <TableRow key={item.id}>
                       <TableCell className="font-medium">{product?.item_code} — {product?.description}</TableCell>
                       <TableCell>{supplier?.name ?? "—"}</TableCell>
                       <TableCell className="text-right">{item.quantity}</TableCell>
                       <TableCell>{item.input_unit}</TableCell>
-                      <TableCell className="text-right">{formatLength(item.quantity_in_meters)}</TableCell>
-                      <TableCell className="text-right">{item.num_rolls}</TableCell>
+                      <TableCell className="text-right">{formatQuantity(item.quantity_in_meters, stockUnit)}</TableCell>
+                      <TableCell className="text-right">{stockUnit === "pieces" ? "—" : item.num_rolls}</TableCell>
                     </TableRow>
                   );
                 })

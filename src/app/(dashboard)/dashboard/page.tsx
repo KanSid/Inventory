@@ -26,7 +26,7 @@ export default async function DashboardPage() {
     // Usage data for consumption and top products charts
     supabase.from("stock_usage").select("*, products(item_code)").order("usage_date", { ascending: false }).limit(500),
     // Shipment data for timeline
-    supabase.from("shipments").select("status, received_date, created_at").order("received_date", { ascending: false }).limit(200),
+    supabase.from("shipments").select("status, date, created_at").order("created_at", { ascending: false }).limit(200),
   ]);
 
   // Aggregate status data
@@ -86,7 +86,7 @@ export default async function DashboardPage() {
   // Aggregate shipments by week
   const shipmentMap = new Map<string, { received: number; pending: number; cancelled: number }>();
   (shipmentsRaw ?? []).forEach((shipment: any) => {
-    const date = new Date(shipment.received_date || shipment.created_at);
+    const date = new Date(shipment.date || shipment.created_at);
     const weekNum = Math.floor((date.getDate() - date.getDay() + 6) / 7);
     const month = date.toLocaleDateString("en-US", { month: "short", year: "2-digit" });
     const week = `${month} W${weekNum}`;

@@ -5,7 +5,7 @@ export interface ShipmentRow {
   shipment_number: string;
   supplier_count: number;
   status: string;
-  received_date: string | null;
+  date: string | null;
   item_count: number;
   total_meters: number;
 }
@@ -31,7 +31,7 @@ export async function exportShipmentPdf(data: ShipmentRow[], fileName: string = 
     row.shipment_number,
     row.supplier_count > 0 ? `${row.supplier_count}` : "—",
     row.status.charAt(0).toUpperCase() + row.status.slice(1),
-    row.received_date ? new Date(row.received_date).toLocaleDateString() : "Pending",
+    row.date ? new Date(row.date).toLocaleDateString() : "Pending",
     row.item_count.toString(),
     `${row.total_meters}m`,
   ]);
@@ -94,7 +94,7 @@ export async function exportShipmentExcel(data: ShipmentRow[], fileName: string 
     "Shipment #": row.shipment_number,
     Suppliers: row.supplier_count > 0 ? row.supplier_count : "—",
     Status: row.status.charAt(0).toUpperCase() + row.status.slice(1),
-    "Received Date": row.received_date ? new Date(row.received_date).toLocaleDateString() : "Pending",
+    "Received Date": row.date ? new Date(row.date).toLocaleDateString() : "Pending",
     "Item Count": row.item_count,
     "Total Meters": row.total_meters,
   }));

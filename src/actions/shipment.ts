@@ -10,28 +10,25 @@ export async function createShipment(data: ShipmentFormData) {
 
   const supabase = await createClient();
 
-  // Generate shipment number
-  const { data: shipmentNumber } = await supabase.rpc("generate_shipment_number");
-
-  // Create shipment
   const { data: shipment, error: shipError } = await supabase
     .from("shipments")
     .insert({
-      shipment_number: shipmentNumber,
-      supplier_id: parsed.data.supplier_id || null,
-      expected_date: parsed.data.expected_date || null,
+      shipment_number: parsed.data.shipment_number,
+      date: parsed.data.date || null,
       notes: parsed.data.notes || null,
     })
     .select("id")
     .single();
 
-  if (shipError) return { error: { supplier_id: [shipError.message] } };
+  if (shipError) {
+    if (shipError.code === "23505") return { error: { shipment_number: ["Shipment number already exists"] } };
+    return { error: { shipment_number: [shipError.message] } };
+  }
 
-  // Create shipment items with per-item supplier_id
   const items = parsed.data.items.map((item) => {
-    const qtyMeters = item.input_unit === "yards"
-      ? item.quantity * 0.9144
-      : item.quantity; // pairs stored as-is, no conversion
+    const toMeters = (v: number) => item.input_unit === "yards" ? v * 0.9144 : v;
+    const qtyMeters = toMeters(item.quantity);
+    const rollLengthsMeters = item.roll_lengths?.map(toMeters) ?? null;
     return {
       shipment_id: shipment.id,
       product_id: item.product_id,
@@ -40,12 +37,13 @@ export async function createShipment(data: ShipmentFormData) {
       input_unit: item.input_unit,
       quantity_in_meters: qtyMeters,
       num_rolls: item.num_rolls,
+      roll_lengths: rollLengthsMeters,
       notes: item.notes || null,
     };
   });
 
   const { error: itemsError } = await supabase.from("shipment_items").insert(items);
-  if (itemsError) return { error: { supplier_id: [itemsError.message] } };
+  if (itemsError) return { error: { shipment_number: [itemsError.message] } };
 
   revalidatePath("/shipments");
   return { success: true, id: shipment.id };
@@ -56,71 +54,79 @@ export async function receiveShipment(shipmentId: string) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: "Not authenticated" };
 
-  // Get shipment items
+  // Get shipment date for roll received_date
+  const { data: shipmentData } = await supabase
+    .from("shipments")
+    .select("shipment_number, date")
+    .eq("id", shipmentId)
+    .single();
+
+  const receivedDate = shipmentData?.date ?? new Date().toISOString().split("T")[0];
+
   const { data: items } = await supabase
     .from("shipment_items")
-    .select("*, products(id, item_code)")
+    .select("*, products(id, item_code, categories(unit))")
     .eq("shipment_id", shipmentId);
 
   if (!items || items.length === 0) return { error: "No items in shipment" };
 
-  // Create rolls for each item
   for (const item of items) {
-    const lengthPerRoll = item.quantity_in_meters / item.num_rolls;
+    const productData = item.products as any;
+    const stockUnit = productData?.categories?.unit ?? "roll";
 
-    for (let i = 0; i < item.num_rolls; i++) {
-      const { data: rollNum } = await supabase.rpc("generate_roll_number", {
+    if (stockUnit === "pieces") {
+      const { data: batchNum } = await supabase.rpc("generate_batch_number", {
         p_product_id: item.product_id,
       });
-
-      await supabase.from("rolls").insert({
+      await supabase.from("piece_batches").insert({
         product_id: item.product_id,
-        roll_number: rollNum,
-        initial_length_m: lengthPerRoll,
-        current_length_m: lengthPerRoll,
+        batch_number: batchNum,
+        initial_count: Math.round(item.quantity_in_meters),
+        current_count: Math.round(item.quantity_in_meters),
         shipment_id: shipmentId,
-        received_date: new Date().toISOString().split("T")[0],
+        received_date: receivedDate,
       });
+    } else {
+      const rollLengths = item.roll_lengths as number[] | null;
+      for (let i = 0; i < item.num_rolls; i++) {
+        const lengthM = rollLengths?.[i] ?? item.quantity_in_meters / item.num_rolls;
+        const { data: rollNum } = await supabase.rpc("generate_roll_number", {
+          p_product_id: item.product_id,
+        });
+        await supabase.from("rolls").insert({
+          product_id: item.product_id,
+          roll_number: rollNum,
+          initial_length_m: lengthM,
+          current_length_m: lengthM,
+          shipment_id: shipmentId,
+          received_date: receivedDate,
+        });
+      }
     }
   }
 
-  // Update shipment status
   await supabase
     .from("shipments")
     .update({
       status: "received",
-      received_date: new Date().toISOString().split("T")[0],
       received_by: user.id,
       updated_at: new Date().toISOString(),
     })
     .eq("id", shipmentId);
 
-  // Get shipment info for logging
-  const { data: shipmentData } = await supabase
-    .from("shipments")
-    .select("shipment_number")
-    .eq("id", shipmentId)
-    .single();
-
-  // Get unique suppliers from items
+  // Get unique suppliers from items for activity log
   const { data: itemsWithSuppliers } = await supabase
     .from("shipment_items")
     .select("supplier_id, suppliers(name)")
     .eq("shipment_id", shipmentId);
 
   const suppliersSet = new Set<string>();
-  const itemsWithSuppliers_typed = itemsWithSuppliers as any[];
-  if (itemsWithSuppliers_typed) {
-    itemsWithSuppliers_typed.forEach((item) => {
-      if (item.suppliers?.name) {
-        suppliersSet.add(item.suppliers.name);
-      }
+  if (itemsWithSuppliers) {
+    (itemsWithSuppliers as any[]).forEach((item) => {
+      if (item.suppliers?.name) suppliersSet.add(item.suppliers.name);
     });
   }
 
-  const suppliersList = Array.from(suppliersSet);
-
-  // Log activity
   await supabase.from("inventory_activity_log").insert({
     user_id: user.id,
     action_type: "shipment_received",
@@ -128,8 +134,8 @@ export async function receiveShipment(shipmentId: string) {
     entity_id: shipmentId,
     details: {
       shipment: shipmentData?.shipment_number ?? "Unknown",
-      supplier_count: suppliersList.length,
-      suppliers: suppliersList,
+      supplier_count: suppliersSet.size,
+      suppliers: Array.from(suppliersSet),
       items_count: items.length,
     },
   });

@@ -5,7 +5,7 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import { PageHeader } from "@/components/shared/page-header";
-import { formatDate, formatLength } from "@/lib/utils";
+import { formatDate, formatQuantity } from "@/lib/utils";
 
 export default async function BrideDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -16,9 +16,11 @@ export default async function BrideDetailPage({ params }: { params: Promise<{ id
 
   const { data: usage } = await supabase
     .from("stock_usage")
-    .select("*, rolls(roll_number, products(item_code, description))")
+    .select("*, rolls(roll_number, products(item_code, description, categories(unit))), piece_batches(batch_number, products(item_code, description, categories(unit)))")
     .eq("bride_id", id)
     .order("usage_date", { ascending: false });
+
+  const totalUsages = usage?.length ?? 0;
 
   return (
     <div className="space-y-6">
@@ -39,10 +41,8 @@ export default async function BrideDetailPage({ params }: { params: Promise<{ id
         </Card>
         <Card>
           <CardContent className="pt-6">
-            <p className="text-sm text-muted-foreground">Total Materials Used</p>
-            <p className="text-2xl font-bold">
-              {formatLength(usage?.reduce((sum, u) => sum + u.quantity_used, 0) ?? 0)}
-            </p>
+            <p className="text-sm text-muted-foreground">Usage Records</p>
+            <p className="text-2xl font-bold">{totalUsages}</p>
           </CardContent>
         </Card>
       </div>
@@ -57,7 +57,7 @@ export default async function BrideDetailPage({ params }: { params: Promise<{ id
               <TableRow>
                 <TableHead>Date</TableHead>
                 <TableHead>Product</TableHead>
-                <TableHead>Roll</TableHead>
+                <TableHead>Roll / Batch</TableHead>
                 <TableHead className="text-right">Quantity</TableHead>
               </TableRow>
             </TableHeader>
@@ -70,13 +70,18 @@ export default async function BrideDetailPage({ params }: { params: Promise<{ id
                 </TableRow>
               ) : (
                 usage.map((u) => {
-                  const roll = u.rolls as { roll_number: string; products: { item_code: string; description: string } } | null;
+                  const roll = u.rolls as { roll_number: string; products: { item_code: string; description: string; categories: { unit: string } | null } } | null;
+                  const batch = u.piece_batches as { batch_number: string; products: { item_code: string; description: string; categories: { unit: string } | null } } | null;
+                  const isRoll = !!roll;
+                  const product = isRoll ? roll?.products : batch?.products;
+                  const entryNum = isRoll ? roll?.roll_number : batch?.batch_number;
+                  const stockUnit = (product?.categories?.unit ?? "roll") as "roll" | "pieces";
                   return (
                     <TableRow key={u.id}>
                       <TableCell>{formatDate(u.usage_date)}</TableCell>
-                      <TableCell>{roll?.products?.item_code} — {roll?.products?.description}</TableCell>
-                      <TableCell>{roll?.roll_number}</TableCell>
-                      <TableCell className="text-right font-medium">{formatLength(u.quantity_used)}</TableCell>
+                      <TableCell>{product?.item_code} — {product?.description}</TableCell>
+                      <TableCell>{entryNum ?? "—"}</TableCell>
+                      <TableCell className="text-right font-medium">{formatQuantity(u.quantity_used, stockUnit)}</TableCell>
                     </TableRow>
                   );
                 })

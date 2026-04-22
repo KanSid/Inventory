@@ -4,8 +4,9 @@ import * as XLSX from "xlsx";
 export interface InventoryRow {
   item_code: string;
   description: string;
-  total_stock_m: number;
-  active_roll_count: number;
+  total_stock: number;
+  active_count: number;
+  stock_unit: string;
   stock_status: string;
 }
 
@@ -29,14 +30,14 @@ export async function exportInventoryPdf(data: InventoryRow[], fileName: string 
   const tableData = data.map((row) => [
     row.item_code,
     row.description,
-    `${row.total_stock_m}m`,
-    row.active_roll_count.toString(),
+    row.stock_unit === "pieces" ? `${Math.round(row.total_stock)} pcs` : `${row.total_stock.toFixed(1)}m`,
+    row.active_count.toString(),
     row.stock_status.replace(/_/g, " ").charAt(0).toUpperCase() + row.stock_status.slice(1).replace(/_/g, " "),
   ]);
 
   // Create table
   const startY = margin + 20;
-  const columns = ["Code", "Description", "Total Stock", "Rolls", "Status"];
+  const columns = ["Code", "Description", "Total Stock", "Entries", "Status"];
   const columnWidths = [25, 60, 30, 20, 35];
 
   // Header
@@ -93,8 +94,9 @@ export async function exportInventoryExcel(data: InventoryRow[], fileName: strin
   const exportData = data.map((row) => ({
     "Item Code": row.item_code,
     Description: row.description,
-    "Total Stock (m)": row.total_stock_m,
-    "Roll Count": row.active_roll_count,
+    "Total Stock": row.stock_unit === "pieces" ? `${Math.round(row.total_stock)} pcs` : `${row.total_stock.toFixed(1)}m`,
+    "Unit": row.stock_unit === "pieces" ? "pieces" : "meters",
+    "Entry Count": row.active_count,
     Status: row.stock_status.replace(/_/g, " "),
   }));
 

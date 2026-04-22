@@ -13,8 +13,8 @@ export function formatLength(meters: number): string {
   return `${meters.toFixed(1)}m`;
 }
 
-export function formatQuantity(value: number, stockUnit: "roll" | "pair"): string {
-  if (stockUnit === "pair") return `${Math.round(value)} pair${Math.round(value) !== 1 ? "s" : ""}`;
+export function formatQuantity(value: number, stockUnit: "roll" | "pieces"): string {
+  if (stockUnit === "pieces") return `${Math.round(value)} pc${Math.round(value) !== 1 ? "s" : ""}`;
   return formatLength(value);
 }
 

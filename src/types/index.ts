@@ -13,6 +13,7 @@ export interface Profile {
 export interface Category {
   id: string;
   name: string;
+  unit: "roll" | "pieces";
   description: string | null;
   created_at: string;
 }
@@ -30,24 +31,45 @@ export interface Supplier {
   updated_at: string;
 }
 
+export interface ProductTypeRow {
+  id: string;
+  name: string;
+  sort_order: number;
+}
+
+export interface CostingCategoryRow {
+  id: string;
+  name: string;
+  sort_order: number;
+}
+
+export interface DesignFamilyRow {
+  id: string;
+  name: string;
+  sort_order: number;
+}
+
 export interface Product {
   id: string;
   item_code: string;
   description: string;
   category_id: string;
-  sub_type: string | null;
   image_url: string | null;
-  stock_unit: "roll" | "pair";
+  type_id: string | null;
+  costing_category_id: string | null;
+  design_family_id: string | null;
+  comment: string | null;
   low_stock_threshold: number;
   is_phased_out: boolean;
-  notes: string | null;
   created_at: string;
   updated_at: string;
-  // Computed
+  // Computed / joined
   category?: Category;
-  total_stock_m?: number;
-  active_roll_count?: number;
-  stock_status?: "in_stock" | "low_stock" | "out_of_stock";
+  suppliers?: Supplier[];
+  stock_unit?: "roll" | "pieces"; // from view (category.unit)
+  total_stock?: number;
+  active_count?: number;
+  stock_status?: "in_stock" | "low_stock" | "out_of_stock" | "phased_out";
 }
 
 export type RollStatus = "active" | "finished";
@@ -80,10 +102,27 @@ export interface Bride {
   updated_at: string;
 }
 
+export interface PieceBatch {
+  id: string;
+  product_id: string;
+  batch_number: string;
+  initial_count: number;
+  current_count: number;
+  status: "active" | "finished";
+  shipment_id: string | null;
+  received_date: string;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+  // Joined
+  product?: Product;
+}
+
 export interface StockUsage {
   id: string;
   bride_id: string;
-  roll_id: string;
+  roll_id: string | null;
+  batch_id: string | null;
   quantity_used: number;
   logged_by: string;
   usage_date: string;
@@ -92,20 +131,20 @@ export interface StockUsage {
   // Joined
   bride?: Bride;
   roll?: Roll & { product?: Product };
+  batch?: PieceBatch & { product?: Product };
   logged_by_profile?: Profile;
 }
 
 export type ShipmentStatus = "pending" | "received" | "cancelled";
-export type InputUnit = "meters" | "yards" | "pairs";
-export type StockUnit = "roll" | "pair";
+export type InputUnit = "meters" | "yards" | "pieces";
+export type StockUnit = "roll" | "pieces";
 
 export interface Shipment {
   id: string;
   shipment_number: string;
   supplier_id: string | null;
   status: ShipmentStatus;
-  expected_date: string | null;
-  received_date: string | null;
+  date: string | null;
   received_by: string | null;
   notes: string | null;
   created_at: string;
@@ -135,7 +174,8 @@ export type AdjustmentType = "addition" | "deduction" | "damage" | "correction";
 
 export interface StockAdjustment {
   id: string;
-  roll_id: string;
+  roll_id: string | null;
+  batch_id: string | null;
   adjustment_type: AdjustmentType;
   quantity: number;
   reason: string;
@@ -143,6 +183,7 @@ export interface StockAdjustment {
   created_at: string;
   // Joined
   roll?: Roll & { product?: Product };
+  batch?: PieceBatch & { product?: Product };
   adjusted_by_profile?: Profile;
 }
 

@@ -46,14 +46,13 @@ export default async function ShipmentsPage() {
                 <TableHead>Shipment #</TableHead>
                 <TableHead>Supplier</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead>Expected</TableHead>
-                <TableHead>Received</TableHead>
+                <TableHead>Date</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {!shipments || shipments.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="py-12 text-center text-muted-foreground">
+                  <TableCell colSpan={4} className="py-12 text-center text-muted-foreground">
                     No shipments yet.
                   </TableCell>
                 </TableRow>
@@ -89,8 +88,7 @@ export default async function ShipmentsPage() {
                           {s.status.charAt(0).toUpperCase() + s.status.slice(1)}
                         </span>
                       </TableCell>
-                      <TableCell>{s.expected_date ? formatDate(s.expected_date) : "—"}</TableCell>
-                      <TableCell>{s.received_date ? formatDate(s.received_date) : "—"}</TableCell>
+                      <TableCell>{s.date ? formatDate(s.date) : "—"}</TableCell>
                     </TableRow>
                   );
                 })

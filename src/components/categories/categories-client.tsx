@@ -7,6 +7,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -29,6 +36,7 @@ export function CategoriesClient({ categories, productCounts, canEdit, canDelete
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Category | null>(null);
   const [name, setName] = useState("");
+  const [unit, setUnit] = useState<"roll" | "pieces">("roll");
   const [description, setDescription] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -37,6 +45,7 @@ export function CategoriesClient({ categories, productCounts, canEdit, canDelete
   function openCreate() {
     setEditing(null);
     setName("");
+    setUnit("roll");
     setDescription("");
     setError("");
     setOpen(true);
@@ -45,6 +54,7 @@ export function CategoriesClient({ categories, productCounts, canEdit, canDelete
   function openEdit(cat: Category) {
     setEditing(cat);
     setName(cat.name);
+    setUnit(cat.unit);
     setDescription(cat.description || "");
     setError("");
     setOpen(true);
@@ -55,7 +65,7 @@ export function CategoriesClient({ categories, productCounts, canEdit, canDelete
     setLoading(true);
     setError("");
 
-    const data = { name, description: description || null };
+    const data = { name, unit, description: description || null };
     const result = editing
       ? await updateCategory(editing.id, data)
       : await createCategory(data);
@@ -110,6 +120,18 @@ export function CategoriesClient({ categories, productCounts, canEdit, canDelete
                       placeholder="e.g. Lace, Chiffon"
                       required
                     />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Unit</Label>
+                    <Select value={unit} onValueChange={(v) => setUnit(v as "roll" | "pieces")}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="roll">Roll</SelectItem>
+                        <SelectItem value="pieces">Pieces</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="desc">Description (optional)</Label>
@@ -173,7 +195,10 @@ export function CategoriesClient({ categories, productCounts, canEdit, canDelete
                 )}
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                  {cat.unit === "roll" ? "Roll (meters)" : "Pieces"}
+                </p>
+                <p className="mt-1 text-sm text-muted-foreground">
                   {productCounts[cat.id] || 0} product(s)
                 </p>
                 {cat.description && (

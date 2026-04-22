@@ -83,14 +83,13 @@ export default async function SupplierDetailPage({ params }: { params: Promise<{
               <TableRow>
                 <TableHead>Shipment #</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead>Expected</TableHead>
-                <TableHead>Received</TableHead>
+                <TableHead>Date</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {!shipments || shipments.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={4} className="py-8 text-center text-muted-foreground">No shipments.</TableCell>
+                  <TableCell colSpan={3} className="py-8 text-center text-muted-foreground">No shipments.</TableCell>
                 </TableRow>
               ) : (
                 shipments.map((s) => (
@@ -109,8 +108,7 @@ export default async function SupplierDetailPage({ params }: { params: Promise<{
                         {s.status.charAt(0).toUpperCase() + s.status.slice(1)}
                       </span>
                     </TableCell>
-                    <TableCell>{s.expected_date ? formatDate(s.expected_date) : "—"}</TableCell>
-                    <TableCell>{s.received_date ? formatDate(s.received_date) : "—"}</TableCell>
+                    <TableCell>{s.date ? formatDate(s.date) : "—"}</TableCell>
                   </TableRow>
                 ))
               )}

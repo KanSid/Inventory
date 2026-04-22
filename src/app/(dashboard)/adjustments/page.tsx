@@ -7,14 +7,14 @@ import {
 } from "@/components/ui/table";
 import { PageHeader } from "@/components/shared/page-header";
 import { Plus } from "lucide-react";
-import { formatDate, formatLength } from "@/lib/utils";
+import { formatDate, formatQuantity } from "@/lib/utils";
 
 export default async function AdjustmentsPage() {
   const supabase = await createClient();
 
   const { data: adjustments } = await supabase
     .from("stock_adjustments")
-    .select("*, rolls(roll_number, products(item_code)), profiles:adjusted_by(full_name)")
+    .select("*, rolls(roll_number, products(item_code, categories(unit))), piece_batches(batch_number, products(item_code, categories(unit))), profiles:adjusted_by(full_name)")
     .order("created_at", { ascending: false })
     .limit(100);
 
@@ -70,8 +70,13 @@ export default async function AdjustmentsPage() {
                 </TableRow>
               ) : (
                 adjustments.map((a) => {
-                  const roll = a.rolls as { roll_number: string; products: { item_code: string } } | null;
+                  const roll = a.rolls as { roll_number: string; products: { item_code: string; categories: { unit: string } | null } } | null;
+                  const batch = a.piece_batches as { batch_number: string; products: { item_code: string; categories: { unit: string } | null } } | null;
                   const adjBy = a.profiles as { full_name: string } | null;
+                  const isRoll = !!roll;
+                  const stockUnit = (isRoll ? roll?.products?.categories?.unit : batch?.products?.categories?.unit) ?? "roll";
+                  const itemCode = isRoll ? roll?.products?.item_code : batch?.products?.item_code;
+                  const entryNum = isRoll ? roll?.roll_number : batch?.batch_number;
 
                   const typeConfig: Record<string, { label: string; dot: string; badge: string }> = {
                     addition:   { label: "Addition",   dot: "bg-emerald-500", badge: "bg-emerald-100 text-emerald-700" },
@@ -89,9 +94,9 @@ export default async function AdjustmentsPage() {
                         <div className="flex items-center gap-2.5">
                           <div className={`w-2 h-2 rounded-full shrink-0 ${cfg.dot}`} />
                           <span className="font-serif">
-                            {roll?.products?.item_code}
-                            {roll?.roll_number && (
-                              <span className="text-muted-foreground font-sans text-xs ml-1">/ {roll.roll_number}</span>
+                            {itemCode}
+                            {entryNum && (
+                              <span className="text-muted-foreground font-sans text-xs ml-1">/ {entryNum}</span>
                             )}
                           </span>
                         </div>
@@ -103,7 +108,7 @@ export default async function AdjustmentsPage() {
                       </TableCell>
                       <TableCell className="text-right font-serif">
                         <span className={isPositive ? "text-emerald-700" : "text-red-600"}>
-                          {isPositive ? "+" : "−"}{formatLength(a.quantity)}
+                          {isPositive ? "+" : "−"}{formatQuantity(a.quantity, stockUnit as "roll" | "pieces")}
                         </span>
                       </TableCell>
                       <TableCell className="max-w-xs truncate text-muted-foreground text-sm">{a.reason}</TableCell>

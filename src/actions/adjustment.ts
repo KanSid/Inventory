@@ -12,69 +12,88 @@ export async function createAdjustment(data: AdjustmentFormData) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: { roll_id: ["Not authenticated"] } };
 
-  // Get current roll with readable info
-  const { data: roll } = await supabase
-    .from("rolls")
-    .select("current_length_m, status, product_id, roll_number, products(item_code)")
-    .eq("id", parsed.data.roll_id)
-    .single();
+  const { roll_id, batch_id, adjustment_type, quantity, reason } = parsed.data;
 
-  if (!roll) return { error: { roll_id: ["Roll not found"] } };
+  if (roll_id) {
+    const { data: roll } = await supabase
+      .from("rolls")
+      .select("current_length_m, status, product_id, roll_number, products(item_code)")
+      .eq("id", roll_id)
+      .single();
 
-  // Calculate new length
-  let newLength = roll.current_length_m;
-  if (parsed.data.adjustment_type === "addition" || parsed.data.adjustment_type === "correction") {
-    newLength += parsed.data.quantity;
-  } else {
-    newLength -= parsed.data.quantity;
-    if (newLength < 0) {
-      return { error: { quantity: [`Cannot deduct ${parsed.data.quantity}m from ${roll.current_length_m}m remaining`] } };
+    if (!roll) return { error: { roll_id: ["Roll not found"] } };
+
+    let newLength = roll.current_length_m;
+    if (adjustment_type === "addition" || adjustment_type === "correction") {
+      newLength += quantity;
+    } else {
+      newLength -= quantity;
+      if (newLength < 0) {
+        return { error: { quantity: [`Cannot deduct ${quantity}m from ${roll.current_length_m}m remaining`] } };
+      }
     }
-  }
 
-  // Insert adjustment
-  const { error: adjError } = await supabase
-    .from("stock_adjustments")
-    .insert({
-      roll_id: parsed.data.roll_id,
-      adjustment_type: parsed.data.adjustment_type,
-      quantity: parsed.data.quantity,
-      reason: parsed.data.reason,
-      adjusted_by: user.id,
+    const { error: adjError } = await supabase.from("stock_adjustments").insert({
+      roll_id, batch_id: null, adjustment_type, quantity, reason, adjusted_by: user.id,
     });
+    if (adjError) return { error: { roll_id: [adjError.message] } };
 
-  if (adjError) return { error: { roll_id: [adjError.message] } };
+    await supabase.from("rolls").update({
+      current_length_m: Math.max(0, newLength),
+      status: newLength <= 0 ? "finished" : "active",
+      updated_at: new Date().toISOString(),
+    }).eq("id", roll_id);
 
-  // Update roll
-  const updates: Record<string, unknown> = {
-    current_length_m: newLength,
-    updated_at: new Date().toISOString(),
-  };
-  if (newLength <= 0) {
-    updates.status = "finished";
-    updates.current_length_m = 0;
-  } else if (roll.status === "finished" && newLength > 0) {
-    updates.status = "active";
+    const rollData = roll as any;
+    await supabase.from("inventory_activity_log").insert({
+      user_id: user.id, action_type: "adjustment_made", entity_type: "adjustment",
+      details: {
+        product: rollData?.products?.item_code ?? "Unknown",
+        roll: rollData?.roll_number ?? "Unknown",
+        type: adjustment_type, quantity, reason, new_length: newLength,
+      },
+    });
+  } else {
+    const { data: batch } = await supabase
+      .from("piece_batches")
+      .select("current_count, status, product_id, batch_number, products(item_code)")
+      .eq("id", batch_id!)
+      .single();
+
+    if (!batch) return { error: { roll_id: ["Batch not found"] } };
+
+    const qtyInt = Math.round(quantity);
+    let newCount = batch.current_count;
+    if (adjustment_type === "addition" || adjustment_type === "correction") {
+      newCount += qtyInt;
+    } else {
+      newCount -= qtyInt;
+      if (newCount < 0) {
+        return { error: { quantity: [`Cannot deduct ${qtyInt} pcs from ${batch.current_count} pcs remaining`] } };
+      }
+    }
+
+    const { error: adjError } = await supabase.from("stock_adjustments").insert({
+      roll_id: null, batch_id: batch_id!, adjustment_type, quantity: qtyInt, reason, adjusted_by: user.id,
+    });
+    if (adjError) return { error: { roll_id: [adjError.message] } };
+
+    await supabase.from("piece_batches").update({
+      current_count: newCount,
+      status: newCount <= 0 ? "finished" : "active",
+      updated_at: new Date().toISOString(),
+    }).eq("id", batch_id!);
+
+    const batchData = batch as any;
+    await supabase.from("inventory_activity_log").insert({
+      user_id: user.id, action_type: "adjustment_made", entity_type: "adjustment",
+      details: {
+        product: batchData?.products?.item_code ?? "Unknown",
+        batch: batchData?.batch_number ?? "Unknown",
+        type: adjustment_type, quantity: qtyInt, reason, new_count: newCount,
+      },
+    });
   }
-
-  await supabase.from("rolls").update(updates).eq("id", parsed.data.roll_id);
-
-  // Log activity
-  const rollData = roll as any;
-  const productData = rollData?.products as any;
-  await supabase.from("inventory_activity_log").insert({
-    user_id: user.id,
-    action_type: "adjustment_made",
-    entity_type: "adjustment",
-    details: {
-      product: productData?.item_code ?? "Unknown",
-      roll: rollData?.roll_number ?? "Unknown",
-      type: parsed.data.adjustment_type,
-      quantity: parsed.data.quantity,
-      reason: parsed.data.reason,
-      new_length: newLength,
-    },
-  });
 
   revalidatePath("/adjustments");
   revalidatePath("/products");

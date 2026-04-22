@@ -129,14 +129,8 @@ export function Sidebar({ role, fullName, open, onClose }: SidebarProps) {
           )}
         </nav>
 
-        {/* New Entry + User */}
-        <div className="border-t border-sidebar-border px-4 pt-4 pb-3 space-y-3">
-          <Link
-            href="/usage/new"
-            className="flex w-full items-center justify-center py-2.5 bg-primary text-primary-foreground rounded-lg text-[11px] font-bold uppercase tracking-widest hover:opacity-90 transition-opacity shadow-sm"
-          >
-            + New Entry
-          </Link>
+        {/* User */}
+        <div className="border-t border-sidebar-border px-4 pt-4 pb-3">
           <div className="flex items-center gap-3">
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-sidebar-primary text-sm font-semibold text-sidebar-primary-foreground">
               {fullName.charAt(0).toUpperCase()}

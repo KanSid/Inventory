@@ -20,30 +20,22 @@ import type { RollEntry } from "@/validators/product";
 interface Props {
   productId: string;
   itemCode: string;
-  stockUnit: "roll" | "pair";
 }
 
-export function AddRollsForm({ productId, itemCode, stockUnit }: Props) {
+export function AddRollsForm({ productId, itemCode }: Props) {
   const router = useRouter();
-  const isPair = stockUnit === "pair";
-  const [rolls, setRolls] = useState<RollEntry[]>([
-    { length: "", unit: isPair ? "pairs" : "meters" },
-  ]);
-  const [receivedDate, setReceivedDate] = useState(
-    new Date().toISOString().split("T")[0]
-  );
+  const [rolls, setRolls] = useState<RollEntry[]>([{ length: "", unit: "meters" }]);
+  const [receivedDate, setReceivedDate] = useState(new Date().toISOString().split("T")[0]);
   const [notes, setNotes] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   function addRollField() {
-    setRolls([...rolls, { length: "", unit: isPair ? "pairs" : "meters" }]);
+    setRolls([...rolls, { length: "", unit: "meters" }]);
   }
 
   function removeRollField(index: number) {
-    if (rolls.length > 1) {
-      setRolls(rolls.filter((_, i) => i !== index));
-    }
+    if (rolls.length > 1) setRolls(rolls.filter((_, i) => i !== index));
   }
 
   function updateRoll(index: number, field: keyof RollEntry, value: string | number) {
@@ -59,20 +51,14 @@ export function AddRollsForm({ productId, itemCode, stockUnit }: Props) {
 
     const result = await addVariableRolls({
       product_id: productId,
-      rolls: rolls.map((r) => ({
-        length: Number(r.length),
-        unit: r.unit as "meters" | "yards",
-      })),
+      rolls: rolls.map((r) => ({ length: Number(r.length), unit: r.unit as "meters" | "yards" })),
       received_date: receivedDate,
       notes: notes || null,
     });
 
     if ("error" in result) {
       const err = result.error;
-      const msg =
-        typeof err === "string"
-          ? err
-          : Object.values(err as Record<string, string[]>).flat().join(", ");
+      const msg = typeof err === "string" ? err : Object.values(err as Record<string, string[]>).flat().join(", ");
       setError(msg);
       setLoading(false);
       return;
@@ -89,44 +75,35 @@ export function AddRollsForm({ productId, itemCode, stockUnit }: Props) {
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-3">
-            <Label>{isPair ? "Pairs" : "Rolls"}</Label>
+            <Label>Rolls</Label>
             {rolls.map((roll, index) => (
               <div key={index} className="flex gap-2 items-end">
                 <div className="flex-1 grid gap-2 sm:grid-cols-2">
                   <div>
-                    <Label htmlFor={`length-${index}`} className="text-xs">
-                      {isPair ? "Quantity (pairs)" : "Length"}
-                    </Label>
+                    <Label htmlFor={`length-${index}`} className="text-xs">Length</Label>
                     <Input
                       id={`length-${index}`}
                       type="number"
-                      step={isPair ? "1" : "0.5"}
-                      min={isPair ? "1" : "0.5"}
-                      placeholder={isPair ? "e.g. 10" : "e.g. 12.5"}
+                      step="0.5"
+                      min="0.5"
+                      placeholder="e.g. 12.5"
                       value={roll.length}
                       onChange={(e) => updateRoll(index, "length", e.target.value)}
                       required
                     />
                   </div>
-                  {!isPair && (
-                    <div>
-                      <Label htmlFor={`unit-${index}`} className="text-xs">
-                        Unit
-                      </Label>
-                      <Select
-                        value={roll.unit}
-                        onValueChange={(v) => v && updateRoll(index, "unit", v)}
-                      >
-                        <SelectTrigger id={`unit-${index}`}>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="meters">Meters</SelectItem>
-                          <SelectItem value="yards">Yards</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  )}
+                  <div>
+                    <Label htmlFor={`unit-${index}`} className="text-xs">Unit</Label>
+                    <Select value={roll.unit} onValueChange={(v) => v && updateRoll(index, "unit", v)}>
+                      <SelectTrigger id={`unit-${index}`}>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="meters">Meters</SelectItem>
+                        <SelectItem value="yards">Yards</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
                 <Button
                   type="button"
@@ -140,14 +117,8 @@ export function AddRollsForm({ productId, itemCode, stockUnit }: Props) {
                 </Button>
               </div>
             ))}
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={addRollField}
-              className="mt-2"
-            >
-              + Add Another {isPair ? "Batch" : "Roll"}
+            <Button type="button" variant="outline" size="sm" onClick={addRollField} className="mt-2">
+              + Add Another Roll
             </Button>
           </div>
 
@@ -164,31 +135,19 @@ export function AddRollsForm({ productId, itemCode, stockUnit }: Props) {
 
           <div className="space-y-2">
             <Label htmlFor="notes">Notes (optional)</Label>
-            <Textarea
-              id="notes"
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              rows={2}
-            />
+            <Textarea id="notes" value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} />
           </div>
 
           {error && <p className="text-sm text-red-500">{error}</p>}
 
           <p className="text-sm text-muted-foreground">
-            {isPair
-              ? `This will create ${rolls.length} pair batch(es) numbered ${itemCode}-P1, ${itemCode}-P2, etc.`
-              : `This will create ${rolls.length} roll(s) numbered ${itemCode}-R1, ${itemCode}-R2, etc.`}
+            This will create {rolls.length} roll(s) numbered {itemCode}-R1, {itemCode}-R2, etc.
           </p>
 
           <div className="flex justify-end gap-2">
-            <Button type="button" variant="outline" onClick={() => router.back()}>
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              disabled={loading}
-            >
-              {loading ? "Adding..." : isPair ? `Add ${rolls.length} Batch(es)` : `Add ${rolls.length} Roll(s)`}
+            <Button type="button" variant="outline" onClick={() => router.back()}>Cancel</Button>
+            <Button type="submit" disabled={loading}>
+              {loading ? "Adding..." : `Add ${rolls.length} Roll(s)`}
             </Button>
           </div>
         </form>

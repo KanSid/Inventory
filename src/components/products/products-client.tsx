@@ -23,19 +23,19 @@ import {
 import { PageHeader } from "@/components/shared/page-header";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Plus, Search } from "lucide-react";
-import { formatLength } from "@/lib/utils";
+import { formatQuantity } from "@/lib/utils";
 
 interface ProductSummary {
   id: string;
   item_code: string;
   description: string;
   category_id: string;
-  sub_type: string | null;
   image_url: string | null;
   low_stock_threshold: number;
   is_phased_out: boolean;
-  total_stock_m: number;
-  active_roll_count: number;
+  total_stock: number;
+  active_count: number;
+  stock_unit: string;
   stock_status: string;
 }
 
@@ -50,7 +50,7 @@ interface Props {
   canEdit: boolean;
 }
 
-type SortKey = "item_code" | "description" | "total_stock_m" | "active_roll_count";
+type SortKey = "item_code" | "description" | "total_stock" | "active_count";
 
 export function ProductsClient({ products, categories, canEdit }: Props) {
   const [search, setSearch] = useState("");
@@ -138,7 +138,9 @@ export function ProductsClient({ products, categories, canEdit }: Props) {
         </div>
         <Select value={categoryFilter} onValueChange={(v) => setCategoryFilter(v ?? "all")}>
           <SelectTrigger className="w-full sm:w-48">
-            <SelectValue placeholder="All Categories" />
+            <SelectValue placeholder="All Categories">
+              {(value: string) => value === "all" || !value ? "All Categories" : (catMap[value]?.name ?? "All Categories")}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Categories</SelectItem>
@@ -175,12 +177,11 @@ export function ProductsClient({ products, categories, canEdit }: Props) {
                 <TableHead className="cursor-pointer" onClick={() => toggleSort("description")}>
                   Description{sortIndicator("description")}
                 </TableHead>
-                <TableHead>Sub-type</TableHead>
-                <TableHead className="cursor-pointer text-right" onClick={() => toggleSort("total_stock_m")}>
-                  Stock{sortIndicator("total_stock_m")}
+                <TableHead className="cursor-pointer text-right" onClick={() => toggleSort("total_stock")}>
+                  Stock{sortIndicator("total_stock")}
                 </TableHead>
-                <TableHead className="cursor-pointer text-right" onClick={() => toggleSort("active_roll_count")}>
-                  Rolls{sortIndicator("active_roll_count")}
+                <TableHead className="cursor-pointer text-right" onClick={() => toggleSort("active_count")}>
+                  Rolls{sortIndicator("active_count")}
                 </TableHead>
                 <TableHead>Status</TableHead>
               </TableRow>
@@ -188,7 +189,7 @@ export function ProductsClient({ products, categories, canEdit }: Props) {
             <TableBody>
               {filtered.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={8} className="py-12 text-center text-muted-foreground">
+                  <TableCell colSpan={7} className="py-12 text-center text-muted-foreground">
                     {products.length === 0 ? "No products yet." : "No products match your filters."}
                   </TableCell>
                 </TableRow>
@@ -225,11 +226,10 @@ export function ProductsClient({ products, categories, canEdit }: Props) {
                       <TableCell>
                         <Link href={`/products/${p.item_code}`}>{p.description}</Link>
                       </TableCell>
-                      <TableCell className="text-muted-foreground">{p.sub_type || "—"}</TableCell>
                       <TableCell className="text-right font-medium">
-                        {formatLength(p.total_stock_m)}
+                        {formatQuantity(p.total_stock, p.stock_unit as "roll" | "pieces")}
                       </TableCell>
-                      <TableCell className="text-right">{p.active_roll_count}</TableCell>
+                      <TableCell className="text-right">{p.stock_unit === "roll" ? p.active_count : "—"}</TableCell>
                       <TableCell>
                         <StatusBadge status={p.stock_status as "in_stock" | "low_stock" | "out_of_stock" | "phased_out"} />
                       </TableCell>

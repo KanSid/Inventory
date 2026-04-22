@@ -52,7 +52,19 @@
       "Bash(curl -L -o \"C:/Users/Sreelakshmi S/Downloads/stitch_bridal_gown_inventory_manager/stitch_bridal_gown_inventory_manager/inventory_adjustments/screen.png\" \"https://lh3.googleusercontent.com/aida/ADBb0ujdAjFTwLMClPI87G5OiCJ2WGynNBNW2fnbgZBSY1GBE0A-Nn-ia9mHKTvjuLuqk01RgtjS4m8Kfwo4SgyzrrTdDsw2q5kz_e9l6Tl3x0RY5SkvZ7aB9SmEDGTZc4Favw6eZ4aTVDRiU7Wgqfg7CqZajmReQ2PFQNqbNEStk9dYdfimhVZTx_o2R6lMZDkiqKHY8U4yAR-GE-8OQUhNCFdartTE6DJpgLc0Pzug9ZAnTdv3EGkXyK4Zog\")",
       "Bash(py -c ' *)",
       "Bash(mkdir -p graphify-out)",
-      "Bash(rm -f .graphify_detect.json .graphify_extract.json .graphify_ast.json .graphify_semantic.json .graphify_analysis.json .graphify_labels.json .graphify_python)"
+      "Bash(rm -f .graphify_detect.json .graphify_extract.json .graphify_ast.json .graphify_semantic.json .graphify_analysis.json .graphify_labels.json .graphify_python)",
+      "mcp__3d454847-1e89-4eed-ad15-f76ba914fc7c__list_projects",
+      "mcp__3d454847-1e89-4eed-ad15-f76ba914fc7c__apply_migration",
+      "mcp__3d454847-1e89-4eed-ad15-f76ba914fc7c__execute_sql",
+      "Bash(py scripts/add_3d_flower_products.py)",
+      "Bash(py -m pip install requests -q)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(netstat -ano)",
+      "Bash(findstr :3000)",
+      "mcp__claude_ai_Supabase__list_projects",
+      "mcp__claude_ai_Supabase__list_migrations",
+      "mcp__claude_ai_Supabase__apply_migration",
+      "mcp__claude_ai_Supabase__execute_sql"
     ]
   }
 }

@@ -12,16 +12,23 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createAdjustment } from "@/actions/adjustment";
 import { createClient } from "@/lib/supabase/client";
-import { formatLength } from "@/lib/utils";
+import { formatQuantity } from "@/lib/utils";
 
-interface Props {
-  products: { id: string; item_code: string; description: string }[];
+interface ProductRow {
+  id: string;
+  item_code: string;
+  description: string;
+  categories: { unit: string } | null;
 }
 
-interface Roll {
+interface Props {
+  products: ProductRow[];
+}
+
+interface StockEntry {
   id: string;
-  roll_number: string;
-  current_length_m: number;
+  number: string;
+  qty: number;
   status: string;
 }
 
@@ -30,28 +37,44 @@ export function AdjustmentForm({ products }: Props) {
   const supabase = createClient();
 
   const [productId, setProductId] = useState("");
-  const [rollId, setRollId] = useState("");
+  const [entryId, setEntryId] = useState("");
   const [adjustmentType, setAdjustmentType] = useState("");
   const [quantity, setQuantity] = useState("");
   const [reason, setReason] = useState("");
-  const [rolls, setRolls] = useState<Roll[]>([]);
+  const [entries, setEntries] = useState<StockEntry[]>([]);
   const [errors, setErrors] = useState<Record<string, string[]>>({});
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (!productId) { setRolls([]); setRollId(""); return; }
-    supabase
-      .from("rolls")
-      .select("id, roll_number, current_length_m, status")
-      .eq("product_id", productId)
-      .order("roll_number")
-      .then(({ data }) => {
-        setRolls(data ?? []);
-        setRollId("");
-      });
-  }, [productId, supabase]);
+  const selectedProduct = products.find((p) => p.id === productId);
+  const stockUnit = (selectedProduct?.categories?.unit ?? "roll") as "roll" | "pieces";
+  const isRoll = stockUnit === "roll";
 
-  const selectedRoll = rolls.find((r) => r.id === rollId);
+  useEffect(() => {
+    if (!productId) { setEntries([]); setEntryId(""); return; }
+    if (isRoll) {
+      supabase
+        .from("rolls")
+        .select("id, roll_number, current_length_m, status")
+        .eq("product_id", productId)
+        .order("roll_number")
+        .then(({ data }) => {
+          setEntries((data ?? []).map((r) => ({ id: r.id, number: r.roll_number, qty: r.current_length_m, status: r.status })));
+          setEntryId("");
+        });
+    } else {
+      supabase
+        .from("piece_batches")
+        .select("id, batch_number, current_count, status")
+        .eq("product_id", productId)
+        .order("batch_number")
+        .then(({ data }) => {
+          setEntries((data ?? []).map((b) => ({ id: b.id, number: b.batch_number, qty: b.current_count, status: b.status })));
+          setEntryId("");
+        });
+    }
+  }, [productId, isRoll]);
+
+  const selectedEntry = entries.find((e) => e.id === entryId);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -59,7 +82,8 @@ export function AdjustmentForm({ products }: Props) {
     setErrors({});
 
     const result = await createAdjustment({
-      roll_id: rollId,
+      roll_id: isRoll ? entryId : null,
+      batch_id: !isRoll ? entryId : null,
       adjustment_type: adjustmentType as "addition" | "deduction" | "damage" | "correction",
       quantity: Number(quantity),
       reason,
@@ -94,17 +118,17 @@ export function AdjustmentForm({ products }: Props) {
           </div>
 
           <div className="space-y-2">
-            <Label>Roll</Label>
-            <Select value={rollId} onValueChange={(v) => setRollId(v ?? "")} required disabled={!productId}>
+            <Label>{isRoll ? "Roll" : "Batch"}</Label>
+            <Select value={entryId} onValueChange={(v) => setEntryId(v ?? "")} required disabled={!productId}>
               <SelectTrigger>
-                <SelectValue placeholder={productId ? "Select roll" : "Select product first"}>
-                  {rollId ? rolls.find(r => r.id === rollId)?.roll_number : undefined}
+                <SelectValue placeholder={productId ? `Select ${isRoll ? "roll" : "batch"}` : "Select product first"}>
+                  {entryId ? entries.find(e => e.id === entryId)?.number : undefined}
                 </SelectValue>
               </SelectTrigger>
               <SelectContent>
-                {rolls.map((r) => (
-                  <SelectItem key={r.id} value={r.id}>
-                    {r.roll_number} — {formatLength(r.current_length_m)} ({r.status})
+                {entries.map((e) => (
+                  <SelectItem key={e.id} value={e.id}>
+                    {e.number} — {formatQuantity(e.qty, stockUnit)} ({e.status})
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -126,10 +150,17 @@ export function AdjustmentForm({ products }: Props) {
               </Select>
             </div>
             <div className="space-y-2">
-              <Label>Quantity (meters)</Label>
-              <Input type="number" step="0.5" min="0.5" value={quantity} onChange={(e) => setQuantity(e.target.value)} required />
-              {selectedRoll && (
-                <p className="text-xs text-muted-foreground">Current: {formatLength(selectedRoll.current_length_m)}</p>
+              <Label>{isRoll ? "Quantity (meters)" : "Quantity (pieces)"}</Label>
+              <Input
+                type="number"
+                step={isRoll ? "0.5" : "1"}
+                min={isRoll ? "0.5" : "1"}
+                value={quantity}
+                onChange={(e) => setQuantity(e.target.value)}
+                required
+              />
+              {selectedEntry && (
+                <p className="text-xs text-muted-foreground">Current: {formatQuantity(selectedEntry.qty, stockUnit)}</p>
               )}
               {errors.quantity && <p className="text-xs text-red-500">{errors.quantity[0]}</p>}
             </div>
@@ -140,7 +171,9 @@ export function AdjustmentForm({ products }: Props) {
             <Textarea value={reason} onChange={(e) => setReason(e.target.value)} rows={3} required />
           </div>
 
-          {error(errors)}
+          {Object.values(errors).flat().length > 0 && (
+            <p className="text-sm text-red-500">{Object.values(errors).flat().join(", ")}</p>
+          )}
 
           <div className="flex justify-end gap-2 pt-2">
             <Button type="button" variant="outline" onClick={() => router.back()}>Cancel</Button>
@@ -152,10 +185,4 @@ export function AdjustmentForm({ products }: Props) {
       </CardContent>
     </Card>
   );
-}
-
-function error(errors: Record<string, string[]>) {
-  const all = Object.values(errors).flat();
-  if (all.length === 0) return null;
-  return <p className="text-sm text-red-500">{all.join(", ")}</p>;
 }

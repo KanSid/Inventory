@@ -7,7 +7,7 @@ export default async function NewAdjustmentPage() {
 
   const { data: products } = await supabase
     .from("products")
-    .select("id, item_code, description")
+    .select("id, item_code, description, categories(unit)")
     .eq("is_phased_out", false)
     .order("item_code");
 

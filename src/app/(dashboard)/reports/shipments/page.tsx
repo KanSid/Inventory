@@ -17,7 +17,7 @@ export default async function ShipmentReportPage() {
 
   const { data: shipments } = await supabase
     .from("shipments")
-    .select("id, shipment_number, status, received_date, created_at, shipment_items(quantity_in_meters, suppliers(name))")
+    .select("id, shipment_number, status, date, created_at, shipment_items(quantity_in_meters, suppliers(name))")
     .order("created_at", { ascending: false });
 
   const shipmentData = (shipments ?? []).map((s: any) => {
@@ -34,7 +34,7 @@ export default async function ShipmentReportPage() {
       shipment_number: s.shipment_number,
       supplier_count: supplierCount,
       status: s.status,
-      received_date: s.received_date || s.created_at,
+      received_date: s.date || s.created_at,
       item_count: items.length || 0,
       total_meters: items.reduce((sum: number, item: any) => sum + (item.quantity_in_meters || 0), 0),
     };

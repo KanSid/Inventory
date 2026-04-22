@@ -7,7 +7,7 @@ export default async function NewUsagePage() {
 
   const [{ data: brides }, { data: products }] = await Promise.all([
     supabase.from("brides").select("id, name").order("name"),
-    supabase.from("products").select("id, item_code, description").eq("is_phased_out", false).order("item_code"),
+    supabase.from("products").select("id, item_code, description, categories(unit)").eq("is_phased_out", false).order("item_code"),
   ]);
 
   return (
