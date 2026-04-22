@@ -14,7 +14,7 @@ export default async function NewShipmentPage() {
     id: p.id,
     item_code: p.item_code,
     description: p.description,
-    category_unit: ((p.categories as { unit: string } | null)?.unit ?? "roll"),
+    category_unit: ((p.categories as unknown as { unit: string } | null)?.unit ?? "roll"),
   }));
 
   return (
