@@ -34,7 +34,7 @@ export default async function ShipmentReportPage() {
       shipment_number: s.shipment_number,
       supplier_count: supplierCount,
       status: s.status,
-      received_date: s.date || s.created_at,
+      date: s.date || s.created_at,
       item_count: items.length || 0,
       total_meters: items.reduce((sum: number, item: any) => sum + (item.quantity_in_meters || 0), 0),
     };
@@ -89,7 +89,7 @@ export default async function ShipmentReportPage() {
                             {s.status.charAt(0).toUpperCase() + s.status.slice(1)}
                           </span>
                         </TableCell>
-                        <TableCell className="text-sm">{formatDate(s.received_date)}</TableCell>
+                        <TableCell className="text-sm">{formatDate(s.date)}</TableCell>
                         <TableCell className="text-right text-sm">{s.item_count}</TableCell>
                         <TableCell className="text-right">{s.total_meters}m</TableCell>
                       </TableRow>
