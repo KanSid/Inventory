@@ -11,13 +11,13 @@ import { Search } from "lucide-react";
 import { SearchableSelect } from "@/components/ui/searchable-select";
 import { createProduct, updateProduct } from "@/actions/product";
 import { uploadProductImage } from "@/actions/upload";
-import type { Product, Category, Supplier } from "@/types";
+import type { Product, Category } from "@/types";
 
 interface LookupItem { id: string; name: string; }
 
 interface Props {
   categories: Category[];
-  suppliers: Supplier[];
+  suppliers: LookupItem[];
   productTypes: LookupItem[];
   costingCategories: LookupItem[];
   designFamilies: LookupItem[];
