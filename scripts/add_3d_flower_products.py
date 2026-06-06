@@ -1,5 +1,5 @@
 """
-Script to add 3D Flower products to the D'Aisle inventory database.
+Script to add 3D Flower products to the D'Aisle inventory database. Can be run multiple times without creating duplicates.
 Downloads images from S3 and uploads to Supabase storage, then creates product records.
 """
 import os
@@ -7,7 +7,7 @@ import sys
 import secrets
 import requests
 
-SUPABASE_URL = "https://yknooquxjgxocgepjzsg.supabase.co"
+SUPABASE_URL = os.getenv("SUPABASE_URL")
 SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
 
 
