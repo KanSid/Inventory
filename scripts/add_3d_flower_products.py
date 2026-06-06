@@ -1,5 +1,5 @@
 """
-Script to add 3D Flower products to the D'Aisle inventory database. Can be run multiple times without creating duplicates.
+Script to add 3D Flower products to the D'Aisle inventory database. Can be run multiple times without creating duplicates
 Downloads images from S3 and uploads to Supabase storage, then creates product records.
 """
 import os
