@@ -96,3 +96,27 @@ export async function logUsage(data: UsageFormData) {
   revalidatePath("/dashboard");
   return { success: true };
 }
+
+export async function logUsageBatch(params: {
+  bride_id: string;
+  usage_date: string;
+  notes: string | null;
+  items: Array<{ roll_id: string | null; batch_id: string | null; quantity_used: number }>;
+}) {
+  const { bride_id, usage_date, notes, items } = params;
+  if (!items.length) return { error: { form: ["Add at least one item"] } };
+
+  for (let i = 0; i < items.length; i++) {
+    const result = await logUsage({
+      bride_id,
+      roll_id: items[i].roll_id,
+      batch_id: items[i].batch_id,
+      quantity_used: items[i].quantity_used,
+      usage_date,
+      notes,
+    });
+    if ("error" in result) return { error: result.error, failedIndex: i };
+  }
+
+  return { success: true };
+}

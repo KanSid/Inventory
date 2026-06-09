@@ -64,7 +64,10 @@
       "mcp__claude_ai_Supabase__list_projects",
       "mcp__claude_ai_Supabase__list_migrations",
       "mcp__claude_ai_Supabase__apply_migration",
-      "mcp__claude_ai_Supabase__execute_sql"
+      "mcp__claude_ai_Supabase__execute_sql",
+      "Bash(py \"C:\\\\Users\\\\Sreelakshmi S\\\\OneDrive\\\\Desktop\\\\h\\\\import_lf.py\")",
+      "PowerShell($env:PYTHONUTF8 = '1'; py -c \"from graphify.watch import _rebuild_code; from pathlib import Path; _rebuild_code\\(Path\\('.'\\)\\)\")",
+      "PowerShell(npx tsc --noEmit 2>&1)"
     ]
   }
 }

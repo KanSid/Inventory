@@ -33,26 +33,33 @@ interface ProductSummary {
   image_url: string | null;
   low_stock_threshold: number;
   is_phased_out: boolean;
+  type_id: string | null;
+  costing_category_id: string | null;
+  design_family_id: string | null;
+  comment: string | null;
   total_stock: number;
   active_count: number;
   stock_unit: string;
   stock_status: string;
 }
 
-interface CategoryRef {
+interface Ref {
   id: string;
   name: string;
 }
 
 interface Props {
   products: ProductSummary[];
-  categories: CategoryRef[];
+  categories: Ref[];
+  productTypes: Ref[];
+  costingCategories: Ref[];
+  designFamilies: Ref[];
   canEdit: boolean;
 }
 
 type SortKey = "item_code" | "description" | "total_stock" | "active_count";
 
-export function ProductsClient({ products, categories, canEdit }: Props) {
+export function ProductsClient({ products, categories, productTypes, costingCategories, designFamilies, canEdit }: Props) {
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -60,10 +67,28 @@ export function ProductsClient({ products, categories, canEdit }: Props) {
   const [sortAsc, setSortAsc] = useState(true);
 
   const catMap = useMemo(() => {
-    const m: Record<string, CategoryRef> = {};
+    const m: Record<string, Ref> = {};
     categories.forEach((c) => (m[c.id] = c));
     return m;
   }, [categories]);
+
+  const typeMap = useMemo(() => {
+    const m: Record<string, Ref> = {};
+    productTypes.forEach((t) => (m[t.id] = t));
+    return m;
+  }, [productTypes]);
+
+  const costingMap = useMemo(() => {
+    const m: Record<string, Ref> = {};
+    costingCategories.forEach((c) => (m[c.id] = c));
+    return m;
+  }, [costingCategories]);
+
+  const designMap = useMemo(() => {
+    const m: Record<string, Ref> = {};
+    designFamilies.forEach((d) => (m[d.id] = d));
+    return m;
+  }, [designFamilies]);
 
   const filtered = useMemo(() => {
     let list = products;
@@ -164,37 +189,45 @@ export function ProductsClient({ products, categories, canEdit }: Props) {
 
       {/* Table */}
       <Card>
-        <CardContent className="p-0">
+        <CardContent className="overflow-x-auto p-0">
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead className="w-12" />
-                <TableHead className="cursor-pointer" onClick={() => toggleSort("item_code")}>
+                <TableHead className="cursor-pointer whitespace-nowrap" onClick={() => toggleSort("item_code")}>
                   Code{sortIndicator("item_code")}
                 </TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead className="cursor-pointer" onClick={() => toggleSort("description")}>
-                  Description{sortIndicator("description")}
-                </TableHead>
-                <TableHead className="cursor-pointer text-right" onClick={() => toggleSort("total_stock")}>
+                <TableHead className="whitespace-nowrap">Category</TableHead>
+                <TableHead className="cursor-pointer whitespace-nowrap text-right" onClick={() => toggleSort("total_stock")}>
                   Stock{sortIndicator("total_stock")}
                 </TableHead>
-                <TableHead className="cursor-pointer text-right" onClick={() => toggleSort("active_count")}>
+                <TableHead className="cursor-pointer whitespace-nowrap text-right" onClick={() => toggleSort("active_count")}>
                   Rolls{sortIndicator("active_count")}
                 </TableHead>
-                <TableHead>Status</TableHead>
+                <TableHead className="whitespace-nowrap">Status</TableHead>
+                <TableHead className="whitespace-nowrap">Type</TableHead>
+                <TableHead className="whitespace-nowrap">Design Family</TableHead>
+                <TableHead className="whitespace-nowrap">Costing Category</TableHead>
+                <TableHead className="cursor-pointer whitespace-nowrap" onClick={() => toggleSort("description")}>
+                  Description{sortIndicator("description")}
+                </TableHead>
+                <TableHead className="whitespace-nowrap">Comment</TableHead>
+                <TableHead className="whitespace-nowrap text-right">Low Stock At</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filtered.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="py-12 text-center text-muted-foreground">
+                  <TableCell colSpan={12} className="py-12 text-center text-muted-foreground">
                     {products.length === 0 ? "No products yet." : "No products match your filters."}
                   </TableCell>
                 </TableRow>
               ) : (
                 filtered.map((p) => {
                   const cat = catMap[p.category_id];
+                  const type = p.type_id ? typeMap[p.type_id] : null;
+                  const costing = p.costing_category_id ? costingMap[p.costing_category_id] : null;
+                  const design = p.design_family_id ? designMap[p.design_family_id] : null;
                   return (
                     <TableRow key={p.id} className="cursor-pointer hover:bg-muted/50">
                       <TableCell>
@@ -222,15 +255,48 @@ export function ProductsClient({ products, categories, canEdit }: Props) {
                           <span className="text-muted-foreground">—</span>
                         )}
                       </TableCell>
-                      <TableCell>
-                        <Link href={`/products/${p.item_code}`}>{p.description}</Link>
-                      </TableCell>
                       <TableCell className="text-right font-medium">
                         {formatQuantity(p.total_stock, p.stock_unit as "roll" | "pieces")}
                       </TableCell>
                       <TableCell className="text-right">{p.stock_unit === "roll" ? p.active_count : "—"}</TableCell>
                       <TableCell>
                         <StatusBadge status={p.stock_status as "in_stock" | "low_stock" | "out_of_stock" | "phased_out"} />
+                      </TableCell>
+                      <TableCell>
+                        {type ? (
+                          <span className="inline-block rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
+                            {type.name}
+                          </span>
+                        ) : (
+                          <span className="text-muted-foreground">—</span>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {design ? (
+                          <span className="inline-block rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
+                            {design.name}
+                          </span>
+                        ) : (
+                          <span className="text-muted-foreground">—</span>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {costing ? (
+                          <span className="inline-block rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
+                            {costing.name}
+                          </span>
+                        ) : (
+                          <span className="text-muted-foreground">—</span>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <Link href={`/products/${p.item_code}`}>{p.description}</Link>
+                      </TableCell>
+                      <TableCell className="max-w-[200px] truncate text-sm text-muted-foreground">
+                        {p.comment ?? <span className="text-muted-foreground">—</span>}
+                      </TableCell>
+                      <TableCell className="text-right text-sm text-muted-foreground">
+                        {formatQuantity(p.low_stock_threshold, p.stock_unit as "roll" | "pieces")}
                       </TableCell>
                     </TableRow>
                   );

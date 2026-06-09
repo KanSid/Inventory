@@ -23,7 +23,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
 
   const { data: product } = await supabase
     .from("products")
-    .select("*, categories(name)")
+    .select("*, categories(name), product_types(name), costing_categories(name), design_families(name), product_suppliers(suppliers(name))")
     .eq("item_code", itemCode)
     .single();
 
@@ -85,6 +85,12 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
   const canEdit = profile?.role === "admin" || profile?.role === "inventory_manager";
 
   const cat = product.categories as { name: string } | null;
+  const productType = product.product_types as { name: string } | null;
+  const costingCat = product.costing_categories as { name: string } | null;
+  const designFamily = product.design_families as { name: string } | null;
+  const supplierNames = ((product.product_suppliers ?? []) as { suppliers: { name: string } | null }[])
+    .map((ps) => ps.suppliers?.name)
+    .filter(Boolean) as string[];
   const stockStatus = (summary?.stock_status ?? "out_of_stock") as "in_stock" | "low_stock" | "out_of_stock" | "phased_out";
 
   const addHref = isRoll
@@ -120,38 +126,77 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
       />
 
       <div className="flex flex-col lg:flex-row gap-6">
-        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 flex-1">
-          <Card>
-            <CardContent className="pt-6">
-              <p className="text-sm text-muted-foreground">Category</p>
-              {cat && (
-                <span className="mt-1 inline-block rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
-                  {cat.name}
-                </span>
-              )}
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="pt-6">
-              <p className="text-sm text-muted-foreground">Total Stock</p>
-              <p className="text-2xl font-bold">{formatQuantity(summary?.total_stock ?? 0, stockUnit)}</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="pt-6">
-              <p className="text-sm text-muted-foreground">{isRoll ? "Active Rolls" : "Active Batches"}</p>
-              <p className="text-2xl font-bold">{summary?.active_count ?? 0}</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="pt-6">
-              <p className="text-sm text-muted-foreground">Status</p>
-              <div className="mt-1">
-                <StatusBadge status={stockStatus} />
+        <Card className="flex-1">
+          <CardContent className="pt-6 space-y-4">
+            {/* Key stats */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 border-b pb-4">
+              <div>
+                <p className="text-xs text-muted-foreground">Total Stock</p>
+                <p className="text-xl font-bold">{formatQuantity(summary?.total_stock ?? 0, stockUnit)}</p>
               </div>
-            </CardContent>
-          </Card>
-        </div>
+              <div>
+                <p className="text-xs text-muted-foreground">{isRoll ? "Active Rolls" : "Active Batches"}</p>
+                <p className="text-xl font-bold">{summary?.active_count ?? 0}</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Low Stock Threshold</p>
+                <p className="text-xl font-bold">{formatQuantity(product.low_stock_threshold ?? 0, stockUnit)}</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Status</p>
+                <div className="mt-1">
+                  <StatusBadge status={stockStatus} />
+                </div>
+              </div>
+            </div>
+
+            {/* Attributes */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-3 text-sm">
+              <div>
+                <p className="text-xs text-muted-foreground">Category</p>
+                <p className="font-medium">{cat?.name ?? "—"}</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Type</p>
+                <p className="font-medium">{productType?.name ?? "—"}</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Design Family</p>
+                <p className="font-medium">{designFamily?.name ?? "—"}</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Costing Category</p>
+                <p className="font-medium">{costingCat?.name ?? "—"}</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Stock Unit</p>
+                <p className="font-medium capitalize">{stockUnit}</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Phased Out</p>
+                <p className="font-medium">{product.is_phased_out ? "Yes" : "No"}</p>
+              </div>
+              <div className="col-span-2 sm:col-span-3">
+                <p className="text-xs text-muted-foreground">Suppliers</p>
+                {supplierNames.length > 0 ? (
+                  <div className="mt-1 flex flex-wrap gap-1.5">
+                    {supplierNames.map((name) => (
+                      <span key={name} className="inline-block rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
+                        {name}
+                      </span>
+                    ))}
+                  </div>
+                ) : <p className="font-medium">—</p>}
+              </div>
+              {product.comment && (
+                <div className="col-span-2 sm:col-span-3">
+                  <p className="text-xs text-muted-foreground">Comment</p>
+                  <p className="mt-0.5">{product.comment}</p>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
 
         <div className="flex justify-center lg:justify-end">
           <ProductImageViewer imageUrl={product.image_url} description={product.description} />

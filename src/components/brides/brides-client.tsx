@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,7 +22,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { PageHeader } from "@/components/shared/page-header";
-import { Plus, Search } from "lucide-react";
+import { LayoutGrid, List, Plus, Search } from "lucide-react";
 import { createBride } from "@/actions/bride";
 import { formatDate } from "@/lib/utils";
 import type { Bride } from "@/types";
@@ -31,8 +32,45 @@ interface Props {
   canEdit: boolean;
 }
 
+function BridesTable({ brides }: { brides: Bride[] }) {
+  const router = useRouter();
+  return (
+    <Card>
+      <CardContent className="p-0">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Name</TableHead>
+              <TableHead>Phone</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>Wedding Date</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {brides.map((b) => (
+              <TableRow
+                key={b.id}
+                className="cursor-pointer hover:bg-muted/50"
+                onClick={() => router.push(`/brides/${b.id}`)}
+              >
+                <TableCell className="font-serif text-base text-primary">{b.name}</TableCell>
+                <TableCell className="text-muted-foreground">{b.phone || "—"}</TableCell>
+                <TableCell className="text-muted-foreground">{b.email || "—"}</TableCell>
+                <TableCell className="text-muted-foreground">{b.wedding_date ? formatDate(b.wedding_date) : "—"}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
+  );
+}
+
 export function BridesClient({ brides, canEdit }: Props) {
   const [search, setSearch] = useState("");
+  const [view, setView] = useState<"table" | "cards">("table");
+  const [sortBy, setSortBy] = useState<"wedding_date" | "name">("wedding_date");
+  const [sortAsc, setSortAsc] = useState(true);
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -75,8 +113,25 @@ export function BridesClient({ brides, canEdit }: Props) {
   }
 
   const today = new Date().toISOString().split("T")[0];
-  const upcoming = filtered.filter((b) => !b.wedding_date || b.wedding_date >= today);
-  const archived = filtered.filter((b) => b.wedding_date && b.wedding_date < today);
+
+  function sortBrides(list: Bride[]) {
+    return [...list].sort((a, b) => {
+      if (sortBy === "name") {
+        const cmp = a.name.localeCompare(b.name);
+        return sortAsc ? cmp : -cmp;
+      }
+      const da = a.wedding_date ?? "";
+      const db = b.wedding_date ?? "";
+      if (!da && !db) return 0;
+      if (!da) return 1;
+      if (!db) return -1;
+      const cmp = da.localeCompare(db);
+      return sortAsc ? cmp : -cmp;
+    });
+  }
+
+  const upcoming = sortBrides(filtered.filter((b) => !b.wedding_date || b.wedding_date >= today));
+  const archived = sortBrides(filtered.filter((b) => b.wedding_date && b.wedding_date < today));
 
   return (
     <div className="space-y-8">
@@ -128,43 +183,91 @@ export function BridesClient({ brides, canEdit }: Props) {
         </DialogContent>
       </Dialog>
 
-      <div className="relative max-w-sm">
-        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-        <Input placeholder="Search brides..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
+      <div className="flex items-center gap-2">
+        <div className="relative max-w-sm flex-1">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <Input placeholder="Search brides..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
+        </div>
+        <div className="flex rounded-md border">
+          <Button
+            type="button"
+            variant={sortBy === "wedding_date" ? "secondary" : "ghost"}
+            size="sm"
+            className="rounded-r-none text-xs px-2.5 gap-1"
+            onClick={() => { if (sortBy === "wedding_date") setSortAsc((a) => !a); else { setSortBy("wedding_date"); setSortAsc(true); } }}
+          >
+            Date {sortBy === "wedding_date" ? (sortAsc ? "↑" : "↓") : ""}
+          </Button>
+          <Button
+            type="button"
+            variant={sortBy === "name" ? "secondary" : "ghost"}
+            size="sm"
+            className="rounded-l-none text-xs px-2.5 gap-1"
+            onClick={() => { if (sortBy === "name") setSortAsc((a) => !a); else { setSortBy("name"); setSortAsc(true); } }}
+          >
+            Name {sortBy === "name" ? (sortAsc ? "↑" : "↓") : ""}
+          </Button>
+        </div>
+        <div className="flex rounded-md border">
+          <Button
+            type="button"
+            variant={view === "table" ? "secondary" : "ghost"}
+            size="sm"
+            className="rounded-r-none"
+            onClick={() => setView("table")}
+            aria-label="Table view"
+          >
+            <List size={16} />
+          </Button>
+          <Button
+            type="button"
+            variant={view === "cards" ? "secondary" : "ghost"}
+            size="sm"
+            className="rounded-l-none"
+            onClick={() => setView("cards")}
+            aria-label="Card view"
+          >
+            <LayoutGrid size={16} />
+          </Button>
+        </div>
       </div>
 
-      {/* Active Commissions — card grid */}
+      {/* Active Commissions */}
       {upcoming.length > 0 && (
         <section className="space-y-4">
           <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
             Active Commissions · {upcoming.length}
           </p>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {upcoming.map((b) => (
-              <Link key={b.id} href={`/brides/${b.id}`}>
-                <div className="group rounded-lg bg-card border-0 shadow-sm p-5 space-y-3 hover:shadow-md transition-shadow cursor-pointer">
-                  <div className="flex items-start justify-between">
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                      <span className="font-serif text-base text-primary">{b.name.charAt(0).toUpperCase()}</span>
+          {view === "table" ? (
+            <BridesTable brides={upcoming} />
+          ) : (
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {upcoming.map((b) => (
+                <Link key={b.id} href={`/brides/${b.id}`}>
+                  <div className="group rounded-lg bg-card border-0 shadow-sm p-5 space-y-3 hover:shadow-md transition-shadow cursor-pointer">
+                    <div className="flex items-start justify-between">
+                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                        <span className="font-serif text-base text-primary">{b.name.charAt(0).toUpperCase()}</span>
+                      </div>
+                      <span className="text-[10px] font-semibold uppercase tracking-[0.1em] text-muted-foreground/60 group-hover:text-primary transition-colors">
+                        View →
+                      </span>
                     </div>
-                    <span className="text-[10px] font-semibold uppercase tracking-[0.1em] text-muted-foreground/60 group-hover:text-primary transition-colors">
-                      View →
-                    </span>
+                    <div>
+                      <p className="font-serif text-lg text-foreground leading-tight">{b.name}</p>
+                      {b.phone && <p className="text-xs text-muted-foreground mt-0.5">{b.phone}</p>}
+                    </div>
+                    <div className="pt-1 border-t border-border/40">
+                      <p className="text-[10px] uppercase tracking-[0.1em] text-muted-foreground/60">Wedding</p>
+                      <p className="text-sm text-foreground mt-0.5">
+                        {b.wedding_date ? formatDate(b.wedding_date) : <span className="text-muted-foreground/50 italic">Not set</span>}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-serif text-lg text-foreground leading-tight">{b.name}</p>
-                    {b.phone && <p className="text-xs text-muted-foreground mt-0.5">{b.phone}</p>}
-                  </div>
-                  <div className="pt-1 border-t border-border/40">
-                    <p className="text-[10px] uppercase tracking-[0.1em] text-muted-foreground/60">Wedding</p>
-                    <p className="text-sm text-foreground mt-0.5">
-                      {b.wedding_date ? formatDate(b.wedding_date) : <span className="text-muted-foreground/50 italic">Not set</span>}
-                    </p>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
+                </Link>
+              ))}
+            </div>
+          )}
         </section>
       )}
 
@@ -174,34 +277,7 @@ export function BridesClient({ brides, canEdit }: Props) {
           <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
             Archived Commissions · {archived.length}
           </p>
-          <Card>
-            <CardContent className="p-0">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Phone</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Wedding Date</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {archived.map((b) => (
-                    <TableRow key={b.id}>
-                      <TableCell>
-                        <Link href={`/brides/${b.id}`} className="font-serif text-primary hover:underline">
-                          {b.name}
-                        </Link>
-                      </TableCell>
-                      <TableCell className="text-muted-foreground">{b.phone || "—"}</TableCell>
-                      <TableCell className="text-muted-foreground">{b.email || "—"}</TableCell>
-                      <TableCell className="text-muted-foreground">{b.wedding_date ? formatDate(b.wedding_date) : "—"}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
+          <BridesTable brides={archived} />
         </section>
       )}
 

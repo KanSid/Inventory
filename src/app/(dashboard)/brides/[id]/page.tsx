@@ -26,26 +26,34 @@ export default async function BrideDetailPage({ params }: { params: Promise<{ id
     <div className="space-y-6">
       <PageHeader title={bride.name} description={bride.wedding_date ? `Wedding: ${formatDate(bride.wedding_date)}` : undefined} />
 
-      <div className="grid gap-4 sm:grid-cols-3">
-        <Card>
-          <CardContent className="pt-6">
-            <p className="text-sm text-muted-foreground">Phone</p>
-            <p className="font-medium">{bride.phone || "—"}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <p className="text-sm text-muted-foreground">Email</p>
-            <p className="font-medium">{bride.email || "—"}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <p className="text-sm text-muted-foreground">Usage Records</p>
-            <p className="text-2xl font-bold">{totalUsages}</p>
-          </CardContent>
-        </Card>
-      </div>
+      <Card>
+        <CardContent className="pt-6">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-3 text-sm">
+            <div>
+              <p className="text-xs text-muted-foreground">Phone</p>
+              <p className="font-medium">{bride.phone || "—"}</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">Email</p>
+              <p className="font-medium">{bride.email || "—"}</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">Wedding Date</p>
+              <p className="font-medium">{bride.wedding_date ? formatDate(bride.wedding_date) : "—"}</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">Usage Records</p>
+              <p className="font-medium">{totalUsages}</p>
+            </div>
+            {bride.notes && (
+              <div className="col-span-2 sm:col-span-4">
+                <p className="text-xs text-muted-foreground">Notes</p>
+                <p className="mt-0.5">{bride.notes}</p>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>
