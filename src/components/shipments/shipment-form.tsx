@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
+import { SearchableSelect } from "@/components/ui/searchable-select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, Trash2 } from "lucide-react";
 import { createShipment } from "@/actions/shipment";
@@ -166,31 +167,24 @@ export function ShipmentForm({ suppliers, products }: Props) {
                 {/* Supplier */}
                 <div>
                   <Label className="text-xs mb-1.5 block pl-2">Supplier</Label>
-                  <Select value={item.supplier_id} onValueChange={(v) => updateItem(idx, "supplier_id", v ?? "")}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select">
-                        {item.supplier_id ? suppliers.find(s => s.id === item.supplier_id)?.name : undefined}
-                      </SelectValue>
-                    </SelectTrigger>
-                    <SelectContent>
-                      {suppliers.map((s) => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
+                  <SearchableSelect
+                    options={suppliers.map((s) => ({ value: s.id, label: s.name }))}
+                    value={item.supplier_id}
+                    onValueChange={(v) => updateItem(idx, "supplier_id", v)}
+                    placeholder="Select..."
+                  />
                 </div>
 
                 {/* Product */}
                 <div className="sm:col-span-2">
                   <Label className="text-xs mb-1.5 block pl-2">Product</Label>
-                  <Select value={item.product_id} onValueChange={(v) => updateItem(idx, "product_id", v ?? "")} required>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select">
-                        {item.product_id ? products.find(p => p.id === item.product_id)?.item_code : undefined}
-                      </SelectValue>
-                    </SelectTrigger>
-                    <SelectContent>
-                      {products.map((p) => <SelectItem key={p.id} value={p.id}>{p.item_code} — {p.description}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
+                  <SearchableSelect
+                    options={products.map((p) => ({ value: p.id, label: p.item_code, hint: p.description }))}
+                    value={item.product_id}
+                    onValueChange={(v) => updateItem(idx, "product_id", v)}
+                    placeholder="Select..."
+                    noneLabel={null}
+                  />
                 </div>
 
                 {/* Quantity — single field for pieces or single roll */}

@@ -35,9 +35,10 @@ export function SearchableSelect({
   const containerRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
 
-  const filtered = options.filter((o) =>
-    o.label.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = options.filter((o) => {
+    const q = search.toLowerCase();
+    return o.label.toLowerCase().includes(q) || o.hint?.toLowerCase().includes(q);
+  });
 
   const selectedLabel = options.find((o) => o.value === value)?.label;
 
