@@ -16,7 +16,7 @@ export default async function AddRollsPage({ params }: { params: Promise<{ id: s
   if (!product) notFound();
 
   const stockUnit = ((product.categories as unknown as { unit: string } | null)?.unit ?? "roll") as "roll" | "pieces";
-  if (stockUnit === "pieces") redirect(`/products/${itemCode}/pieces/add`);
+  if (stockUnit === "pieces") redirect(`/products/${encodeURIComponent(itemCode)}/pieces/add`);
 
   return (
     <div className="space-y-6">

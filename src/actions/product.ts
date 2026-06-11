@@ -39,7 +39,7 @@ export async function createProduct(data: ProductFormData) {
   }
 
   revalidatePath("/products");
-  return { success: true, item_code: product.item_code };
+  return { success: true, id: product.id };
 }
 
 export async function updateProduct(id: string, data: ProductFormData) {
@@ -78,7 +78,7 @@ export async function updateProduct(id: string, data: ProductFormData) {
     );
   }
 
-  revalidatePath(`/products/${parsed.data.item_code}`);
+  revalidatePath(`/products/${id}`);
   revalidatePath("/products");
   return { success: true };
 }

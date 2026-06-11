@@ -206,12 +206,16 @@ export function ShipmentForm({ suppliers, products }: Props) {
 
                 {/* Per-roll lengths — shown when num_rolls > 1 */}
                 {item.input_unit !== "pieces" && parseInt(item.num_rolls) > 1 && (
-                  <div className="sm:col-span-6 grid gap-2" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(90px, 1fr))" }}>
+                  <div className="sm:col-span-6 space-y-1.5">
+                    <div className="grid grid-cols-[1fr_120px] items-center gap-3 pb-0.5">
+                      <p className="text-xs text-muted-foreground">Roll</p>
+                      <p className="text-right text-xs text-muted-foreground">
+                        Length ({item.input_unit === "yards" ? "yds" : "m"})
+                      </p>
+                    </div>
                     {item.roll_lengths.map((len, rIdx) => (
-                      <div key={rIdx}>
-                        <Label className="text-xs mb-1.5 block">
-                          Roll {rIdx + 1} ({item.input_unit === "yards" ? "yds" : "m"})
-                        </Label>
+                      <div key={rIdx} className="grid grid-cols-[1fr_120px] items-center gap-3">
+                        <p className="text-sm text-muted-foreground">Roll {rIdx + 1}</p>
                         <Input
                           type="number"
                           step="0.5"
@@ -219,6 +223,7 @@ export function ShipmentForm({ suppliers, products }: Props) {
                           value={len}
                           onChange={(e) => updateRollLength(idx, rIdx, e.target.value)}
                           required
+                          className="h-8 text-right text-sm"
                         />
                       </div>
                     ))}

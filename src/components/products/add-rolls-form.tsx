@@ -64,7 +64,7 @@ export function AddRollsForm({ productId, itemCode }: Props) {
       return;
     }
 
-    router.push(`/products/${itemCode}`);
+    router.push(`/products/${encodeURIComponent(itemCode)}`);
   }
 
   return (

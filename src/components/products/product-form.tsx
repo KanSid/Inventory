@@ -101,8 +101,10 @@ export function ProductForm({ categories, suppliers, productTypes, costingCatego
       return;
     }
 
-    if ("item_code" in result && result.item_code) {
-      router.push(`/products/${result.item_code}`);
+    if ("id" in result && result.id) {
+      router.push(`/products/${result.id}`);
+    } else if (isEdit) {
+      router.push(`/products/${product!.id}`);
     } else {
       router.push("/products");
     }

@@ -245,7 +245,7 @@ export function ProductsClient({ products, categories, productTypes, costingCate
                         )}
                       </TableCell>
                       <TableCell>
-                        <Link href={`/products/${p.item_code}`} className="font-medium text-primary hover:underline">
+                        <Link href={`/products/${p.id}`} className="font-medium text-primary hover:underline">
                           {p.item_code}
                         </Link>
                       </TableCell>
@@ -293,7 +293,7 @@ export function ProductsClient({ products, categories, productTypes, costingCate
                         )}
                       </TableCell>
                       <TableCell>
-                        <Link href={`/products/${p.item_code}`}>{p.description}</Link>
+                        <Link href={`/products/${p.id}`}>{p.description}</Link>
                       </TableCell>
                       <TableCell className="max-w-[200px] truncate text-sm text-muted-foreground">
                         {p.comment ?? <span className="text-muted-foreground">—</span>}

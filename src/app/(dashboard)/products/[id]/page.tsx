@@ -18,13 +18,13 @@ import { Pencil, Plus } from "lucide-react";
 import { formatQuantity, formatDate } from "@/lib/utils";
 
 export default async function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id: itemCode } = await params;
+  const { id } = await params;
   const supabase = await createClient();
 
   const { data: product } = await supabase
     .from("products")
     .select("*, categories(name), product_types(name), costing_categories(name), design_families(name), product_suppliers(suppliers(name))")
-    .eq("item_code", itemCode)
+    .eq("id", id)
     .single();
 
   if (!product) notFound();
@@ -94,8 +94,8 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
   const stockStatus = (summary?.stock_status ?? "out_of_stock") as "in_stock" | "low_stock" | "out_of_stock" | "phased_out";
 
   const addHref = isRoll
-    ? `/products/${product.item_code}/rolls/add`
-    : `/products/${product.item_code}/pieces/add`;
+    ? `/products/${product.id}/rolls/add`
+    : `/products/${product.id}/pieces/add`;
 
   const entries = isRoll ? rolls : batches;
   const entryCount = entries.length;
@@ -114,7 +114,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                   {isRoll ? "Add Rolls" : "Add Pieces"}
                 </Button>
               </Link>
-              <Link href={`/products/${product.item_code}/edit`}>
+              <Link href={`/products/${product.id}/edit`}>
                 <Button variant="outline">
                   <Pencil size={16} className="mr-2" />
                   Edit
