@@ -95,11 +95,14 @@ export function ProductsClient({ products, categories, productTypes, costingCate
 
     if (search) {
       const q = search.toLowerCase();
-      list = list.filter(
-        (p) =>
-          p.item_code.toLowerCase().includes(q) ||
-          p.description.toLowerCase().includes(q)
-      );
+      list = list.filter((p) => {
+        const typeName = p.type_id ? (typeMap[p.type_id]?.name ?? "").toLowerCase() : "";
+        return (
+          (p.item_code ?? "").toLowerCase().includes(q) ||
+          (p.description ?? "").toLowerCase().includes(q) ||
+          typeName.includes(q)
+        );
+      });
     }
 
     if (categoryFilter !== "all") {
@@ -120,7 +123,7 @@ export function ProductsClient({ products, categories, productTypes, costingCate
     });
 
     return list;
-  }, [products, search, categoryFilter, statusFilter, sortBy, sortAsc]);
+  }, [products, search, categoryFilter, statusFilter, sortBy, sortAsc, typeMap]);
 
   function toggleSort(key: SortKey) {
     if (sortBy === key) setSortAsc(!sortAsc);
