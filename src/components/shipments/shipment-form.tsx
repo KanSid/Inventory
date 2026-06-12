@@ -12,7 +12,8 @@ import {
 import { SearchableSelect } from "@/components/ui/searchable-select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, Trash2 } from "lucide-react";
-import { createShipment } from "@/actions/shipment";
+import { useRef } from "react";
+import { createShipment, createAndReceiveShipment } from "@/actions/shipment";
 
 interface Props {
   suppliers: { id: string; name: string }[];
@@ -39,6 +40,7 @@ export function ShipmentForm({ suppliers, products }: Props) {
   ]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const submitMode = useRef<"create" | "receive">("create");
 
   function addItem() {
     setItems([...items, { supplier_id: "", product_id: "", quantity: "", input_unit: "meters", num_rolls: "1", roll_lengths: [""], notes: "" }]);
@@ -85,7 +87,7 @@ export function ShipmentForm({ suppliers, products }: Props) {
     setLoading(true);
     setError("");
 
-    const result = await createShipment({
+    const payload = {
       shipment_number: shipmentNumber,
       date: date || null,
       notes: notes || null,
@@ -106,7 +108,11 @@ export function ShipmentForm({ suppliers, products }: Props) {
           notes: item.notes || null,
         };
       }),
-    });
+    };
+
+    const result = submitMode.current === "receive"
+      ? await createAndReceiveShipment(payload)
+      : await createShipment(payload);
 
     if ("error" in result) {
       const err = result.error;
@@ -143,12 +149,7 @@ export function ShipmentForm({ suppliers, products }: Props) {
           </div>
 
           <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <Label className="text-base font-semibold">Items</Label>
-              <Button type="button" variant="outline" size="sm" onClick={addItem}>
-                <Plus size={14} className="mr-1" />Add Item
-              </Button>
-            </div>
+            <Label className="text-base font-semibold">Items</Label>
 
             {items.map((item, idx) => (
               <div key={idx} className="relative grid gap-5 rounded-lg border p-5 sm:grid-cols-6">
@@ -253,6 +254,10 @@ export function ShipmentForm({ suppliers, products }: Props) {
                 )}
               </div>
             ))}
+
+            <Button type="button" variant="outline" size="sm" className="w-full" onClick={addItem}>
+              <Plus size={14} className="mr-1.5" /> Add Item
+            </Button>
           </div>
 
           <div className="space-y-2">
@@ -264,8 +269,21 @@ export function ShipmentForm({ suppliers, products }: Props) {
 
           <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={() => router.back()}>Cancel</Button>
-            <Button type="submit" disabled={loading}>
-              {loading ? "Creating..." : "Create Shipment"}
+            <Button
+              type="submit"
+              variant="outline"
+              disabled={loading}
+              onClick={() => { submitMode.current = "create"; }}
+            >
+              {loading && submitMode.current === "create" ? "Creating..." : "Create Shipment"}
+            </Button>
+            <Button
+              type="submit"
+              className="bg-emerald-600 hover:bg-emerald-700"
+              disabled={loading}
+              onClick={() => { submitMode.current = "receive"; }}
+            >
+              {loading && submitMode.current === "receive" ? "Receiving..." : "Create & Receive"}
             </Button>
           </div>
         </form>

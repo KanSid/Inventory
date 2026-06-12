@@ -49,6 +49,116 @@ export async function createShipment(data: ShipmentFormData) {
   return { success: true, id: shipment.id };
 }
 
+export async function createAndReceiveShipment(data: ShipmentFormData, receivedDate?: string) {
+  const parsed = shipmentSchema.safeParse(data);
+  if (!parsed.success) return { error: parsed.error.flatten().fieldErrors };
+
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: { shipment_number: ["Not authenticated"] } };
+
+  const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
+  if (profile?.role !== "admin" && profile?.role !== "inventory_manager") {
+    return { error: { shipment_number: ["Unauthorized"] } };
+  }
+
+  const date = receivedDate || parsed.data.date || new Date().toISOString().split("T")[0];
+
+  const { data: shipment, error: shipError } = await supabase
+    .from("shipments")
+    .insert({ shipment_number: parsed.data.shipment_number, date, notes: parsed.data.notes || null })
+    .select("id")
+    .single();
+
+  if (shipError) {
+    if (shipError.code === "23505") return { error: { shipment_number: ["Shipment number already exists"] } };
+    return { error: { shipment_number: [shipError.message] } };
+  }
+
+  const toMeters = (v: number, unit: string) => unit === "yards" ? v * 0.9144 : v;
+
+  const itemRows = parsed.data.items.map((item) => {
+    const qtyM = toMeters(item.quantity, item.input_unit);
+    const rollLengthsM = item.roll_lengths?.map((l) => toMeters(l, item.input_unit)) ?? null;
+    return {
+      shipment_id: shipment.id,
+      product_id: item.product_id,
+      supplier_id: item.supplier_id || null,
+      quantity: item.quantity,
+      input_unit: item.input_unit,
+      quantity_in_meters: qtyM,
+      num_rolls: item.num_rolls,
+      roll_lengths: rollLengthsM,
+      notes: item.notes || null,
+      received_quantity_in_meters: qtyM,
+      received_num_rolls: item.input_unit === "pieces" ? 1 : item.num_rolls,
+      received_roll_lengths: item.input_unit === "pieces" ? null : rollLengthsM,
+    };
+  });
+
+  const { error: itemsError } = await supabase.from("shipment_items").insert(itemRows);
+  if (itemsError) return { error: { shipment_number: [itemsError.message] } };
+
+  const productIds = [...new Set(parsed.data.items.map((i) => i.product_id))];
+  const { data: productData } = await supabase
+    .from("products").select("id, categories(unit)").in("id", productIds);
+
+  const unitMap: Record<string, string> = {};
+  (productData ?? []).forEach((p: any) => { unitMap[p.id] = p.categories?.unit ?? "roll"; });
+
+  for (const item of parsed.data.items) {
+    const stockUnit = unitMap[item.product_id] ?? "roll";
+    const qtyM = toMeters(item.quantity, item.input_unit);
+    const rollLengthsM = item.roll_lengths?.map((l) => toMeters(l, item.input_unit)) ?? null;
+
+    if (stockUnit === "pieces") {
+      const { data: batchNum } = await supabase.rpc("generate_batch_number", { p_product_id: item.product_id });
+      await supabase.from("piece_batches").insert({
+        product_id: item.product_id, batch_number: batchNum,
+        initial_count: Math.round(qtyM), current_count: Math.round(qtyM),
+        shipment_id: shipment.id, received_date: date,
+      });
+    } else {
+      for (let i = 0; i < item.num_rolls; i++) {
+        const lengthM = rollLengthsM?.[i] ?? qtyM / item.num_rolls;
+        const { data: rollNum } = await supabase.rpc("generate_roll_number", { p_product_id: item.product_id });
+        await supabase.from("rolls").insert({
+          product_id: item.product_id, roll_number: rollNum,
+          initial_length_m: lengthM, current_length_m: lengthM,
+          shipment_id: shipment.id, received_date: date,
+        });
+      }
+    }
+  }
+
+  await supabase.from("shipments").update({
+    status: "received", received_by: user.id, date,
+    updated_at: new Date().toISOString(),
+  }).eq("id", shipment.id);
+
+  const supplierIds = [...new Set(parsed.data.items.map((i) => i.supplier_id).filter(Boolean))] as string[];
+  const suppliersSet = new Set<string>();
+  if (supplierIds.length > 0) {
+    const { data: suppData } = await supabase.from("suppliers").select("id, name").in("id", supplierIds);
+    (suppData ?? []).forEach((s: any) => suppliersSet.add(s.name));
+  }
+
+  await supabase.from("inventory_activity_log").insert({
+    user_id: user.id, action_type: "shipment_received",
+    entity_type: "shipment", entity_id: shipment.id,
+    details: {
+      shipment: parsed.data.shipment_number, supplier_count: suppliersSet.size,
+      suppliers: Array.from(suppliersSet), items_count: parsed.data.items.length,
+      has_discrepancies: false, direct_receive: true,
+    },
+  });
+
+  revalidatePath("/shipments");
+  revalidatePath("/products");
+  revalidatePath("/dashboard");
+  return { success: true, id: shipment.id };
+}
+
 export async function receiveShipment(shipmentId: string) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
