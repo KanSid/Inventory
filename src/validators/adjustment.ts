@@ -3,7 +3,7 @@ import { z } from "zod";
 export const adjustmentSchema = z.object({
   roll_id: z.string().uuid().nullable().optional(),
   batch_id: z.string().uuid().nullable().optional(),
-  adjustment_type: z.enum(["addition", "deduction", "damage", "correction"]),
+  adjustment_type: z.enum(["addition", "deduction", "damage"]),
   quantity: z.coerce.number().positive("Must be positive"),
   reason: z.string().min(1, "Reason is required").max(1000),
 }).superRefine((data, ctx) => {

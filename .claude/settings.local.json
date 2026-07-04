@@ -67,7 +67,9 @@
       "mcp__claude_ai_Supabase__execute_sql",
       "Bash(py \"C:\\\\Users\\\\Sreelakshmi S\\\\OneDrive\\\\Desktop\\\\h\\\\import_lf.py\")",
       "PowerShell($env:PYTHONUTF8 = '1'; py -c \"from graphify.watch import _rebuild_code; from pathlib import Path; _rebuild_code\\(Path\\('.'\\)\\)\")",
-      "PowerShell(npx tsc --noEmit 2>&1)"
+      "PowerShell(npx tsc --noEmit 2>&1)",
+      "Bash(py -c \"from graphify.watch import _rebuild_code; from pathlib import Path; _rebuild_code\\(Path\\('.'\\)\\)\")",
+      "Bash(npx tsc *)"
     ]
   }
 }

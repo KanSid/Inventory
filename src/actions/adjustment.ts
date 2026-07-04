@@ -24,7 +24,7 @@ export async function createAdjustment(data: AdjustmentFormData) {
     if (!roll) return { error: { roll_id: ["Roll not found"] } };
 
     let newLength = roll.current_length_m;
-    if (adjustment_type === "addition" || adjustment_type === "correction") {
+    if (adjustment_type === "addition") {
       newLength += quantity;
     } else {
       newLength -= quantity;
@@ -64,7 +64,7 @@ export async function createAdjustment(data: AdjustmentFormData) {
 
     const qtyInt = Math.round(quantity);
     let newCount = batch.current_count;
-    if (adjustment_type === "addition" || adjustment_type === "correction") {
+    if (adjustment_type === "addition") {
       newCount += qtyInt;
     } else {
       newCount -= qtyInt;

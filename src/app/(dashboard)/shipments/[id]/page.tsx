@@ -5,7 +5,7 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import { PageHeader } from "@/components/shared/page-header";
-import { ReceiveShipmentButton } from "@/components/shipments/receive-button";
+import { ShipmentPendingActions } from "@/components/shipments/shipment-pending-actions";
 import { formatDate, formatQuantity } from "@/lib/utils";
 
 function round1(n: number) {
@@ -55,7 +55,7 @@ export default async function ShipmentDetailPage({ params }: { params: Promise<{
         description="Shipment details and items"
         action={
           canEdit && shipment.status === "pending" ? (
-            <ReceiveShipmentButton shipmentId={id} />
+            <ShipmentPendingActions shipmentId={id} />
           ) : undefined
         }
       />

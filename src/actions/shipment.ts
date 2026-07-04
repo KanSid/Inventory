@@ -387,3 +387,91 @@ export async function cancelShipment(shipmentId: string) {
   revalidatePath("/shipments");
   return { success: true };
 }
+
+export async function updateShipment(shipmentId: string, data: ShipmentFormData) {
+  const parsed = shipmentSchema.safeParse(data);
+  if (!parsed.success) return { error: parsed.error.flatten().fieldErrors };
+
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: { shipment_number: ["Not authenticated"] } };
+
+  const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
+  if (profile?.role !== "admin" && profile?.role !== "inventory_manager") {
+    return { error: { shipment_number: ["Unauthorized"] } };
+  }
+
+  const { data: existing } = await supabase
+    .from("shipments").select("status").eq("id", shipmentId).single();
+  if (!existing) return { error: { shipment_number: ["Shipment not found"] } };
+  if (existing.status !== "pending") {
+    return { error: { shipment_number: ["Only pending shipments can be edited"] } };
+  }
+
+  const { error: updError } = await supabase
+    .from("shipments")
+    .update({
+      shipment_number: parsed.data.shipment_number,
+      date: parsed.data.date || null,
+      notes: parsed.data.notes || null,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", shipmentId);
+
+  if (updError) {
+    if (updError.code === "23505") return { error: { shipment_number: ["Shipment number already exists"] } };
+    return { error: { shipment_number: [updError.message] } };
+  }
+
+  // Replace line items
+  await supabase.from("shipment_items").delete().eq("shipment_id", shipmentId);
+
+  const items = parsed.data.items.map((item) => {
+    const toMeters = (v: number) => item.input_unit === "yards" ? v * 0.9144 : v;
+    const qtyMeters = toMeters(item.quantity);
+    const rollLengthsMeters = item.roll_lengths?.map(toMeters) ?? null;
+    return {
+      shipment_id: shipmentId,
+      product_id: item.product_id,
+      supplier_id: item.supplier_id || null,
+      quantity: item.quantity,
+      input_unit: item.input_unit,
+      quantity_in_meters: qtyMeters,
+      num_rolls: item.num_rolls,
+      roll_lengths: rollLengthsMeters,
+      notes: item.notes || null,
+    };
+  });
+
+  const { error: itemsError } = await supabase.from("shipment_items").insert(items);
+  if (itemsError) return { error: { shipment_number: [itemsError.message] } };
+
+  revalidatePath("/shipments");
+  revalidatePath(`/shipments/${shipmentId}`);
+  return { success: true, id: shipmentId };
+}
+
+export async function deleteShipment(shipmentId: string) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Not authenticated" };
+
+  const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
+  if (profile?.role !== "admin" && profile?.role !== "inventory_manager") {
+    return { error: "Unauthorized" };
+  }
+
+  const { data: shipment } = await supabase
+    .from("shipments").select("status").eq("id", shipmentId).single();
+  if (!shipment) return { error: "Shipment not found" };
+  if (shipment.status === "received") {
+    return { error: "Cannot delete a received shipment — its stock has already been added" };
+  }
+
+  await supabase.from("shipment_items").delete().eq("shipment_id", shipmentId);
+  const { error } = await supabase.from("shipments").delete().eq("id", shipmentId);
+  if (error) return { error: error.message };
+
+  revalidatePath("/shipments");
+  return { success: true };
+}

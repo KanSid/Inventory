@@ -6,7 +6,7 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import { PageHeader } from "@/components/shared/page-header";
-import { Plus } from "lucide-react";
+import { Pencil, Plus } from "lucide-react";
 import { formatDate, formatQuantity } from "@/lib/utils";
 
 export default async function UsagePage() {
@@ -50,12 +50,13 @@ export default async function UsagePage() {
                 <TableHead>Roll</TableHead>
                 <TableHead className="text-right">Quantity</TableHead>
                 <TableHead>Logged By</TableHead>
+                {canEdit && <TableHead />}
               </TableRow>
             </TableHeader>
             <TableBody>
               {!usage || usage.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="py-12 text-center text-muted-foreground">
+                  <TableCell colSpan={canEdit ? 7 : 6} className="py-12 text-center text-muted-foreground">
                     No usage logged yet.
                   </TableCell>
                 </TableRow>
@@ -82,6 +83,15 @@ export default async function UsagePage() {
                       <TableCell className="text-sm text-muted-foreground">{entryNum ?? "—"}</TableCell>
                       <TableCell className="text-right font-serif">{formatQuantity(u.quantity_used, stockUnit as "roll" | "pieces")}</TableCell>
                       <TableCell className="text-sm text-muted-foreground">{logger?.full_name ?? "—"}</TableCell>
+                      {canEdit && (
+                        <TableCell className="text-right">
+                          <Link href={`/usage/${u.id}/edit`}>
+                            <Button variant="ghost" size="icon" className="h-7 w-7">
+                              <Pencil size={13} />
+                            </Button>
+                          </Link>
+                        </TableCell>
+                      )}
                     </TableRow>
                   );
                 })

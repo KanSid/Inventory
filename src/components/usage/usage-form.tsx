@@ -216,7 +216,7 @@ export function UsageForm({ brides: initialBrides, products }: Props) {
                         <div className="space-y-1.5">
                           <Label className="text-xs text-muted-foreground">Product</Label>
                           <SearchableSelect
-                            options={products.map((p) => ({ value: p.id, label: `${p.item_code} — ${p.description}` }))}
+                            options={products.map((p) => ({ value: p.id, label: p.item_code }))}
                             value={item.productId}
                             onValueChange={(v) => handleProductChange(item.key, v)}
                             placeholder="Select product"

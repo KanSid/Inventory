@@ -97,6 +97,84 @@ export async function logUsage(data: UsageFormData) {
   return { success: true };
 }
 
+export async function updateUsage(
+  usageId: string,
+  data: { bride_id: string; usage_date: string; quantity_used: number; notes: string | null },
+) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Not authenticated" };
+
+  const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
+  if (profile?.role !== "admin" && profile?.role !== "inventory_manager") {
+    return { error: "Unauthorized" };
+  }
+
+  const { data: existing } = await supabase
+    .from("stock_usage")
+    .select("bride_id, roll_id, batch_id, quantity_used, usage_date, notes")
+    .eq("id", usageId)
+    .single();
+  if (!existing) return { error: "Usage record not found" };
+
+  const oldQty = Number(existing.quantity_used);
+  const newQty = data.quantity_used;
+  const delta = newQty - oldQty;
+
+  if (existing.roll_id) {
+    const { data: roll } = await supabase
+      .from("rolls")
+      .select("current_length_m, roll_number, product_id, products(item_code)")
+      .eq("id", existing.roll_id)
+      .single();
+    if (!roll) return { error: "Roll not found" };
+
+    const available = Number(roll.current_length_m) + oldQty;
+    if (newQty > available) {
+      return { error: `Exceeds available stock (${available}m after reversing original)` };
+    }
+
+    const newLength = Math.max(0, Number(roll.current_length_m) - delta);
+    await supabase.from("rolls").update({
+      current_length_m: newLength,
+      status: newLength <= 0 ? "finished" : "active",
+      updated_at: new Date().toISOString(),
+    }).eq("id", existing.roll_id);
+  } else if (existing.batch_id) {
+    const { data: batch } = await supabase
+      .from("piece_batches")
+      .select("current_count, batch_number, product_id, products(item_code)")
+      .eq("id", existing.batch_id)
+      .single();
+    if (!batch) return { error: "Batch not found" };
+
+    const available = batch.current_count + Math.round(oldQty);
+    const newQtyInt = Math.round(newQty);
+    if (newQtyInt > available) {
+      return { error: `Exceeds available stock (${available} pcs after reversing original)` };
+    }
+
+    const newCount = batch.current_count - Math.round(delta);
+    await supabase.from("piece_batches").update({
+      current_count: Math.max(0, newCount),
+      status: newCount <= 0 ? "finished" : "active",
+      updated_at: new Date().toISOString(),
+    }).eq("id", existing.batch_id);
+  }
+
+  await supabase.from("stock_usage").update({
+    bride_id: data.bride_id,
+    usage_date: data.usage_date,
+    quantity_used: existing.roll_id ? newQty : Math.round(newQty),
+    notes: data.notes || null,
+  }).eq("id", usageId);
+
+  revalidatePath("/usage");
+  revalidatePath("/products");
+  revalidatePath("/dashboard");
+  return { success: true };
+}
+
 export async function logUsageBatch(params: {
   bride_id: string;
   usage_date: string;

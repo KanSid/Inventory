@@ -47,6 +47,15 @@ export async function updateProduct(id: string, data: ProductFormData) {
   if (!parsed.success) return { error: parsed.error.flatten().fieldErrors };
 
   const supabase = await createClient();
+
+  // Capture the current item_code so we can re-prefix dependent roll/batch
+  // numbers if the product is being renamed.
+  const { data: existing } = await supabase
+    .from("products")
+    .select("item_code")
+    .eq("id", id)
+    .single();
+
   const { error } = await supabase
     .from("products")
     .update({
@@ -67,6 +76,35 @@ export async function updateProduct(id: string, data: ProductFormData) {
   if (error) {
     if (error.code === "23505") return { error: { item_code: ["Item code already exists"] } };
     return { error: { item_code: [error.message] } };
+  }
+
+  // Roll numbers (`<item_code>-R<n>`) and piece-batch numbers
+  // (`<item_code>-P<n>`) embed the product's item_code as a prefix. When the
+  // item_code changes, rename the dependent records to keep them in sync.
+  const oldCode = existing?.item_code;
+  const newCode = parsed.data.item_code;
+  if (oldCode && oldCode !== newCode) {
+    const { data: rolls } = await supabase
+      .from("rolls")
+      .select("id, roll_number")
+      .eq("product_id", id);
+    for (const r of rolls ?? []) {
+      const suffix = r.roll_number.startsWith(oldCode)
+        ? r.roll_number.slice(oldCode.length)
+        : r.roll_number;
+      await supabase.from("rolls").update({ roll_number: newCode + suffix }).eq("id", r.id);
+    }
+
+    const { data: batches } = await supabase
+      .from("piece_batches")
+      .select("id, batch_number")
+      .eq("product_id", id);
+    for (const b of batches ?? []) {
+      const suffix = b.batch_number.startsWith(oldCode)
+        ? b.batch_number.slice(oldCode.length)
+        : b.batch_number;
+      await supabase.from("piece_batches").update({ batch_number: newCode + suffix }).eq("id", b.id);
+    }
   }
 
   // Replace product_suppliers

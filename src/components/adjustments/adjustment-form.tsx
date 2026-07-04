@@ -6,9 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from "@/components/ui/select";
+import { SearchableSelect } from "@/components/ui/searchable-select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createAdjustment } from "@/actions/adjustment";
 import { createClient } from "@/lib/supabase/client";
@@ -84,7 +82,7 @@ export function AdjustmentForm({ products }: Props) {
     const result = await createAdjustment({
       roll_id: isRoll ? entryId : null,
       batch_id: !isRoll ? entryId : null,
-      adjustment_type: adjustmentType as "addition" | "deduction" | "damage" | "correction",
+      adjustment_type: adjustmentType as "addition" | "deduction" | "damage",
       quantity: Number(quantity),
       reason,
     });
@@ -105,49 +103,45 @@ export function AdjustmentForm({ products }: Props) {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label>Product</Label>
-            <Select value={productId} onValueChange={(v) => setProductId(v ?? "")} required>
-              <SelectTrigger>
-                <SelectValue placeholder="Select product">
-                  {productId ? products.find(p => p.id === productId)?.item_code : undefined}
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                {products.map((p) => <SelectItem key={p.id} value={p.id}>{p.item_code} — {p.description}</SelectItem>)}
-              </SelectContent>
-            </Select>
+            <SearchableSelect
+              options={products.map((p) => ({ value: p.id, label: p.item_code }))}
+              value={productId}
+              onValueChange={(v) => setProductId(v ?? "")}
+              placeholder="Select product"
+              noneLabel={null}
+            />
           </div>
 
           <div className="space-y-2">
             <Label>{isRoll ? "Roll" : "Batch"}</Label>
-            <Select value={entryId} onValueChange={(v) => setEntryId(v ?? "")} required disabled={!productId}>
-              <SelectTrigger>
-                <SelectValue placeholder={productId ? `Select ${isRoll ? "roll" : "batch"}` : "Select product first"}>
-                  {entryId ? entries.find(e => e.id === entryId)?.number : undefined}
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                {entries.map((e) => (
-                  <SelectItem key={e.id} value={e.id}>
-                    {e.number} — {formatQuantity(e.qty, stockUnit)} ({e.status})
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <SearchableSelect
+              options={entries.map((e) => ({
+                value: e.id,
+                label: `${e.number} — ${formatQuantity(e.qty, stockUnit)} (${e.status})`,
+              }))}
+              value={entryId}
+              onValueChange={(v) => setEntryId(v ?? "")}
+              placeholder={productId ? `Select ${isRoll ? "roll" : "batch"}` : "Select product first"}
+              noneLabel={null}
+              disabled={!productId}
+            />
             {errors.roll_id && <p className="text-xs text-red-500">{errors.roll_id[0]}</p>}
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label>Type</Label>
-              <Select value={adjustmentType} onValueChange={(v) => setAdjustmentType(v ?? "")} required>
-                <SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="addition">Addition</SelectItem>
-                  <SelectItem value="deduction">Deduction</SelectItem>
-                  <SelectItem value="damage">Damage</SelectItem>
-                  <SelectItem value="correction">Correction</SelectItem>
-                </SelectContent>
-              </Select>
+              <SearchableSelect
+                options={[
+                  { value: "addition", label: "Addition" },
+                  { value: "deduction", label: "Deduction" },
+                  { value: "damage", label: "Damage" },
+                ]}
+                value={adjustmentType}
+                onValueChange={(v) => setAdjustmentType(v ?? "")}
+                placeholder="Select type"
+                noneLabel={null}
+              />
             </div>
             <div className="space-y-2">
               <Label>{isRoll ? "Quantity (meters)" : "Quantity (pieces)"}</Label>

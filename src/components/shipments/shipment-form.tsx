@@ -13,12 +13,7 @@ import { SearchableSelect } from "@/components/ui/searchable-select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, Trash2 } from "lucide-react";
 import { useRef } from "react";
-import { createShipment, createAndReceiveShipment } from "@/actions/shipment";
-
-interface Props {
-  suppliers: { id: string; name: string }[];
-  products: { id: string; item_code: string; description: string; category_unit: string }[];
-}
+import { createShipment, createAndReceiveShipment, updateShipment } from "@/actions/shipment";
 
 interface LineItem {
   supplier_id: string;
@@ -30,14 +25,30 @@ interface LineItem {
   notes: string;
 }
 
-export function ShipmentForm({ suppliers, products }: Props) {
+interface Props {
+  suppliers: { id: string; name: string }[];
+  products: { id: string; item_code: string; description: string; category_unit: string }[];
+  mode?: "create" | "edit";
+  shipmentId?: string;
+  initial?: {
+    shipment_number: string;
+    date: string;
+    notes: string;
+    items: LineItem[];
+  };
+}
+
+export function ShipmentForm({ suppliers, products, mode = "create", shipmentId, initial }: Props) {
   const router = useRouter();
-  const [shipmentNumber, setShipmentNumber] = useState("");
-  const [date, setDate] = useState("");
-  const [notes, setNotes] = useState("");
-  const [items, setItems] = useState<LineItem[]>([
-    { supplier_id: "", product_id: "", quantity: "", input_unit: "meters", num_rolls: "1", roll_lengths: [""], notes: "" },
-  ]);
+  const isEdit = mode === "edit";
+  const [shipmentNumber, setShipmentNumber] = useState(initial?.shipment_number ?? "");
+  const [date, setDate] = useState(initial?.date ?? "");
+  const [notes, setNotes] = useState(initial?.notes ?? "");
+  const [items, setItems] = useState<LineItem[]>(
+    initial?.items ?? [
+      { supplier_id: "", product_id: "", quantity: "", input_unit: "meters", num_rolls: "1", roll_lengths: [""], notes: "" },
+    ]
+  );
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const submitMode = useRef<"create" | "receive">("create");
@@ -110,9 +121,11 @@ export function ShipmentForm({ suppliers, products }: Props) {
       }),
     };
 
-    const result = submitMode.current === "receive"
-      ? await createAndReceiveShipment(payload)
-      : await createShipment(payload);
+    const result = isEdit
+      ? await updateShipment(shipmentId!, payload)
+      : submitMode.current === "receive"
+        ? await createAndReceiveShipment(payload)
+        : await createShipment(payload);
 
     if ("error" in result) {
       const err = result.error;
@@ -128,7 +141,7 @@ export function ShipmentForm({ suppliers, products }: Props) {
 
   return (
     <Card className="max-w-3xl">
-      <CardHeader><CardTitle>Create Shipment</CardTitle></CardHeader>
+      <CardHeader><CardTitle>{isEdit ? "Edit Shipment" : "Create Shipment"}</CardTitle></CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid gap-4 sm:grid-cols-2">
@@ -180,7 +193,7 @@ export function ShipmentForm({ suppliers, products }: Props) {
                 <div className="sm:col-span-2">
                   <Label className="text-xs mb-1.5 block pl-2">Product</Label>
                   <SearchableSelect
-                    options={products.map((p) => ({ value: p.id, label: p.item_code, hint: p.description }))}
+                    options={products.map((p) => ({ value: p.id, label: p.item_code }))}
                     value={item.product_id}
                     onValueChange={(v) => updateItem(idx, "product_id", v)}
                     placeholder="Select..."
@@ -269,22 +282,30 @@ export function ShipmentForm({ suppliers, products }: Props) {
 
           <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={() => router.back()}>Cancel</Button>
-            <Button
-              type="submit"
-              variant="outline"
-              disabled={loading}
-              onClick={() => { submitMode.current = "create"; }}
-            >
-              {loading && submitMode.current === "create" ? "Creating..." : "Create Shipment"}
-            </Button>
-            <Button
-              type="submit"
-              className="bg-emerald-600 hover:bg-emerald-700"
-              disabled={loading}
-              onClick={() => { submitMode.current = "receive"; }}
-            >
-              {loading && submitMode.current === "receive" ? "Receiving..." : "Create & Receive"}
-            </Button>
+            {isEdit ? (
+              <Button type="submit" disabled={loading}>
+                {loading ? "Saving..." : "Save Changes"}
+              </Button>
+            ) : (
+              <>
+                <Button
+                  type="submit"
+                  variant="outline"
+                  disabled={loading}
+                  onClick={() => { submitMode.current = "create"; }}
+                >
+                  {loading && submitMode.current === "create" ? "Creating..." : "Create Shipment"}
+                </Button>
+                <Button
+                  type="submit"
+                  className="bg-emerald-600 hover:bg-emerald-700"
+                  disabled={loading}
+                  onClick={() => { submitMode.current = "receive"; }}
+                >
+                  {loading && submitMode.current === "receive" ? "Receiving..." : "Create & Receive"}
+                </Button>
+              </>
+            )}
           </div>
         </form>
       </CardContent>
