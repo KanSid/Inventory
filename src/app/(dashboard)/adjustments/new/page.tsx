@@ -2,7 +2,12 @@ import { createClient } from "@/lib/supabase/server";
 import { PageHeader } from "@/components/shared/page-header";
 import { AdjustmentForm } from "@/components/adjustments/adjustment-form";
 
-export default async function NewAdjustmentPage() {
+export default async function NewAdjustmentPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ product?: string }>;
+}) {
+  const { product: defaultProductId } = await searchParams;
   const supabase = await createClient();
 
   const { data: rawProducts } = await supabase
@@ -21,7 +26,7 @@ export default async function NewAdjustmentPage() {
   return (
     <div className="space-y-6">
       <PageHeader title="New Adjustment" description="Record a stock correction or damage" />
-      <AdjustmentForm products={products} />
+      <AdjustmentForm products={products} defaultProductId={defaultProductId} />
     </div>
   );
 }

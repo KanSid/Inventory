@@ -14,7 +14,7 @@ import {
 import { PageHeader } from "@/components/shared/page-header";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { ProductImageViewer } from "@/components/products/product-image-viewer";
-import { Pencil, Plus } from "lucide-react";
+import { Pencil, Plus, Scale } from "lucide-react";
 import { formatQuantity, formatDate } from "@/lib/utils";
 
 export default async function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -76,6 +76,28 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     usage = data ?? [];
   }
 
+  // Fetch recent stock adjustments for this product's rolls or batches
+  let adjustments: any[] = [];
+  if (isRoll && rolls.length > 0) {
+    const rollIds = rolls.map((r) => r.id);
+    const { data } = await supabase
+      .from("stock_adjustments")
+      .select("*, rolls(roll_number), profiles:adjusted_by(full_name)")
+      .in("roll_id", rollIds)
+      .order("created_at", { ascending: false })
+      .limit(20);
+    adjustments = data ?? [];
+  } else if (!isRoll && batches.length > 0) {
+    const batchIds = batches.map((b) => b.id);
+    const { data } = await supabase
+      .from("stock_adjustments")
+      .select("*, piece_batches(batch_number), profiles:adjusted_by(full_name)")
+      .in("batch_id", batchIds)
+      .order("created_at", { ascending: false })
+      .limit(20);
+    adjustments = data ?? [];
+  }
+
   const { data: { user } } = await supabase.auth.getUser();
   const { data: profile } = await supabase
     .from("profiles")
@@ -112,6 +134,12 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                 <Button>
                   <Plus size={16} className="mr-2" />
                   {isRoll ? "Add Rolls" : "Add Pieces"}
+                </Button>
+              </Link>
+              <Link href={`/adjustments/new?product=${product.id}`}>
+                <Button variant="outline">
+                  <Scale size={16} className="mr-2" />
+                  Adjust Stock
                 </Button>
               </Link>
               <Link href={`/products/${product.id}/edit`}>
@@ -303,6 +331,68 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                     <TableCell className="text-right font-medium">{formatQuantity(u.quantity_used, stockUnit)}</TableCell>
                   </TableRow>
                 ))
+              )}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
+      {/* Adjustment History */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Adjustment History</CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Date</TableHead>
+                <TableHead>{isRoll ? "Roll" : "Batch"}</TableHead>
+                <TableHead>Type</TableHead>
+                <TableHead className="text-right">Quantity</TableHead>
+                <TableHead>Reason</TableHead>
+                <TableHead>By</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {adjustments.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="py-8 text-center text-muted-foreground">
+                    No adjustments recorded yet.
+                  </TableCell>
+                </TableRow>
+              ) : (
+                adjustments.map((a) => {
+                  const entryNum = isRoll
+                    ? (a.rolls as { roll_number: string } | null)?.roll_number
+                    : (a.piece_batches as { batch_number: string } | null)?.batch_number;
+                  const adjBy = a.profiles as { full_name: string } | null;
+                  const typeConfig: Record<string, { label: string; badge: string }> = {
+                    addition: { label: "Addition", badge: "bg-emerald-100 text-emerald-700" },
+                    deduction: { label: "Deduction", badge: "bg-red-100 text-red-700" },
+                    damage: { label: "Damage", badge: "bg-red-100 text-red-700" },
+                    correction: { label: "Correction", badge: "bg-amber-100 text-amber-700" },
+                  };
+                  const cfg = typeConfig[a.adjustment_type] ?? { label: a.adjustment_type, badge: "bg-muted text-muted-foreground" };
+                  const isPositive = a.adjustment_type === "addition" || a.adjustment_type === "correction";
+
+                  return (
+                    <TableRow key={a.id}>
+                      <TableCell>{formatDate(a.created_at)}</TableCell>
+                      <TableCell>{entryNum ?? "—"}</TableCell>
+                      <TableCell>
+                        <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${cfg.badge}`}>
+                          {cfg.label}
+                        </span>
+                      </TableCell>
+                      <TableCell className={`text-right font-medium ${isPositive ? "text-emerald-700" : "text-red-600"}`}>
+                        {isPositive ? "+" : "−"}{formatQuantity(a.quantity, stockUnit)}
+                      </TableCell>
+                      <TableCell className="max-w-xs truncate text-muted-foreground text-sm">{a.reason}</TableCell>
+                      <TableCell className="text-sm text-muted-foreground">{adjBy?.full_name ?? "—"}</TableCell>
+                    </TableRow>
+                  );
+                })
               )}
             </TableBody>
           </Table>

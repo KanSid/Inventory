@@ -21,6 +21,7 @@ interface ProductRow {
 
 interface Props {
   products: ProductRow[];
+  defaultProductId?: string;
 }
 
 interface StockEntry {
@@ -30,11 +31,11 @@ interface StockEntry {
   status: string;
 }
 
-export function AdjustmentForm({ products }: Props) {
+export function AdjustmentForm({ products, defaultProductId }: Props) {
   const router = useRouter();
   const supabase = createClient();
 
-  const [productId, setProductId] = useState("");
+  const [productId, setProductId] = useState(defaultProductId ?? "");
   const [entryId, setEntryId] = useState("");
   const [adjustmentType, setAdjustmentType] = useState("");
   const [quantity, setQuantity] = useState("");
@@ -82,7 +83,7 @@ export function AdjustmentForm({ products }: Props) {
     const result = await createAdjustment({
       roll_id: isRoll ? entryId : null,
       batch_id: !isRoll ? entryId : null,
-      adjustment_type: adjustmentType as "addition" | "deduction" | "damage",
+      adjustment_type: adjustmentType as "addition" | "deduction",
       quantity: Number(quantity),
       reason,
     });
@@ -135,7 +136,6 @@ export function AdjustmentForm({ products }: Props) {
                 options={[
                   { value: "addition", label: "Addition" },
                   { value: "deduction", label: "Deduction" },
-                  { value: "damage", label: "Damage" },
                 ]}
                 value={adjustmentType}
                 onValueChange={(v) => setAdjustmentType(v ?? "")}

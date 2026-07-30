@@ -170,7 +170,7 @@ export interface ShipmentItem {
   supplier?: Supplier;
 }
 
-export type AdjustmentType = "addition" | "deduction" | "damage" | "correction";
+export type AdjustmentType = "addition" | "deduction" | "correction";
 
 export interface StockAdjustment {
   id: string;
