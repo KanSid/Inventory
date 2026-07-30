@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -6,17 +7,22 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import { PageHeader } from "@/components/shared/page-header";
-import { Pencil, Plus } from "lucide-react";
+import { UsageTableSkeleton } from "@/components/usage/usage-table-skeleton";
+import { ChevronLeft, ChevronRight, Pencil, Plus } from "lucide-react";
 import { formatDate, formatQuantity } from "@/lib/utils";
 
-export default async function UsagePage() {
+const PAGE_SIZE = 100;
+
+export default async function UsagePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
   const supabase = await createClient();
 
-  const { data: usage } = await supabase
-    .from("stock_usage")
-    .select("*, brides(name), rolls(roll_number, products(item_code, description, categories(unit))), piece_batches(batch_number, products(item_code, description, categories(unit))), profiles:logged_by(full_name)")
-    .order("created_at", { ascending: false })
-    .limit(100);
+  const { page: pageParam } = await searchParams;
+  const parsedPage = parseInt(pageParam ?? "1", 10);
+  const page = Number.isFinite(parsedPage) && parsedPage > 0 ? parsedPage : 1;
 
   const { data: { user } } = await supabase.auth.getUser();
   const { data: profile } = await supabase.from("profiles").select("role").eq("id", user!.id).single();
@@ -39,6 +45,27 @@ export default async function UsagePage() {
         }
       />
 
+      <Suspense key={page} fallback={<UsageTableSkeleton canEdit={canEdit} />}>
+        <UsageTable page={page} canEdit={canEdit} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function UsageTable({ page, canEdit }: { page: number; canEdit: boolean }) {
+  const supabase = await createClient();
+  const offset = (page - 1) * PAGE_SIZE;
+
+  const { data: usage, count } = await supabase
+    .from("stock_usage")
+    .select("*, brides(name), rolls(roll_number, products(item_code, description, categories(unit))), piece_batches(batch_number, products(item_code, description, categories(unit))), profiles:logged_by(full_name)", { count: "exact" })
+    .order("created_at", { ascending: false })
+    .range(offset, offset + PAGE_SIZE - 1);
+
+  const totalPages = Math.ceil((count ?? 0) / PAGE_SIZE);
+
+  return (
+    <>
       <Card>
         <CardContent className="p-0">
           <Table>
@@ -100,6 +127,52 @@ export default async function UsagePage() {
           </Table>
         </CardContent>
       </Card>
-    </div>
+
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between text-sm text-muted-foreground">
+          <span>
+            Showing {offset + 1}–{Math.min(offset + PAGE_SIZE, count ?? 0)} of {count ?? 0} entries
+          </span>
+          <div className="flex items-center gap-2">
+            {page > 1 && (
+              <Link
+                href={`?page=${page - 1}`}
+                className="rounded border p-1.5 hover:bg-muted transition-colors"
+                aria-label="Previous page"
+              >
+                <ChevronLeft size={14} />
+              </Link>
+            )}
+            <form action="/usage" className="flex items-center gap-1.5">
+              <span>Page</span>
+              <input
+                type="number"
+                name="page"
+                min={1}
+                max={totalPages}
+                defaultValue={page}
+                className="w-14 rounded border bg-background px-2 py-1 text-center"
+              />
+              <span>of {totalPages}</span>
+              <button
+                type="submit"
+                className="rounded border px-3 py-1 hover:bg-muted transition-colors"
+              >
+                Go
+              </button>
+            </form>
+            {page < totalPages && (
+              <Link
+                href={`?page=${page + 1}`}
+                className="rounded border p-1.5 hover:bg-muted transition-colors"
+                aria-label="Next page"
+              >
+                <ChevronRight size={14} />
+              </Link>
+            )}
+          </div>
+        </div>
+      )}
+    </>
   );
 }
