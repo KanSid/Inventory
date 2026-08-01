@@ -14,7 +14,7 @@ export default async function ShipmentsPage() {
 
   const { data: shipments } = await supabase
     .from("shipments")
-    .select("*, shipment_items(supplier_id, suppliers(name))")
+    .select("*")
     .order("created_at", { ascending: false });
 
   const { data: { user } } = await supabase.auth.getUser();
@@ -44,9 +44,9 @@ export default async function ShipmentsPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>Shipment #</TableHead>
-                <TableHead>Supplier</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Date</TableHead>
+                <TableHead>Notes</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -58,26 +58,12 @@ export default async function ShipmentsPage() {
                 </TableRow>
               ) : (
                 shipments.map((s) => {
-                  const items = s.shipment_items as any[] || [];
-                  const uniqueSuppliers = new Set(
-                    items
-                      .filter((item) => item.suppliers?.name)
-                      .map((item) => item.suppliers.name)
-                  );
-                  const supplierCount = uniqueSuppliers.size;
-                  const supplierCountText = supplierCount === 1 ? "1 supplier" : `${supplierCount} suppliers`;
-
                   return (
                     <TableRow key={s.id}>
                       <TableCell>
                         <Link href={`/shipments/${s.id}`} className="font-serif text-primary hover:underline">
                           {s.shipment_number}
                         </Link>
-                      </TableCell>
-                      <TableCell>
-                        <span className="inline-flex items-center rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
-                          {supplierCount > 0 ? supplierCountText : "—"}
-                        </span>
                       </TableCell>
                       <TableCell>
                         <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
@@ -89,6 +75,9 @@ export default async function ShipmentsPage() {
                         </span>
                       </TableCell>
                       <TableCell>{s.date ? formatDate(s.date) : "—"}</TableCell>
+                      <TableCell className="max-w-[240px] truncate text-muted-foreground" title={s.notes ?? undefined}>
+                        {s.notes ?? "—"}
+                      </TableCell>
                     </TableRow>
                   );
                 })

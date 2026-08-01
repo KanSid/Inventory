@@ -91,11 +91,20 @@ export default async function ShipmentDetailPage({ params }: { params: Promise<{
         )}
       </div>
 
+      {shipment.notes && (
+        <Card>
+          <CardContent className="pt-6">
+            <p className="mb-1 text-sm font-medium text-muted-foreground">Notes</p>
+            <p className="text-sm whitespace-pre-wrap">{shipment.notes}</p>
+          </CardContent>
+        </Card>
+      )}
+
       {isReceived && shipment.received_notes && (
         <Card>
           <CardContent className="pt-6">
             <p className="mb-1 text-sm font-medium text-muted-foreground">Discrepancy notes</p>
-            <p className="text-sm">{shipment.received_notes}</p>
+            <p className="text-sm whitespace-pre-wrap">{shipment.received_notes}</p>
           </CardContent>
         </Card>
       )}
@@ -155,6 +164,9 @@ export default async function ShipmentDetailPage({ params }: { params: Promise<{
                         {/* Expected total */}
                         <TableCell className="text-right text-muted-foreground">
                           {formatQuantity(item.quantity_in_meters, stockUnit)}
+                          {stockUnit !== "pieces" && item.input_unit === "yards" && (
+                            <span className="ml-1 text-xs">({item.quantity} yd)</span>
+                          )}
                         </TableCell>
 
                         {/* Received total */}
