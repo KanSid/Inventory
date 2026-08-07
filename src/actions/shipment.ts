@@ -375,6 +375,34 @@ export async function receiveShipmentVerified(
   return { success: true };
 }
 
+export async function renameShipment(shipmentId: string, shipmentNumber: string) {
+  const trimmed = shipmentNumber.trim();
+  if (!trimmed) return { error: "Shipment number is required" };
+
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Not authenticated" };
+
+  const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
+  if (profile?.role !== "admin" && profile?.role !== "inventory_manager") {
+    return { error: "Unauthorized" };
+  }
+
+  const { error } = await supabase
+    .from("shipments")
+    .update({ shipment_number: trimmed, updated_at: new Date().toISOString() })
+    .eq("id", shipmentId);
+
+  if (error) {
+    if (error.code === "23505") return { error: "Shipment number already exists" };
+    return { error: error.message };
+  }
+
+  revalidatePath("/shipments");
+  revalidatePath(`/shipments/${shipmentId}`);
+  return { success: true };
+}
+
 export async function cancelShipment(shipmentId: string) {
   const supabase = await createClient();
   const { error } = await supabase

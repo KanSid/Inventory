@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/table";
 import { PageHeader } from "@/components/shared/page-header";
 import { ShipmentPendingActions } from "@/components/shipments/shipment-pending-actions";
+import { ShipmentNameEditor } from "@/components/shipments/shipment-name-editor";
 import { formatDate, formatQuantity } from "@/lib/utils";
 
 function round1(n: number) {
@@ -51,7 +52,7 @@ export default async function ShipmentDetailPage({ params }: { params: Promise<{
   return (
     <div className="space-y-6">
       <PageHeader
-        title={shipment.shipment_number}
+        title={<ShipmentNameEditor shipmentId={id} name={shipment.shipment_number} canEdit={canEdit} />}
         description="Shipment details and items"
         action={
           canEdit && shipment.status === "pending" ? (
