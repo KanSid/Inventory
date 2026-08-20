@@ -147,8 +147,8 @@ export function AdjustmentForm({ products, defaultProductId }: Props) {
               <Label>{isRoll ? "Quantity (meters)" : "Quantity (pieces)"}</Label>
               <Input
                 type="number"
-                step={isRoll ? "0.5" : "1"}
-                min={isRoll ? "0.5" : "1"}
+                step={isRoll ? "0.01" : "1"}
+                min={isRoll ? "0.01" : "1"}
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
                 required

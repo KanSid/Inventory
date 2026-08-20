@@ -200,7 +200,7 @@ export function ProductForm({ categories, suppliers, productTypes, costingCatego
             <Input
               id="low_stock_threshold"
               type="number"
-              step={stockUnit === "pieces" ? "1" : "0.5"}
+              step={stockUnit === "pieces" ? "1" : "0.01"}
               min="0"
               value={lowStockThreshold}
               onChange={(e) => setLowStockThreshold(e.target.value)}

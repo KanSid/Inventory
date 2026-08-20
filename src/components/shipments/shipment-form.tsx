@@ -209,8 +209,8 @@ export function ShipmentForm({ suppliers, products, mode = "create", shipmentId,
                     </Label>
                     <Input
                       type="number"
-                      step={item.input_unit === "pieces" ? "1" : "0.5"}
-                      min={item.input_unit === "pieces" ? "1" : "0.5"}
+                      step={item.input_unit === "pieces" ? "1" : "0.01"}
+                      min={item.input_unit === "pieces" ? "1" : "0.01"}
                       value={item.quantity}
                       onChange={(e) => updateItem(idx, "quantity", e.target.value)}
                       required
@@ -232,8 +232,8 @@ export function ShipmentForm({ suppliers, products, mode = "create", shipmentId,
                         <p className="text-sm text-muted-foreground">Roll {rIdx + 1}</p>
                         <Input
                           type="number"
-                          step="0.5"
-                          min="0.5"
+                          step="0.01"
+                          min="0.01"
                           value={len}
                           onChange={(e) => updateRollLength(idx, rIdx, e.target.value)}
                           required

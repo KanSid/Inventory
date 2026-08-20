@@ -244,8 +244,8 @@ export function UsageForm({ brides: initialBrides, products }: Props) {
                           <Label className="text-xs text-muted-foreground">{isRoll ? "Qty (m)" : "Qty (pcs)"}</Label>
                           <Input
                             type="number"
-                            step={isRoll ? "0.5" : "1"}
-                            min={isRoll ? "0.5" : "1"}
+                            step={isRoll ? "0.01" : "1"}
+                            min={isRoll ? "0.01" : "1"}
                             max={selectedEntry?.qty}
                             value={item.quantity}
                             onChange={(e) => updateItem(item.key, { quantity: e.target.value })}

@@ -84,8 +84,8 @@ export function AddRollsForm({ productId, itemCode }: Props) {
                     <Input
                       id={`length-${index}`}
                       type="number"
-                      step="0.5"
-                      min="0.5"
+                      step="0.01"
+                      min="0.01"
                       placeholder="e.g. 12.5"
                       value={roll.length}
                       onChange={(e) => updateRoll(index, "length", e.target.value)}

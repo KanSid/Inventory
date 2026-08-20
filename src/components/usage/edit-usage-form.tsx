@@ -82,8 +82,8 @@ export function EditUsageForm({ usageId, brides, initial }: Props) {
               <Label>{isRoll ? "Quantity (m)" : "Quantity (pcs)"}</Label>
               <Input
                 type="number"
-                step={isRoll ? "0.5" : "1"}
-                min={isRoll ? "0.5" : "1"}
+                step={isRoll ? "0.01" : "1"}
+                min={isRoll ? "0.01" : "1"}
                 max={initial.available}
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
