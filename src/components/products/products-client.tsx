@@ -23,7 +23,7 @@ import {
 import { PageHeader } from "@/components/shared/page-header";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Plus, Search } from "lucide-react";
-import { formatQuantity } from "@/lib/utils";
+import { formatQuantity, naturalSort } from "@/lib/utils";
 
 interface ProductSummary {
   id: string;
@@ -117,7 +117,7 @@ export function ProductsClient({ products, categories, productTypes, costingCate
       const aVal = a[sortBy];
       const bVal = b[sortBy];
       if (typeof aVal === "string" && typeof bVal === "string") {
-        return sortAsc ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+        return sortAsc ? naturalSort(aVal, bVal) : naturalSort(bVal, aVal);
       }
       return sortAsc ? Number(aVal) - Number(bVal) : Number(bVal) - Number(aVal);
     });

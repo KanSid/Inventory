@@ -15,7 +15,7 @@ import { PageHeader } from "@/components/shared/page-header";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { ProductImageViewer } from "@/components/products/product-image-viewer";
 import { Pencil, Plus, Scale } from "lucide-react";
-import { formatQuantity, formatDate } from "@/lib/utils";
+import { formatQuantity, formatDate, naturalSort } from "@/lib/utils";
 
 export default async function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -44,15 +44,15 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
 
   const [rollsResult, batchesResult] = await Promise.all([
     isRoll
-      ? supabase.from("rolls").select("*").eq("product_id", productId).order("roll_number")
+      ? supabase.from("rolls").select("*").eq("product_id", productId)
       : Promise.resolve({ data: [] }),
     !isRoll
-      ? supabase.from("piece_batches").select("*").eq("product_id", productId).order("batch_number")
+      ? supabase.from("piece_batches").select("*").eq("product_id", productId)
       : Promise.resolve({ data: [] }),
   ]);
 
-  const rolls = rollsResult.data ?? [];
-  const batches = batchesResult.data ?? [];
+  const rolls = (rollsResult.data ?? []).sort((a, b) => naturalSort(a.roll_number, b.roll_number));
+  const batches = (batchesResult.data ?? []).sort((a, b) => naturalSort(a.batch_number, b.batch_number));
 
   // Fetch recent usage for this product's rolls or batches
   let usage: any[] = [];

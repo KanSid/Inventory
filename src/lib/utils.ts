@@ -18,6 +18,10 @@ export function formatQuantity(value: number, stockUnit: "roll" | "pieces"): str
   return formatLength(value);
 }
 
+export function naturalSort(a: string, b: string): number {
+  return a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" });
+}
+
 export function formatDate(dateString: string): string {
   return new Date(dateString).toLocaleDateString("en-IN", {
     day: "2-digit",
