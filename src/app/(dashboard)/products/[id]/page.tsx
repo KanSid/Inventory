@@ -14,8 +14,13 @@ import {
 import { PageHeader } from "@/components/shared/page-header";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { ProductImageViewer } from "@/components/products/product-image-viewer";
+import { RecentUsageCard } from "@/components/products/recent-usage-card";
+import { AdjustmentHistoryCard } from "@/components/products/adjustment-history-card";
 import { Pencil, Plus, Scale } from "lucide-react";
 import { formatQuantity, formatDate, naturalSort } from "@/lib/utils";
+
+const RECENT_LIMIT = 20;
+const ADJUSTMENT_POSITIVE_TYPES = new Set(["addition", "correction"]);
 
 export default async function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -54,48 +59,77 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
   const rolls = (rollsResult.data ?? []).sort((a, b) => naturalSort(a.roll_number, b.roll_number));
   const batches = (batchesResult.data ?? []).sort((a, b) => naturalSort(a.batch_number, b.batch_number));
 
+  const rollIds = rolls.map((r) => r.id);
+  const batchIds = batches.map((b) => b.id);
+
   // Fetch recent usage for this product's rolls or batches
   let usage: any[] = [];
-  if (isRoll && rolls.length > 0) {
-    const rollIds = rolls.map((r) => r.id);
-    const { data } = await supabase
-      .from("stock_usage")
-      .select("*, brides(name), rolls(roll_number)")
-      .in("roll_id", rollIds)
-      .order("usage_date", { ascending: false })
-      .limit(20);
+  let usageCount = 0;
+  let usageTotal = 0;
+  if (isRoll && rollIds.length > 0) {
+    const [{ data, count }, { data: allQty }] = await Promise.all([
+      supabase
+        .from("stock_usage")
+        .select("*, brides(name), rolls(roll_number)", { count: "exact" })
+        .in("roll_id", rollIds)
+        .order("usage_date", { ascending: false })
+        .limit(RECENT_LIMIT),
+      supabase.from("stock_usage").select("quantity_used").in("roll_id", rollIds),
+    ]);
     usage = data ?? [];
-  } else if (!isRoll && batches.length > 0) {
-    const batchIds = batches.map((b) => b.id);
-    const { data } = await supabase
-      .from("stock_usage")
-      .select("*, brides(name), piece_batches(batch_number)")
-      .in("batch_id", batchIds)
-      .order("usage_date", { ascending: false })
-      .limit(20);
+    usageCount = count ?? usage.length;
+    usageTotal = (allQty ?? []).reduce((sum, u) => sum + Number(u.quantity_used), 0);
+  } else if (!isRoll && batchIds.length > 0) {
+    const [{ data, count }, { data: allQty }] = await Promise.all([
+      supabase
+        .from("stock_usage")
+        .select("*, brides(name), piece_batches(batch_number)", { count: "exact" })
+        .in("batch_id", batchIds)
+        .order("usage_date", { ascending: false })
+        .limit(RECENT_LIMIT),
+      supabase.from("stock_usage").select("quantity_used").in("batch_id", batchIds),
+    ]);
     usage = data ?? [];
+    usageCount = count ?? usage.length;
+    usageTotal = (allQty ?? []).reduce((sum, u) => sum + Number(u.quantity_used), 0);
   }
 
   // Fetch recent stock adjustments for this product's rolls or batches
   let adjustments: any[] = [];
-  if (isRoll && rolls.length > 0) {
-    const rollIds = rolls.map((r) => r.id);
-    const { data } = await supabase
-      .from("stock_adjustments")
-      .select("*, rolls(roll_number), profiles:adjusted_by(full_name)")
-      .in("roll_id", rollIds)
-      .order("created_at", { ascending: false })
-      .limit(20);
+  let adjustmentCount = 0;
+  let adjustmentTotal = 0;
+  if (isRoll && rollIds.length > 0) {
+    const [{ data, count }, { data: allQty }] = await Promise.all([
+      supabase
+        .from("stock_adjustments")
+        .select("*, rolls(roll_number), profiles:adjusted_by(full_name)", { count: "exact" })
+        .in("roll_id", rollIds)
+        .order("created_at", { ascending: false })
+        .limit(RECENT_LIMIT),
+      supabase.from("stock_adjustments").select("quantity, adjustment_type").in("roll_id", rollIds),
+    ]);
     adjustments = data ?? [];
-  } else if (!isRoll && batches.length > 0) {
-    const batchIds = batches.map((b) => b.id);
-    const { data } = await supabase
-      .from("stock_adjustments")
-      .select("*, piece_batches(batch_number), profiles:adjusted_by(full_name)")
-      .in("batch_id", batchIds)
-      .order("created_at", { ascending: false })
-      .limit(20);
+    adjustmentCount = count ?? adjustments.length;
+    adjustmentTotal = (allQty ?? []).reduce(
+      (sum, a) => sum + (ADJUSTMENT_POSITIVE_TYPES.has(a.adjustment_type) ? Number(a.quantity) : -Number(a.quantity)),
+      0,
+    );
+  } else if (!isRoll && batchIds.length > 0) {
+    const [{ data, count }, { data: allQty }] = await Promise.all([
+      supabase
+        .from("stock_adjustments")
+        .select("*, piece_batches(batch_number), profiles:adjusted_by(full_name)", { count: "exact" })
+        .in("batch_id", batchIds)
+        .order("created_at", { ascending: false })
+        .limit(RECENT_LIMIT),
+      supabase.from("stock_adjustments").select("quantity, adjustment_type").in("batch_id", batchIds),
+    ]);
     adjustments = data ?? [];
+    adjustmentCount = count ?? adjustments.length;
+    adjustmentTotal = (allQty ?? []).reduce(
+      (sum, a) => sum + (ADJUSTMENT_POSITIVE_TYPES.has(a.adjustment_type) ? Number(a.quantity) : -Number(a.quantity)),
+      0,
+    );
   }
 
   const { data: { user } } = await supabase.auth.getUser();
@@ -296,108 +330,23 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
         </CardContent>
       </Card>
 
-      {/* Recent Usage */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Recent Usage</CardTitle>
-        </CardHeader>
-        <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>Bride</TableHead>
-                <TableHead>{isRoll ? "Roll" : "Batch"}</TableHead>
-                <TableHead className="text-right">Quantity</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {usage.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={4} className="py-8 text-center text-muted-foreground">
-                    No usage recorded yet.
-                  </TableCell>
-                </TableRow>
-              ) : (
-                usage.map((u) => (
-                  <TableRow key={u.id}>
-                    <TableCell>{formatDate(u.usage_date)}</TableCell>
-                    <TableCell>{(u.brides as { name: string } | null)?.name ?? "—"}</TableCell>
-                    <TableCell>
-                      {isRoll
-                        ? (u.rolls as { roll_number: string } | null)?.roll_number ?? "—"
-                        : (u.piece_batches as { batch_number: string } | null)?.batch_number ?? "—"}
-                    </TableCell>
-                    <TableCell className="text-right font-medium">{formatQuantity(u.quantity_used, stockUnit)}</TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+      <RecentUsageCard
+        productId={productId}
+        isRoll={isRoll}
+        stockUnit={stockUnit}
+        initialUsage={usage}
+        hasMore={usageCount > usage.length}
+        totalQuantity={usageTotal}
+      />
 
-      {/* Adjustment History */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Adjustment History</CardTitle>
-        </CardHeader>
-        <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>{isRoll ? "Roll" : "Batch"}</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead className="text-right">Quantity</TableHead>
-                <TableHead>Reason</TableHead>
-                <TableHead>By</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {adjustments.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="py-8 text-center text-muted-foreground">
-                    No adjustments recorded yet.
-                  </TableCell>
-                </TableRow>
-              ) : (
-                adjustments.map((a) => {
-                  const entryNum = isRoll
-                    ? (a.rolls as { roll_number: string } | null)?.roll_number
-                    : (a.piece_batches as { batch_number: string } | null)?.batch_number;
-                  const adjBy = a.profiles as { full_name: string } | null;
-                  const typeConfig: Record<string, { label: string; badge: string }> = {
-                    addition: { label: "Addition", badge: "bg-emerald-100 text-emerald-700" },
-                    deduction: { label: "Deduction", badge: "bg-red-100 text-red-700" },
-                    damage: { label: "Damage", badge: "bg-red-100 text-red-700" },
-                    correction: { label: "Correction", badge: "bg-amber-100 text-amber-700" },
-                  };
-                  const cfg = typeConfig[a.adjustment_type] ?? { label: a.adjustment_type, badge: "bg-muted text-muted-foreground" };
-                  const isPositive = a.adjustment_type === "addition" || a.adjustment_type === "correction";
-
-                  return (
-                    <TableRow key={a.id}>
-                      <TableCell>{formatDate(a.created_at)}</TableCell>
-                      <TableCell>{entryNum ?? "—"}</TableCell>
-                      <TableCell>
-                        <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${cfg.badge}`}>
-                          {cfg.label}
-                        </span>
-                      </TableCell>
-                      <TableCell className={`text-right font-medium ${isPositive ? "text-emerald-700" : "text-red-600"}`}>
-                        {isPositive ? "+" : "−"}{formatQuantity(a.quantity, stockUnit)}
-                      </TableCell>
-                      <TableCell className="max-w-xs truncate text-muted-foreground text-sm">{a.reason}</TableCell>
-                      <TableCell className="text-sm text-muted-foreground">{adjBy?.full_name ?? "—"}</TableCell>
-                    </TableRow>
-                  );
-                })
-              )}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+      <AdjustmentHistoryCard
+        productId={productId}
+        isRoll={isRoll}
+        stockUnit={stockUnit}
+        initialAdjustments={adjustments}
+        hasMore={adjustmentCount > adjustments.length}
+        totalQuantity={adjustmentTotal}
+      />
     </div>
   );
 }

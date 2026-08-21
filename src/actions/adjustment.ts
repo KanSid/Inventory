@@ -100,3 +100,29 @@ export async function createAdjustment(data: AdjustmentFormData) {
   revalidatePath("/dashboard");
   return { success: true };
 }
+
+export async function getAllProductAdjustments(productId: string, isRoll: boolean) {
+  const supabase = await createClient();
+
+  if (isRoll) {
+    const { data: rolls } = await supabase.from("rolls").select("id").eq("product_id", productId);
+    const rollIds = (rolls ?? []).map((r) => r.id);
+    if (rollIds.length === 0) return [];
+    const { data } = await supabase
+      .from("stock_adjustments")
+      .select("*, rolls(roll_number), profiles:adjusted_by(full_name)")
+      .in("roll_id", rollIds)
+      .order("created_at", { ascending: false });
+    return data ?? [];
+  }
+
+  const { data: batches } = await supabase.from("piece_batches").select("id").eq("product_id", productId);
+  const batchIds = (batches ?? []).map((b) => b.id);
+  if (batchIds.length === 0) return [];
+  const { data } = await supabase
+    .from("stock_adjustments")
+    .select("*, piece_batches(batch_number), profiles:adjusted_by(full_name)")
+    .in("batch_id", batchIds)
+    .order("created_at", { ascending: false });
+  return data ?? [];
+}

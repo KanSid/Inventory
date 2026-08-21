@@ -97,6 +97,32 @@ export async function logUsage(data: UsageFormData) {
   return { success: true };
 }
 
+export async function getAllProductUsage(productId: string, isRoll: boolean) {
+  const supabase = await createClient();
+
+  if (isRoll) {
+    const { data: rolls } = await supabase.from("rolls").select("id").eq("product_id", productId);
+    const rollIds = (rolls ?? []).map((r) => r.id);
+    if (rollIds.length === 0) return [];
+    const { data } = await supabase
+      .from("stock_usage")
+      .select("*, brides(name), rolls(roll_number)")
+      .in("roll_id", rollIds)
+      .order("usage_date", { ascending: false });
+    return data ?? [];
+  }
+
+  const { data: batches } = await supabase.from("piece_batches").select("id").eq("product_id", productId);
+  const batchIds = (batches ?? []).map((b) => b.id);
+  if (batchIds.length === 0) return [];
+  const { data } = await supabase
+    .from("stock_usage")
+    .select("*, brides(name), piece_batches(batch_number)")
+    .in("batch_id", batchIds)
+    .order("usage_date", { ascending: false });
+  return data ?? [];
+}
+
 export async function updateUsage(
   usageId: string,
   data: { bride_id: string; usage_date: string; quantity_used: number; notes: string | null },
