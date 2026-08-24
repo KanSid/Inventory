@@ -1,9 +1,10 @@
 "use client";
 
 import { useRouter, usePathname } from "next/navigation";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { DatePicker } from "@/components/ui/date-picker";
 
 const ACTION_LABELS: Record<string, string> = {
   stock_adjustment_added: "Stock Adjustment",
@@ -36,6 +37,8 @@ export function ActivityLogFilters({ users, actionTypes, currentFilters }: Activ
   const router = useRouter();
   const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
+  const [from, setFrom] = useState(currentFilters.from ?? "");
+  const [to, setTo] = useState(currentFilters.to ?? "");
 
   function handleChange(formData: FormData) {
     const params = new URLSearchParams();
@@ -50,6 +53,8 @@ export function ActivityLogFilters({ users, actionTypes, currentFilters }: Activ
   }
 
   function handleReset() {
+    setFrom("");
+    setTo("");
     startTransition(() => {
       router.push(pathname);
     });
@@ -89,22 +94,14 @@ export function ActivityLogFilters({ users, actionTypes, currentFilters }: Activ
 
           <div className="space-y-1">
             <label className="text-xs font-medium text-foreground">From Date</label>
-            <input
-              type="date"
-              name="from"
-              defaultValue={currentFilters.from ?? ""}
-              className="rounded border border-input px-2 py-1.5 text-sm focus:border-primary focus:outline-none"
-            />
+            <DatePicker value={from} onChange={setFrom} />
+            <input type="hidden" name="from" value={from} />
           </div>
 
           <div className="space-y-1">
             <label className="text-xs font-medium text-foreground">To Date</label>
-            <input
-              type="date"
-              name="to"
-              defaultValue={currentFilters.to ?? ""}
-              className="rounded border border-input px-2 py-1.5 text-sm focus:border-primary focus:outline-none"
-            />
+            <DatePicker value={to} onChange={setTo} />
+            <input type="hidden" name="to" value={to} />
           </div>
 
           <div className="flex gap-2">

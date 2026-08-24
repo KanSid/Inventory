@@ -23,9 +23,21 @@ export function naturalSort(a: string, b: string): number {
 }
 
 export function formatDate(dateString: string): string {
-  return new Date(dateString).toLocaleDateString("en-IN", {
+  return new Date(dateString).toLocaleDateString("en-GB", {
     day: "2-digit",
-    month: "short",
+    month: "2-digit",
     year: "numeric",
   });
+}
+
+export function getRecentMonthOptions(count = 24): { value: string; label: string }[] {
+  const now = new Date();
+  const options: { value: string; label: string }[] = [];
+  for (let i = 0; i < count; i++) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+    const label = d.toLocaleString("en-US", { month: "long", year: "numeric" });
+    options.push({ value, label });
+  }
+  return options;
 }

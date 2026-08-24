@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { DatePicker } from "@/components/ui/date-picker";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -170,7 +171,7 @@ export function BridesClient({ brides, canEdit }: Props) {
             </div>
             <div className="space-y-2">
               <Label htmlFor="bride-date">Wedding Date</Label>
-              <Input id="bride-date" type="date" value={weddingDate} onChange={(e) => setWeddingDate(e.target.value)} />
+              <DatePicker id="bride-date" value={weddingDate} onChange={setWeddingDate} />
             </div>
             {error && <p className="text-sm text-red-500">{error}</p>}
             <div className="flex justify-end gap-2">

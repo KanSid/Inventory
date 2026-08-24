@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { SearchableSelect } from "@/components/ui/searchable-select";
+import { DatePicker } from "@/components/ui/date-picker";
 
 interface UsageFiltersProps {
   brides: { id: string; name: string }[];
@@ -92,22 +93,12 @@ export function UsageFilters({ brides, products, currentFilters }: UsageFiltersP
 
           <div className="space-y-1">
             <Label className="text-xs font-medium text-foreground">From Date</Label>
-            <input
-              type="date"
-              value={from}
-              onChange={(e) => setFrom(e.target.value)}
-              className="h-8 rounded-lg border border-input bg-transparent px-2.5 py-2 text-sm focus:border-ring focus:outline-none"
-            />
+            <DatePicker value={from} onChange={setFrom} />
           </div>
 
           <div className="space-y-1">
             <Label className="text-xs font-medium text-foreground">To Date</Label>
-            <input
-              type="date"
-              value={to}
-              onChange={(e) => setTo(e.target.value)}
-              className="h-8 rounded-lg border border-input bg-transparent px-2.5 py-2 text-sm focus:border-ring focus:outline-none"
-            />
+            <DatePicker value={to} onChange={setTo} />
           </div>
 
           <div className="flex gap-2">

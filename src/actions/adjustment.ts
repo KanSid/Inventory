@@ -101,28 +101,41 @@ export async function createAdjustment(data: AdjustmentFormData) {
   return { success: true };
 }
 
-export async function getAllProductAdjustments(productId: string, isRoll: boolean) {
+export async function getProductAdjustmentsPage(params: {
+  productId: string;
+  isRoll: boolean;
+  offset: number;
+  limit: number;
+  dateFrom?: string | null;
+  dateTo?: string | null;
+}) {
+  const { productId, isRoll, offset, limit, dateFrom, dateTo } = params;
   const supabase = await createClient();
+  const idField = isRoll ? "roll_id" : "batch_id";
 
+  let ids: string[];
   if (isRoll) {
     const { data: rolls } = await supabase.from("rolls").select("id").eq("product_id", productId);
-    const rollIds = (rolls ?? []).map((r) => r.id);
-    if (rollIds.length === 0) return [];
-    const { data } = await supabase
-      .from("stock_adjustments")
-      .select("*, rolls(roll_number), profiles:adjusted_by(full_name)")
-      .in("roll_id", rollIds)
-      .order("created_at", { ascending: false });
-    return data ?? [];
+    ids = (rolls ?? []).map((r) => r.id);
+  } else {
+    const { data: batches } = await supabase.from("piece_batches").select("id").eq("product_id", productId);
+    ids = (batches ?? []).map((b) => b.id);
   }
+  if (ids.length === 0) return { data: [], count: 0 };
 
-  const { data: batches } = await supabase.from("piece_batches").select("id").eq("product_id", productId);
-  const batchIds = (batches ?? []).map((b) => b.id);
-  if (batchIds.length === 0) return [];
-  const { data } = await supabase
+  // created_at is a timestamptz; make the "to" bound inclusive of the whole day.
+  const toBound = dateTo ? `${dateTo}T23:59:59.999` : null;
+
+  let pageQuery = supabase
     .from("stock_adjustments")
-    .select("*, piece_batches(batch_number), profiles:adjusted_by(full_name)")
-    .in("batch_id", batchIds)
+    .select(isRoll ? "*, rolls(roll_number), profiles:adjusted_by(full_name)" : "*, piece_batches(batch_number), profiles:adjusted_by(full_name)", { count: "exact" })
+    .in(idField, ids)
     .order("created_at", { ascending: false });
-  return data ?? [];
+  if (dateFrom) pageQuery = pageQuery.gte("created_at", dateFrom);
+  if (toBound) pageQuery = pageQuery.lte("created_at", toBound);
+  pageQuery = pageQuery.range(offset, offset + limit - 1);
+
+  const { data, count } = await pageQuery;
+
+  return { data: data ?? [], count: count ?? 0 };
 }

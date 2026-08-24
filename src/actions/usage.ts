@@ -97,30 +97,40 @@ export async function logUsage(data: UsageFormData) {
   return { success: true };
 }
 
-export async function getAllProductUsage(productId: string, isRoll: boolean) {
+export async function getProductUsagePage(params: {
+  productId: string;
+  isRoll: boolean;
+  offset: number;
+  limit: number;
+  dateFrom?: string | null;
+  dateTo?: string | null;
+}) {
+  const { productId, isRoll, offset, limit, dateFrom, dateTo } = params;
   const supabase = await createClient();
+  const idField = isRoll ? "roll_id" : "batch_id";
 
+  let ids: string[];
   if (isRoll) {
     const { data: rolls } = await supabase.from("rolls").select("id").eq("product_id", productId);
-    const rollIds = (rolls ?? []).map((r) => r.id);
-    if (rollIds.length === 0) return [];
-    const { data } = await supabase
-      .from("stock_usage")
-      .select("*, brides(name), rolls(roll_number)")
-      .in("roll_id", rollIds)
-      .order("usage_date", { ascending: false });
-    return data ?? [];
+    ids = (rolls ?? []).map((r) => r.id);
+  } else {
+    const { data: batches } = await supabase.from("piece_batches").select("id").eq("product_id", productId);
+    ids = (batches ?? []).map((b) => b.id);
   }
+  if (ids.length === 0) return { data: [], count: 0 };
 
-  const { data: batches } = await supabase.from("piece_batches").select("id").eq("product_id", productId);
-  const batchIds = (batches ?? []).map((b) => b.id);
-  if (batchIds.length === 0) return [];
-  const { data } = await supabase
+  let pageQuery = supabase
     .from("stock_usage")
-    .select("*, brides(name), piece_batches(batch_number)")
-    .in("batch_id", batchIds)
+    .select(isRoll ? "*, brides(name), rolls(roll_number)" : "*, brides(name), piece_batches(batch_number)", { count: "exact" })
+    .in(idField, ids)
     .order("usage_date", { ascending: false });
-  return data ?? [];
+  if (dateFrom) pageQuery = pageQuery.gte("usage_date", dateFrom);
+  if (dateTo) pageQuery = pageQuery.lte("usage_date", dateTo);
+  pageQuery = pageQuery.range(offset, offset + limit - 1);
+
+  const { data, count } = await pageQuery;
+
+  return { data: data ?? [], count: count ?? 0 };
 }
 
 export async function updateUsage(

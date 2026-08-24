@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { DatePicker } from "@/components/ui/date-picker";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PackageCheck, Plus, Trash2 } from "lucide-react";
@@ -165,12 +166,10 @@ export function ReceiveForm({ shipment, items }: Props) {
           <p className="mb-1 text-xs text-muted-foreground">
             Received date <span className="text-destructive">*</span>
           </p>
-          <input
-            type="date"
-            required
+          <DatePicker
             value={receivedDate}
-            onChange={(e) => setReceivedDate(e.target.value)}
-            className="w-full rounded-md border border-input bg-background px-2 py-1 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-ring"
+            onChange={setReceivedDate}
+            className="w-full rounded-md border border-input bg-background px-2 py-1 text-sm font-medium focus-visible:ring-2 focus-visible:ring-ring"
           />
         </div>
         <div className="rounded-lg bg-muted/50 p-3">

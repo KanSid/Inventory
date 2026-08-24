@@ -19,8 +19,7 @@ import { AdjustmentHistoryCard } from "@/components/products/adjustment-history-
 import { Pencil, Plus, Scale } from "lucide-react";
 import { formatQuantity, formatDate, naturalSort } from "@/lib/utils";
 
-const RECENT_LIMIT = 20;
-const ADJUSTMENT_POSITIVE_TYPES = new Set(["addition", "correction"]);
+const RECENT_LIMIT = 50;
 
 export default async function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -65,71 +64,47 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
   // Fetch recent usage for this product's rolls or batches
   let usage: any[] = [];
   let usageCount = 0;
-  let usageTotal = 0;
   if (isRoll && rollIds.length > 0) {
-    const [{ data, count }, { data: allQty }] = await Promise.all([
-      supabase
-        .from("stock_usage")
-        .select("*, brides(name), rolls(roll_number)", { count: "exact" })
-        .in("roll_id", rollIds)
-        .order("usage_date", { ascending: false })
-        .limit(RECENT_LIMIT),
-      supabase.from("stock_usage").select("quantity_used").in("roll_id", rollIds),
-    ]);
+    const { data, count } = await supabase
+      .from("stock_usage")
+      .select("*, brides(name), rolls(roll_number)", { count: "exact" })
+      .in("roll_id", rollIds)
+      .order("usage_date", { ascending: false })
+      .limit(RECENT_LIMIT);
     usage = data ?? [];
     usageCount = count ?? usage.length;
-    usageTotal = (allQty ?? []).reduce((sum, u) => sum + Number(u.quantity_used), 0);
   } else if (!isRoll && batchIds.length > 0) {
-    const [{ data, count }, { data: allQty }] = await Promise.all([
-      supabase
-        .from("stock_usage")
-        .select("*, brides(name), piece_batches(batch_number)", { count: "exact" })
-        .in("batch_id", batchIds)
-        .order("usage_date", { ascending: false })
-        .limit(RECENT_LIMIT),
-      supabase.from("stock_usage").select("quantity_used").in("batch_id", batchIds),
-    ]);
+    const { data, count } = await supabase
+      .from("stock_usage")
+      .select("*, brides(name), piece_batches(batch_number)", { count: "exact" })
+      .in("batch_id", batchIds)
+      .order("usage_date", { ascending: false })
+      .limit(RECENT_LIMIT);
     usage = data ?? [];
     usageCount = count ?? usage.length;
-    usageTotal = (allQty ?? []).reduce((sum, u) => sum + Number(u.quantity_used), 0);
   }
 
   // Fetch recent stock adjustments for this product's rolls or batches
   let adjustments: any[] = [];
   let adjustmentCount = 0;
-  let adjustmentTotal = 0;
   if (isRoll && rollIds.length > 0) {
-    const [{ data, count }, { data: allQty }] = await Promise.all([
-      supabase
-        .from("stock_adjustments")
-        .select("*, rolls(roll_number), profiles:adjusted_by(full_name)", { count: "exact" })
-        .in("roll_id", rollIds)
-        .order("created_at", { ascending: false })
-        .limit(RECENT_LIMIT),
-      supabase.from("stock_adjustments").select("quantity, adjustment_type").in("roll_id", rollIds),
-    ]);
+    const { data, count } = await supabase
+      .from("stock_adjustments")
+      .select("*, rolls(roll_number), profiles:adjusted_by(full_name)", { count: "exact" })
+      .in("roll_id", rollIds)
+      .order("created_at", { ascending: false })
+      .limit(RECENT_LIMIT);
     adjustments = data ?? [];
     adjustmentCount = count ?? adjustments.length;
-    adjustmentTotal = (allQty ?? []).reduce(
-      (sum, a) => sum + (ADJUSTMENT_POSITIVE_TYPES.has(a.adjustment_type) ? Number(a.quantity) : -Number(a.quantity)),
-      0,
-    );
   } else if (!isRoll && batchIds.length > 0) {
-    const [{ data, count }, { data: allQty }] = await Promise.all([
-      supabase
-        .from("stock_adjustments")
-        .select("*, piece_batches(batch_number), profiles:adjusted_by(full_name)", { count: "exact" })
-        .in("batch_id", batchIds)
-        .order("created_at", { ascending: false })
-        .limit(RECENT_LIMIT),
-      supabase.from("stock_adjustments").select("quantity, adjustment_type").in("batch_id", batchIds),
-    ]);
+    const { data, count } = await supabase
+      .from("stock_adjustments")
+      .select("*, piece_batches(batch_number), profiles:adjusted_by(full_name)", { count: "exact" })
+      .in("batch_id", batchIds)
+      .order("created_at", { ascending: false })
+      .limit(RECENT_LIMIT);
     adjustments = data ?? [];
     adjustmentCount = count ?? adjustments.length;
-    adjustmentTotal = (allQty ?? []).reduce(
-      (sum, a) => sum + (ADJUSTMENT_POSITIVE_TYPES.has(a.adjustment_type) ? Number(a.quantity) : -Number(a.quantity)),
-      0,
-    );
   }
 
   const { data: { user } } = await supabase.auth.getUser();
@@ -335,8 +310,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
         isRoll={isRoll}
         stockUnit={stockUnit}
         initialUsage={usage}
-        hasMore={usageCount > usage.length}
-        totalQuantity={usageTotal}
+        initialCount={usageCount}
       />
 
       <AdjustmentHistoryCard
@@ -344,8 +318,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
         isRoll={isRoll}
         stockUnit={stockUnit}
         initialAdjustments={adjustments}
-        hasMore={adjustmentCount > adjustments.length}
-        totalQuantity={adjustmentTotal}
+        initialCount={adjustmentCount}
       />
     </div>
   );
