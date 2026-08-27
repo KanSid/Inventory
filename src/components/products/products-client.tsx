@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -235,9 +236,11 @@ export function ProductsClient({ products, categories, productTypes, costingCate
                     <TableRow key={p.id} className="cursor-pointer hover:bg-muted/50">
                       <TableCell>
                         {p.image_url ? (
-                          <img
+                          <Image
                             src={p.image_url}
                             alt={p.description}
+                            width={36}
+                            height={36}
                             className="h-9 w-9 rounded-md border object-cover"
                           />
                         ) : (

@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { usageSchema, type UsageFormData } from "@/validators/usage";
 import { revalidatePath } from "next/cache";
+import { getPostHogClient } from "@/lib/posthog-server";
 
 export async function logUsage(data: UsageFormData) {
   const parsed = usageSchema.safeParse(data);
@@ -90,6 +91,19 @@ export async function logUsage(data: UsageFormData) {
       },
     });
   }
+
+  const posthog = getPostHogClient();
+  posthog.capture({
+    distinctId: user.id,
+    event: "stock_usage_logged",
+    properties: {
+      bride_id,
+      stock_type: roll_id ? "roll" : "piece_batch",
+      quantity_used,
+      usage_date,
+    },
+  });
+  await posthog.flush();
 
   revalidatePath("/usage");
   revalidatePath("/products");

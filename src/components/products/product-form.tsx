@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -270,9 +271,11 @@ export function ProductForm({ categories, suppliers, productTypes, costingCatego
               <div className="mt-3 space-y-2">
                 <p className="text-xs text-muted-foreground">Preview:</p>
                 <div className="relative inline-block">
-                  <img
+                  <Image
                     src={imageUrl}
                     alt="Product preview"
+                    width={96}
+                    height={96}
                     className="h-24 w-24 rounded-md border object-cover"
                     onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
                   />

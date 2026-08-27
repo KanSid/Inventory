@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { productSchema, type ProductFormData, addRollsSchema, type AddRollsFormData, addVariableRollsSchema, type AddVariableRollsFormData, addPieceBatchSchema, type AddPieceBatchFormData } from "@/validators/product";
 import { revalidatePath } from "next/cache";
+import { getPostHogClient } from "@/lib/posthog-server";
 
 export async function createProduct(data: ProductFormData) {
   const parsed = productSchema.safeParse(data);
@@ -37,6 +38,19 @@ export async function createProduct(data: ProductFormData) {
       supplierIds.map((sid) => ({ product_id: product.id, supplier_id: sid }))
     );
   }
+
+  const { data: { user } } = await supabase.auth.getUser();
+  const posthog = getPostHogClient();
+  posthog.capture({
+    distinctId: user?.id ?? "anonymous",
+    event: "product_created",
+    properties: {
+      product_id: product.id,
+      item_code: product.item_code,
+      supplier_count: supplierIds.length,
+    },
+  });
+  await posthog.flush();
 
   revalidatePath("/products");
   return { success: true, id: product.id };
@@ -116,6 +130,20 @@ export async function updateProduct(id: string, data: ProductFormData) {
     );
   }
 
+  const { data: { user } } = await supabase.auth.getUser();
+  const posthog = getPostHogClient();
+  posthog.capture({
+    distinctId: user?.id ?? "anonymous",
+    event: "product_updated",
+    properties: {
+      product_id: id,
+      item_code: parsed.data.item_code,
+      supplier_count: (parsed.data.supplier_ids ?? []).length,
+      item_code_changed: oldCode !== parsed.data.item_code,
+    },
+  });
+  await posthog.flush();
+
   revalidatePath(`/products/${id}`);
   revalidatePath("/products");
   return { success: true };
@@ -160,6 +188,20 @@ export async function addRolls(data: AddRollsFormData) {
     insertedCount++;
   }
 
+  const { data: { user } } = await supabase.auth.getUser();
+  const posthog = getPostHogClient();
+  posthog.capture({
+    distinctId: user?.id ?? "anonymous",
+    event: "rolls_added",
+    properties: {
+      product_id: parsed.data.product_id,
+      num_rolls: insertedCount,
+      length_per_roll_m: parsed.data.length_per_roll,
+      total_length_m: parsed.data.length_per_roll * insertedCount,
+    },
+  });
+  await posthog.flush();
+
   revalidatePath(`/products/${parsed.data.product_id}`);
   revalidatePath("/products");
   return { success: true, count: insertedCount };
@@ -184,6 +226,19 @@ export async function addPieceBatch(data: AddPieceBatchFormData) {
   });
 
   if (error) return { error: { count: [error.message] } };
+
+  const { data: { user } } = await supabase.auth.getUser();
+  const posthog = getPostHogClient();
+  posthog.capture({
+    distinctId: user?.id ?? "anonymous",
+    event: "piece_batch_added",
+    properties: {
+      product_id: parsed.data.product_id,
+      batch_number: batchNum,
+      piece_count: parsed.data.count,
+    },
+  });
+  await posthog.flush();
 
   revalidatePath(`/products/${parsed.data.product_id}`);
   revalidatePath("/products");

@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { supplierSchema, type SupplierFormData } from "@/validators/supplier";
 import { revalidatePath } from "next/cache";
+import { getPostHogClient } from "@/lib/posthog-server";
 
 export async function createSupplier(data: SupplierFormData) {
   const parsed = supplierSchema.safeParse(data);
@@ -23,6 +24,18 @@ export async function createSupplier(data: SupplierFormData) {
     .single();
 
   if (error) return { error: { name: [error.message] } };
+
+  const { data: { user } } = await supabase.auth.getUser();
+  const posthog = getPostHogClient();
+  posthog.capture({
+    distinctId: user?.id ?? "anonymous",
+    event: "supplier_created",
+    properties: {
+      supplier_id: supplier.id,
+      has_contact_person: !!parsed.data.contact_person,
+    },
+  });
+  await posthog.flush();
 
   revalidatePath("/suppliers");
   return { success: true, id: supplier.id };

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { XIcon } from "lucide-react";
 
@@ -21,9 +22,11 @@ export function ProductImageViewer({ imageUrl, description }: ProductImageViewer
         onClick={() => setIsOpen(true)}
       >
         <CardContent className="pt-6 flex justify-center">
-          <img
+          <Image
             src={imageUrl}
             alt={description}
+            width={192}
+            height={256}
             className="w-48 h-64 object-cover rounded-lg"
           />
         </CardContent>
@@ -39,10 +42,12 @@ export function ProductImageViewer({ imageUrl, description }: ProductImageViewer
             className="relative flex items-center justify-center"
             onClick={(e) => e.stopPropagation()}
           >
-            <img
+            <Image
               src={imageUrl}
               alt={description}
-              className="max-w-4xl max-h-[90vh] object-contain rounded-lg"
+              width={896}
+              height={1194}
+              className="max-w-4xl max-h-[90vh] w-auto h-auto object-contain rounded-lg"
             />
             <button
               onClick={() => setIsOpen(false)}

@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { adjustmentSchema, type AdjustmentFormData } from "@/validators/adjustment";
 import { revalidatePath } from "next/cache";
+import { getPostHogClient } from "@/lib/posthog-server";
 
 export async function createAdjustment(data: AdjustmentFormData) {
   const parsed = adjustmentSchema.safeParse(data);
@@ -94,6 +95,19 @@ export async function createAdjustment(data: AdjustmentFormData) {
       },
     });
   }
+
+  const posthog = getPostHogClient();
+  posthog.capture({
+    distinctId: user.id,
+    event: "stock_adjustment_made",
+    properties: {
+      adjustment_type: parsed.data.adjustment_type,
+      quantity,
+      reason,
+      stock_type: roll_id ? "roll" : "piece_batch",
+    },
+  });
+  await posthog.flush();
 
   revalidatePath("/adjustments");
   revalidatePath("/products");

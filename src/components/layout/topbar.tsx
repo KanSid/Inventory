@@ -2,6 +2,7 @@
 
 import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import posthog from "posthog-js";
 import { Menu, LogOut, ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -18,6 +19,8 @@ export function Topbar({ onMenuClick }: TopbarProps) {
   const isSubpage = segments.length > 1;
 
   async function handleLogout() {
+    posthog.capture("user_logged_out");
+    posthog.reset();
     await supabase.auth.signOut();
     router.push("/login");
     router.refresh();

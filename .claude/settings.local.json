@@ -69,7 +69,15 @@
       "PowerShell($env:PYTHONUTF8 = '1'; py -c \"from graphify.watch import _rebuild_code; from pathlib import Path; _rebuild_code\\(Path\\('.'\\)\\)\")",
       "PowerShell(npx tsc --noEmit 2>&1)",
       "Bash(py -c \"from graphify.watch import _rebuild_code; from pathlib import Path; _rebuild_code\\(Path\\('.'\\)\\)\")",
-      "Bash(npx tsc *)"
+      "Bash(npx tsc *)",
+      "mcp__3d454847-1e89-4eed-ad15-f76ba914fc7c__get_organization",
+      "mcp__3d454847-1e89-4eed-ad15-f76ba914fc7c__get_advisors",
+      "mcp__3d454847-1e89-4eed-ad15-f76ba914fc7c__query_logs",
+      "Bash(awk '{sum+=$1} END {print}')",
+      "mcp__claude-in-chrome__list_connected_browsers",
+      "mcp__claude-in-chrome__browser_batch",
+      "mcp__claude-in-chrome__computer",
+      "mcp__claude-in-chrome__read_page"
     ]
   }
 }

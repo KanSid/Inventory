@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { shipmentSchema, type ShipmentFormData } from "@/validators/shipment";
 import { revalidatePath } from "next/cache";
+import { getPostHogClient } from "@/lib/posthog-server";
 
 export async function createShipment(data: ShipmentFormData) {
   const parsed = shipmentSchema.safeParse(data);
@@ -44,6 +45,19 @@ export async function createShipment(data: ShipmentFormData) {
 
   const { error: itemsError } = await supabase.from("shipment_items").insert(items);
   if (itemsError) return { error: { shipment_number: [itemsError.message] } };
+
+  const { data: { user } } = await supabase.auth.getUser();
+  const posthog = getPostHogClient();
+  posthog.capture({
+    distinctId: user?.id ?? "anonymous",
+    event: "shipment_created",
+    properties: {
+      shipment_id: shipment.id,
+      shipment_number: parsed.data.shipment_number,
+      item_count: parsed.data.items.length,
+    },
+  });
+  await posthog.flush();
 
   revalidatePath("/shipments");
   return { success: true, id: shipment.id };
@@ -250,6 +264,19 @@ export async function receiveShipment(shipmentId: string) {
     },
   });
 
+  const posthog = getPostHogClient();
+  posthog.capture({
+    distinctId: user.id,
+    event: "shipment_received",
+    properties: {
+      shipment_id: shipmentId,
+      shipment_number: shipmentData?.shipment_number ?? "Unknown",
+      item_count: items.length,
+      supplier_count: suppliersSet.size,
+    },
+  });
+  await posthog.flush();
+
   revalidatePath("/shipments");
   revalidatePath("/products");
   revalidatePath("/dashboard");
@@ -405,12 +432,22 @@ export async function renameShipment(shipmentId: string, shipmentNumber: string)
 
 export async function cancelShipment(shipmentId: string) {
   const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
   const { error } = await supabase
     .from("shipments")
     .update({ status: "cancelled", updated_at: new Date().toISOString() })
     .eq("id", shipmentId);
 
   if (error) return { error: error.message };
+
+  const posthog = getPostHogClient();
+  posthog.capture({
+    distinctId: user?.id ?? "anonymous",
+    event: "shipment_cancelled",
+    properties: { shipment_id: shipmentId },
+  });
+  await posthog.flush();
 
   revalidatePath("/shipments");
   return { success: true };
