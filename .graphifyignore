@@ -1,0 +1,7 @@
+# Skip image files - avoid burning tokens on trivial icons/logos in semantic extraction
+*.svg
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
