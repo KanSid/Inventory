@@ -94,7 +94,10 @@ export function AdjustmentHistoryCard({
   async function handleShowMore() {
     setLoading(true);
     const result = await fetchPage(adjustments.length, { month, from, to });
-    setAdjustments((prev) => [...prev, ...(result.data as AdjustmentRow[])]);
+    setAdjustments((prev) => {
+      const seen = new Set(prev.map((a) => a.id));
+      return [...prev, ...(result.data as AdjustmentRow[]).filter((a) => !seen.has(a.id))];
+    });
     setCount(result.count);
     setLoading(false);
   }

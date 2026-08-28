@@ -77,7 +77,9 @@
       "mcp__claude-in-chrome__list_connected_browsers",
       "mcp__claude-in-chrome__browser_batch",
       "mcp__claude-in-chrome__computer",
-      "mcp__claude-in-chrome__read_page"
+      "mcp__claude-in-chrome__read_page",
+      "Bash(npx eslint *)",
+      "mcp__3d454847-1e89-4eed-ad15-f76ba914fc7c__get_project"
     ]
   }
 }

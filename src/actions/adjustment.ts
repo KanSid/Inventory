@@ -144,7 +144,8 @@ export async function getProductAdjustmentsPage(params: {
     .from("stock_adjustments")
     .select(isRoll ? "*, rolls(roll_number), profiles:adjusted_by(full_name)" : "*, piece_batches(batch_number), profiles:adjusted_by(full_name)", { count: "exact" })
     .in(idField, ids)
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .order("id", { ascending: false });
   if (dateFrom) pageQuery = pageQuery.gte("created_at", dateFrom);
   if (toBound) pageQuery = pageQuery.lte("created_at", toBound);
   pageQuery = pageQuery.range(offset, offset + limit - 1);

@@ -79,7 +79,10 @@ export function RecentUsageCard({
   async function handleShowMore() {
     setLoading(true);
     const result = await fetchPage(usage.length, { month, from, to });
-    setUsage((prev) => [...prev, ...(result.data as UsageRow[])]);
+    setUsage((prev) => {
+      const seen = new Set(prev.map((u) => u.id));
+      return [...prev, ...(result.data as UsageRow[]).filter((u) => !seen.has(u.id))];
+    });
     setCount(result.count);
     setLoading(false);
   }

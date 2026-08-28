@@ -70,6 +70,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
       .select("*, brides(name), rolls(roll_number)", { count: "exact" })
       .in("roll_id", rollIds)
       .order("usage_date", { ascending: false })
+      .order("id", { ascending: false })
       .limit(RECENT_LIMIT);
     usage = data ?? [];
     usageCount = count ?? usage.length;
@@ -79,6 +80,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
       .select("*, brides(name), piece_batches(batch_number)", { count: "exact" })
       .in("batch_id", batchIds)
       .order("usage_date", { ascending: false })
+      .order("id", { ascending: false })
       .limit(RECENT_LIMIT);
     usage = data ?? [];
     usageCount = count ?? usage.length;
@@ -93,6 +95,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
       .select("*, rolls(roll_number), profiles:adjusted_by(full_name)", { count: "exact" })
       .in("roll_id", rollIds)
       .order("created_at", { ascending: false })
+      .order("id", { ascending: false })
       .limit(RECENT_LIMIT);
     adjustments = data ?? [];
     adjustmentCount = count ?? adjustments.length;
@@ -102,6 +105,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
       .select("*, piece_batches(batch_number), profiles:adjusted_by(full_name)", { count: "exact" })
       .in("batch_id", batchIds)
       .order("created_at", { ascending: false })
+      .order("id", { ascending: false })
       .limit(RECENT_LIMIT);
     adjustments = data ?? [];
     adjustmentCount = count ?? adjustments.length;

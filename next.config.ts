@@ -28,6 +28,11 @@ const nextConfig: NextConfig = {
         pathname: "/storage/v1/object/public/**",
       },
     ],
+    // Uploaded filenames are random hex and never overwritten (upsert: false),
+    // so it's safe to cache optimized versions indefinitely. Without this,
+    // Next re-fetches the same images from Supabase every ~60s, defeating
+    // the point of routing images through next/image.
+    minimumCacheTTL: 31536000, // 1 year
   },
 
   // Strict TypeScript check (default in Next.js 16)

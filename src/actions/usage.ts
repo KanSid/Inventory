@@ -137,7 +137,8 @@ export async function getProductUsagePage(params: {
     .from("stock_usage")
     .select(isRoll ? "*, brides(name), rolls(roll_number)" : "*, brides(name), piece_batches(batch_number)", { count: "exact" })
     .in(idField, ids)
-    .order("usage_date", { ascending: false });
+    .order("usage_date", { ascending: false })
+    .order("id", { ascending: false });
   if (dateFrom) pageQuery = pageQuery.gte("usage_date", dateFrom);
   if (dateTo) pageQuery = pageQuery.lte("usage_date", dateTo);
   pageQuery = pageQuery.range(offset, offset + limit - 1);
