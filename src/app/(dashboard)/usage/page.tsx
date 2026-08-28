@@ -178,7 +178,7 @@ async function UsageTable({
               {!usage || usage.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={canEdit ? 7 : 6} className="py-12 text-center text-muted-foreground">
-                    No usage logged yet.
+                    No usage logged yet. Log material used on a commission to start tracking consumption.
                   </TableCell>
                 </TableRow>
               ) : (
@@ -207,7 +207,7 @@ async function UsageTable({
                       {canEdit && (
                         <TableCell className="text-right">
                           <Link href={`/usage/${u.id}/edit`}>
-                            <Button variant="ghost" size="icon" className="h-7 w-7">
+                            <Button variant="ghost" size="icon" className="h-7 w-7" aria-label="Edit usage entry">
                               <Pencil size={13} />
                             </Button>
                           </Link>

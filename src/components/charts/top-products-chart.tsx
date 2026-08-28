@@ -11,7 +11,6 @@ interface ProductUsageData {
 
 const header = (
   <>
-    <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/60 mb-1">Usage</p>
     <h3 className="font-serif text-lg text-foreground">Top Products by Usage</h3>
     <p className="text-sm text-muted-foreground mt-0.5 mb-4">Products ranked by total meters consumed</p>
   </>

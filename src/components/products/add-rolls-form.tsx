@@ -136,13 +136,15 @@ export function AddRollsForm({ productId, itemCode }: Props) {
           {error && <p className="text-sm text-red-500">{error}</p>}
 
           <p className="text-sm text-muted-foreground">
-            This will create {rolls.length} roll(s) numbered {itemCode}-R1, {itemCode}-R2, etc.
+            {rolls.length === 1
+              ? `This will create 1 roll numbered ${itemCode}-R1.`
+              : `This will create ${rolls.length} rolls numbered ${itemCode}-R1 through ${itemCode}-R${rolls.length}.`}
           </p>
 
           <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={() => router.back()}>Cancel</Button>
             <Button type="submit" disabled={loading}>
-              {loading ? "Adding..." : `Add ${rolls.length} Roll(s)`}
+              {loading ? "Adding..." : rolls.length === 1 ? "Add Roll" : `Add ${rolls.length} Rolls`}
             </Button>
           </div>
         </form>

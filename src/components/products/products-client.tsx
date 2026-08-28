@@ -238,7 +238,7 @@ export function ProductsClient({ products, categories, productTypes, costingCate
                         {p.image_url ? (
                           <Image
                             src={p.image_url}
-                            alt={p.description}
+                            alt={p.description || `${p.item_code} product photo`}
                             width={36}
                             height={36}
                             className="h-9 w-9 rounded-md border object-cover"

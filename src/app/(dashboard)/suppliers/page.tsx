@@ -30,7 +30,7 @@ export default async function SuppliersPage() {
       />
 
       {!suppliers || suppliers.length === 0 ? (
-        <div className="py-16 text-center text-muted-foreground">No suppliers yet.</div>
+        <div className="py-16 text-center text-muted-foreground">No suppliers yet. Add one to start linking shipments to a source.</div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {suppliers.map((s) => (

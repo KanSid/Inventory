@@ -72,11 +72,11 @@ export function Sidebar({ role, fullName, open, onClose }: SidebarProps) {
             <Link href="/dashboard">
               <span className="font-serif italic text-2xl text-primary tracking-tight">D&apos;Aisle</span>
             </Link>
-            <p className="font-sans text-[10px] uppercase tracking-[0.15em] font-semibold text-sidebar-foreground/40">
+            <p className="font-sans text-[10px] uppercase tracking-[0.15em] font-semibold text-warm-600">
               Bridal Standard v1.0
             </p>
           </div>
-          <button onClick={onClose} className="lg:hidden mt-1 text-sidebar-foreground/60 hover:text-sidebar-foreground">
+          <button onClick={onClose} className="lg:hidden mt-1 text-warm-600 hover:text-sidebar-foreground" aria-label="Close menu">
             <X size={18} />
           </button>
         </div>
@@ -94,7 +94,7 @@ export function Sidebar({ role, fullName, open, onClose }: SidebarProps) {
                   "flex items-center gap-3 rounded-lg px-3 py-2.5 text-xs font-semibold uppercase tracking-[0.08em] transition-all duration-200",
                   isActive
                     ? "bg-sidebar-primary text-sidebar-primary-foreground"
-                    : "text-sidebar-foreground/50 hover:bg-sidebar-accent hover:text-sidebar-foreground"
+                    : "text-warm-600 hover:bg-sidebar-accent hover:text-sidebar-foreground"
                 )}
               >
                 <item.icon size={18} />
@@ -117,7 +117,7 @@ export function Sidebar({ role, fullName, open, onClose }: SidebarProps) {
                       "flex items-center gap-3 rounded-lg px-3 py-2.5 text-xs font-semibold uppercase tracking-[0.08em] transition-all duration-200",
                       isActive
                         ? "bg-sidebar-primary text-sidebar-primary-foreground"
-                        : "text-sidebar-foreground/50 hover:bg-sidebar-accent hover:text-sidebar-foreground"
+                        : "text-warm-600 hover:bg-sidebar-accent hover:text-sidebar-foreground"
                     )}
                   >
                     <item.icon size={18} />
@@ -137,7 +137,7 @@ export function Sidebar({ role, fullName, open, onClose }: SidebarProps) {
             </div>
             <div className="flex-1 min-w-0">
               <p className="truncate text-sm font-medium text-sidebar-foreground">{fullName}</p>
-              <p className="text-[10px] capitalize text-sidebar-foreground/50 uppercase tracking-[0.08em]">{role.replace("_", " ")}</p>
+              <p className="text-[10px] capitalize text-warm-600 uppercase tracking-[0.08em]">{role.replace("_", " ")}</p>
             </div>
           </div>
         </div>

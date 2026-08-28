@@ -50,7 +50,7 @@ export function UserManagementActions({ userId, currentRole, isActive }: UserMan
   const roles = ["viewer", "inventory_manager", "admin"] as const;
 
   return (
-    <div className="flex items-center justify-end gap-2 flex-wrap">
+    <div className="flex items-center justify-end gap-2 flex-nowrap">
       {feedback && (
         <span className={`text-xs ${feedback.type === "ok" ? "text-emerald-600" : "text-red-600"}`}>
           {feedback.msg}
@@ -108,7 +108,7 @@ export function UserManagementActions({ userId, currentRole, isActive }: UserMan
         onClick={handlePasswordReset}
         className="text-xs h-8"
       >
-        Reset PW
+        Reset Password
       </Button>
     </div>
   );

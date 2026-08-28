@@ -25,12 +25,12 @@ export default async function InventoryReportPage() {
 
   const { data: inventory } = await supabase
     .from("product_stock_summary")
-    .select("*, products(item_code, description)")
-    .order("products.item_code");
+    .select("*")
+    .order("item_code");
 
   const inventoryData = (inventory ?? []).map((item: any) => ({
-    item_code: item.item_code || item.products?.item_code || "Unknown",
-    description: item.description || item.products?.description || "",
+    item_code: item.item_code || "Unknown",
+    description: item.description || "",
     total_stock: item.total_stock || 0,
     active_count: item.active_count || 0,
     stock_unit: item.stock_unit || "roll",
@@ -46,7 +46,7 @@ export default async function InventoryReportPage() {
       />
 
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
+        <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2">
           <CardTitle className="text-lg">Products</CardTitle>
           <InventoryReportClient data={inventoryData} />
         </CardHeader>

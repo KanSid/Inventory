@@ -17,13 +17,15 @@ export default async function UsageReportPage() {
 
   const { data: usage } = await supabase
     .from("stock_usage")
-    .select("*, products(item_code), brides(name), profiles:logged_by(full_name)")
+    .select(
+      "*, brides(name), rolls(product_id, products(item_code)), piece_batches(product_id, products(item_code)), profiles:logged_by(full_name)"
+    )
     .order("usage_date", { ascending: false })
     .limit(500);
 
   const usageData = (usage ?? []).map((item: any) => ({
     usage_date: item.usage_date,
-    item_code: item.products?.item_code || "Unknown",
+    item_code: item.rolls?.products?.item_code || item.piece_batches?.products?.item_code || "Unknown",
     bride_name: item.brides?.name || "—",
     quantity_used: item.quantity_used || 0,
     logged_by: item.profiles?.full_name || "Unknown",
@@ -34,7 +36,7 @@ export default async function UsageReportPage() {
       <PageHeader title="Stock Usage Report" description="Material consumption log" />
 
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
+        <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2">
           <CardTitle className="text-lg">Usage Records</CardTitle>
           <UsageReportClient data={usageData} />
         </CardHeader>

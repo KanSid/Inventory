@@ -285,7 +285,7 @@ export function BridesClient({ brides, canEdit }: Props) {
       {/* Empty state */}
       {filtered.length === 0 && (
         <div className="py-16 text-center text-muted-foreground">
-          {brides.length === 0 ? "No brides yet." : "No results."}
+          {brides.length === 0 ? "No brides yet. Add one to start tracking their commission." : "No brides match your search."}
         </div>
       )}
     </div>

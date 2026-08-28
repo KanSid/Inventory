@@ -65,7 +65,7 @@ export default async function AdjustmentsPage() {
               {!adjustments || adjustments.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="py-12 text-center text-muted-foreground">
-                    No adjustments yet.
+                    No adjustments logged yet.
                   </TableCell>
                 </TableRow>
               ) : (

@@ -122,7 +122,7 @@ export function ProductForm({ categories, suppliers, productTypes, costingCatego
           {/* Code + Category */}
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="item_code">Code</Label>
+              <Label htmlFor="item_code">Item Code</Label>
               <Input
                 id="item_code"
                 value={itemCode}
@@ -283,6 +283,7 @@ export function ProductForm({ categories, suppliers, productTypes, costingCatego
                     type="button"
                     onClick={() => setImageUrl("")}
                     className="absolute -right-2 -top-2 rounded-full bg-red-500 p-1 text-white hover:bg-red-600"
+                    aria-label="Remove image"
                   >
                     ✕
                   </button>
@@ -303,15 +304,20 @@ export function ProductForm({ categories, suppliers, productTypes, costingCatego
           </div>
 
           {/* Phased Out */}
-          <label className="flex items-center gap-2 cursor-pointer select-none">
-            <input
-              type="checkbox"
-              checked={isPhasedOut}
-              onChange={(e) => setIsPhasedOut(e.target.checked)}
-              className="h-4 w-4 rounded border-gray-300"
-            />
-            <span className="text-sm font-medium">Phased out</span>
-          </label>
+          <div className="space-y-1">
+            <label className="flex items-center gap-2 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={isPhasedOut}
+                onChange={(e) => setIsPhasedOut(e.target.checked)}
+                className="h-4 w-4 rounded border-gray-300"
+              />
+              <span className="text-sm font-medium">Phased out</span>
+            </label>
+            <p className="text-xs text-muted-foreground pl-6">
+              Hides this product from new shipments, usage, and adjustments. Existing stock stays visible.
+            </p>
+          </div>
 
           <div className="flex justify-end gap-2 pt-2">
             <Button type="button" variant="outline" onClick={() => router.back()}>

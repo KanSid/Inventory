@@ -95,7 +95,7 @@ export default async function UsersPage() {
                         <TableCell className="hidden lg:table-cell text-sm text-muted-foreground">
                           {formatDate(u.created_at)}
                         </TableCell>
-                        <TableCell className="text-right">
+                        <TableCell className="text-right whitespace-nowrap">
                           {!isSelf && (
                             <UserManagementActions
                               userId={u.id}

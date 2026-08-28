@@ -13,7 +13,6 @@ interface ShipmentTimelineData {
 export function ShipmentTimelineChart({ data }: { data: ShipmentTimelineData[] }) {
   const header = (
     <>
-      <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/60 mb-1">Shipments</p>
       <h3 className="font-serif text-lg text-foreground">Shipment History</h3>
       <p className="text-sm text-muted-foreground mt-0.5 mb-4">Received shipments by week (past 12 weeks)</p>
     </>

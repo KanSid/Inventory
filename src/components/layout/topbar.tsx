@@ -32,6 +32,7 @@ export function Topbar({ onMenuClick }: TopbarProps) {
         <button
           onClick={onMenuClick}
           className="lg:hidden rounded-md p-2 text-muted-foreground hover:bg-muted"
+          aria-label="Open menu"
         >
           <Menu size={20} />
         </button>

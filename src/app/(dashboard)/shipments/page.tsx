@@ -53,7 +53,7 @@ export default async function ShipmentsPage() {
               {!shipments || shipments.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={4} className="py-12 text-center text-muted-foreground">
-                    No shipments yet.
+                    No shipments yet. Create one to start tracking incoming stock.
                   </TableCell>
                 </TableRow>
               ) : (

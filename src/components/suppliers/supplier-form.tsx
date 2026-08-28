@@ -68,26 +68,26 @@ export function SupplierForm({ supplier }: Props) {
               {errors.name && <p className="text-xs text-red-500">{errors.name[0]}</p>}
             </div>
             <div className="space-y-2">
-              <Label>Contact Person</Label>
+              <Label>Contact Person (optional)</Label>
               <Input value={contactPerson} onChange={(e) => setContactPerson(e.target.value)} />
             </div>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label>Email</Label>
+              <Label>Email (optional)</Label>
               <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
             </div>
             <div className="space-y-2">
-              <Label>Phone</Label>
+              <Label>Phone (optional)</Label>
               <Input value={phone} onChange={(e) => setPhone(e.target.value)} />
             </div>
           </div>
           <div className="space-y-2">
-            <Label>Address</Label>
+            <Label>Address (optional)</Label>
             <Textarea value={address} onChange={(e) => setAddress(e.target.value)} rows={2} />
           </div>
           <div className="space-y-2">
-            <Label>Notes</Label>
+            <Label>Notes (optional)</Label>
             <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} />
           </div>
           <div className="flex justify-end gap-2 pt-2">

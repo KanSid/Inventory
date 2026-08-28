@@ -77,10 +77,10 @@ export function ShipmentNameEditor({
           disabled={saving}
           className="h-10 max-w-xs font-serif text-2xl"
         />
-        <Button size="icon" variant="outline" onClick={handleSave} disabled={saving}>
+        <Button size="icon" variant="outline" onClick={handleSave} disabled={saving} aria-label="Save shipment name">
           <Check size={16} />
         </Button>
-        <Button size="icon" variant="outline" onClick={handleCancel} disabled={saving}>
+        <Button size="icon" variant="outline" onClick={handleCancel} disabled={saving} aria-label="Cancel">
           <X size={16} />
         </Button>
       </div>

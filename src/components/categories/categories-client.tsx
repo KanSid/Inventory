@@ -128,10 +128,11 @@ export function CategoriesClient({ categories, productCounts, canEdit, canDelete
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="roll">Roll</SelectItem>
+                        <SelectItem value="roll">Roll (meters)</SelectItem>
                         <SelectItem value="pieces">Pieces</SelectItem>
                       </SelectContent>
                     </Select>
+                    <p className="text-xs text-muted-foreground">How stock is tracked for products in this category</p>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="desc">Description (optional)</Label>
@@ -177,6 +178,7 @@ export function CategoriesClient({ categories, productCounts, canEdit, canDelete
                       size="icon"
                       className="h-8 w-8"
                       onClick={() => openEdit(cat)}
+                      aria-label={`Edit ${cat.name}`}
                     >
                       <Pencil size={14} />
                     </Button>
@@ -187,6 +189,7 @@ export function CategoriesClient({ categories, productCounts, canEdit, canDelete
                         className="h-8 w-8 text-red-500 hover:text-red-700"
                         onClick={() => handleDelete(cat.id)}
                         disabled={deleteId === cat.id}
+                        aria-label={`Delete ${cat.name}`}
                       >
                         <Trash2 size={14} />
                       </Button>

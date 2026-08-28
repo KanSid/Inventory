@@ -201,7 +201,7 @@ export function AdminSettingsForm({ config }: AdminSettingsFormProps) {
             defaultValue={defaults.data_retention_days}
             className="w-full rounded-md border border-input px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
           />
-          <p className="text-xs text-muted-foreground">Activity log entries older than this will be archived (minimum 30 days)</p>
+          <p className="text-xs text-muted-foreground">How long to keep activity log entries (minimum 30 days)</p>
         </CardContent>
       </Card>
 

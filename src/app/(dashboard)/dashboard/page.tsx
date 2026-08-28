@@ -5,6 +5,16 @@ import { StockStatusChart } from "@/components/charts/stock-status-chart";
 import { TopProductsChart } from "@/components/charts/top-products-chart";
 import { ShipmentTimelineChart } from "@/components/charts/shipment-timeline-chart";
 
+// Labels a date by the Monday that starts its calendar week, e.g. "Jun 29" —
+// a real, locatable date instead of a month-relative index that resets every month.
+function weekLabel(date: Date): string {
+  const dayOfWeek = date.getDay(); // 0 = Sunday .. 6 = Saturday
+  const diffToMonday = (dayOfWeek + 6) % 7;
+  const monday = new Date(date);
+  monday.setDate(date.getDate() - diffToMonday);
+  return monday.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}
+
 export default async function DashboardPage() {
   const supabase = await createClient();
 
@@ -24,7 +34,11 @@ export default async function DashboardPage() {
     // Stock status breakdown
     supabase.from("product_stock_summary").select("stock_status"),
     // Usage data for consumption and top products charts
-    supabase.from("stock_usage").select("*, products(item_code)").order("usage_date", { ascending: false }).limit(500),
+    supabase
+      .from("stock_usage")
+      .select("*, rolls(products(item_code)), piece_batches(products(item_code))")
+      .order("usage_date", { ascending: false })
+      .limit(500),
     // Shipment data for timeline
     supabase.from("shipments").select("status, date, created_at").order("created_at", { ascending: false }).limit(200),
   ]);
@@ -50,10 +64,8 @@ export default async function DashboardPage() {
   const consumptionMap = new Map<string, Map<string, number>>();
   (usageWithProducts ?? []).forEach((usage: any) => {
     const date = new Date(usage.usage_date);
-    const weekNum = Math.floor((date.getDate() - date.getDay() + 6) / 7);
-    const month = date.toLocaleDateString("en-US", { month: "short", year: "2-digit" });
-    const week = `${month} W${weekNum}`;
-    const productCode = usage.products?.item_code || "Unknown";
+    const week = weekLabel(date);
+    const productCode = usage.rolls?.products?.item_code || usage.piece_batches?.products?.item_code || "Unknown";
     const qty = usage.quantity_used || 0;
 
     if (!consumptionMap.has(week)) consumptionMap.set(week, new Map());
@@ -73,7 +85,7 @@ export default async function DashboardPage() {
   // Aggregate top products by total usage
   const productUsageMap = new Map<string, number>();
   (usageWithProducts ?? []).forEach((usage: any) => {
-    const productCode = usage.products?.item_code || "Unknown";
+    const productCode = usage.rolls?.products?.item_code || usage.piece_batches?.products?.item_code || "Unknown";
     const qty = usage.quantity_used || 0;
     productUsageMap.set(productCode, (productUsageMap.get(productCode) || 0) + qty);
   });
@@ -87,9 +99,7 @@ export default async function DashboardPage() {
   const shipmentMap = new Map<string, { received: number; pending: number; cancelled: number }>();
   (shipmentsRaw ?? []).forEach((shipment: any) => {
     const date = new Date(shipment.date || shipment.created_at);
-    const weekNum = Math.floor((date.getDate() - date.getDay() + 6) / 7);
-    const month = date.toLocaleDateString("en-US", { month: "short", year: "2-digit" });
-    const week = `${month} W${weekNum}`;
+    const week = weekLabel(date);
 
     if (!shipmentMap.has(week)) shipmentMap.set(week, { received: 0, pending: 0, cancelled: 0 });
     const weekData = shipmentMap.get(week)!;
@@ -116,7 +126,7 @@ export default async function DashboardPage() {
       <div className="space-y-1">
         <h1 className="font-serif text-3xl lg:text-4xl tracking-tight text-foreground">Inventory Overview</h1>
         <p className="text-sm text-muted-foreground font-sans leading-relaxed">
-          Your atelier&apos;s digital pulse — materials, rolls, and shipments at a glance.
+          Products, rolls, and shipments at a glance.
         </p>
       </div>
 
@@ -125,7 +135,7 @@ export default async function DashboardPage() {
         {stats.map((stat, i) => (
           <div key={stat.label} className="rounded-lg bg-card shadow-sm p-6 flex flex-col justify-between gap-5">
             <div className="space-y-2">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/60">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-warm-600">
                 {String(i + 1).padStart(2, "0")} · {stat.label}
               </p>
               <p className="font-serif text-5xl text-foreground leading-none">{stat.value}</p>
@@ -134,7 +144,7 @@ export default async function DashboardPage() {
               <div className="h-px flex-1 bg-border/40" />
               <Link
                 href={stat.href}
-                className="ml-4 text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground/50 hover:text-primary transition-colors"
+                className="ml-4 text-[10px] font-semibold uppercase tracking-[0.12em] text-warm-600 hover:text-primary transition-colors"
               >
                 View →
               </Link>

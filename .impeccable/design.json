@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-28T10:57:06Z",
+  "title": "Design System: D'Aisle Inventory",
+  "extensions": {
+    "colorMeta": {
+      "harvest-gold": { "role": "primary", "displayName": "Harvest Gold", "canonical": "#735b2c", "tonalRamp": ["#f4f2ee", "#cec6b5", "#a49476", "#88744c", "#735b2c", "#735b2c", "#574522", "#3f321a"] },
+      "muted-sage": { "role": "secondary", "displayName": "Muted Sage", "canonical": "#5b8a72", "tonalRamp": ["#f2f6f4", "#c6d6ce", "#94b3a3", "#749c87", "#5b8a72", "#5b8a72", "#466553", "#34473a"] },
+      "bright-gold": { "role": "tertiary", "displayName": "Bright Gold", "canonical": "#c4a265", "tonalRamp": ["#faf8f3", "#eadec9", "#d9c39b", "#cdb07c", "#c4a265", "#c4a265", "#8f764a", "#635234"] },
+      "light-gold": { "role": "tertiary", "displayName": "Light Gold", "canonical": "#a68b54", "tonalRamp": ["#f8f6f1", "#e0d6c3", "#c5b490", "#b39c6e", "#a68b54", "#a68b54", "#7a663e", "#56472c"] },
+      "warm-bronze": { "role": "tertiary", "displayName": "Warm Bronze", "canonical": "#8b6e4e", "tonalRamp": ["#f6f3f1", "#d6ccc1", "#b4a18c", "#9c8469", "#8b6e4e", "#8b6e4e", "#67523a", "#4a3a2a"] },
+      "warm-paper": { "role": "neutral", "displayName": "Warm Paper", "canonical": "#faf9f6", "tonalRamp": ["#fffffe", "#fdfdfc", "#fcfbf9", "#fbfaf7", "#faf9f6", "#faf9f6", "#b5b3b0", "#7b7975"] },
+      "warm-ink": { "role": "neutral", "displayName": "Warm Ink", "canonical": "#2c2418", "tonalRamp": ["#eeeded", "#b5b2ae", "#767169", "#4c453b", "#2c2418", "#2c2418", "#251e14", "#1f1911"] },
+      "warm-taupe": { "role": "neutral", "displayName": "Warm Taupe", "canonical": "#8a7e6b", "tonalRamp": ["#f6f5f3", "#d6d2cb", "#b3ab9f", "#9c9181", "#8a7e6b", "#8a7e6b", "#675d4f", "#494237"] },
+      "warm-border": { "role": "neutral", "displayName": "Warm Border", "canonical": "#e2dcd0", "tonalRamp": ["#fdfcfb", "#f5f3ef", "#ece8e0", "#e6e1d7", "#e2dcd0", "#e2dcd0", "#a49f95", "#716c64"] },
+      "status-in-stock": { "role": "status", "displayName": "In Stock (Sage)", "canonical": "#5b8a72" },
+      "status-low-stock": { "role": "status", "displayName": "Low Stock (Bright Gold)", "canonical": "#c4a265" },
+      "status-out-of-stock": { "role": "status", "displayName": "Out of Stock (Harvest Gold)", "canonical": "#735b2c" },
+      "status-phased-out": { "role": "status", "displayName": "Phased Out (Warm Gray)", "canonical": "#c8bfaf" },
+      "destructive": { "role": "destructive", "displayName": "Destructive Red", "canonical": "#c4473a" }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Page titles and standalone metric numbers only." },
+      "section-title": { "displayName": "Section Title", "purpose": "Card and chart titles." },
+      "body": { "displayName": "Body", "purpose": "Table data, form values, running copy." },
+      "label": { "displayName": "Label", "purpose": "Field labels, kicker prefixes, chart legend/axis text." }
+    },
+    "shadows": [
+      { "name": "card-lift", "value": "0 1px 2px 0 rgba(44,36,24,0.05)", "purpose": "Single soft lift for cards and popovers off the warm paper background." },
+      { "name": "dialog-lift", "value": "0 20px 25px -5px rgba(44,36,24,0.15), 0 8px 10px -6px rgba(44,36,24,0.1)", "purpose": "Heavier lift for dialogs, the only surface allowed above card level." }
+    ],
+    "motion": [
+      { "name": "transition-standard", "value": "all 150ms ease", "purpose": "Default hover/focus/active transition on buttons, badges, and nav items." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "lg", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one high-commitment action per view (Save, Create, Add).",
+      "html": "<button class=\"ds-btn-primary\">Create Product</button>",
+      "css": ".ds-btn-primary { background: #735b2c; color: #fff8ee; padding: 6px 12px; border-radius: 8px; font-family: Manrope, sans-serif; font-size: 14px; font-weight: 500; border: none; transition: all 150ms ease; } .ds-btn-primary:hover { background: rgba(115,91,44,0.8); } .ds-btn-primary:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(115,91,44,0.5); }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Secondary actions (Cancel, Edit) and icon-only row actions.",
+      "html": "<button class=\"ds-btn-outline\">Cancel</button>",
+      "css": ".ds-btn-outline { background: transparent; color: #2c2418; padding: 6px 12px; border-radius: 8px; border: 1px solid #e2dcd0; font-family: Manrope, sans-serif; font-size: 14px; font-weight: 500; transition: all 150ms ease; } .ds-btn-outline:hover { background: #f5f2ec; }"
+    },
+    {
+      "name": "Stock Status Badge",
+      "kind": "chip",
+      "refersTo": "badge-status",
+      "description": "Signature status pill with a colored dot, used on every product/roll/batch row.",
+      "html": "<span class=\"ds-badge-status\"><span class=\"ds-badge-dot\"></span>In Stock</span>",
+      "css": ".ds-badge-status { display: inline-flex; align-items: center; gap: 6px; border-radius: 9999px; padding: 2px 10px; font-family: Manrope, sans-serif; font-size: 12px; font-weight: 500; background: rgba(91,138,114,0.12); color: #46654f; } .ds-badge-dot { width: 6px; height: 6px; border-radius: 9999px; background: #5b8a72; }"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "The base surface for grouped content — flat, warm-white, softly lifted.",
+      "html": "<div class=\"ds-card\"><h3 class=\"ds-card-title\">Stock Status Distribution</h3><p class=\"ds-card-desc\">Products by inventory status</p></div>",
+      "css": ".ds-card { background: #ffffff; border-radius: 12px; padding: 24px; box-shadow: 0 1px 2px rgba(44,36,24,0.05); } .ds-card-title { font-family: 'Noto Serif', Georgia, serif; font-size: 18px; font-weight: 400; color: #2c2418; margin: 0; } .ds-card-desc { font-family: Manrope, sans-serif; font-size: 14px; color: #8a7e6b; margin: 4px 0 0; }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Standard form field across product, shipment, supplier, and usage forms.",
+      "html": "<input class=\"ds-input\" placeholder=\"e.g. AL001\" />",
+      "css": ".ds-input { height: 32px; width: 100%; border-radius: 8px; border: 2px solid #e2dcd0; background: transparent; padding: 4px 10px; font-family: Manrope, sans-serif; font-size: 14px; color: #2c2418; transition: all 150ms ease; } .ds-input::placeholder { color: #8a7e6b; } .ds-input:focus-visible { outline: none; border-color: #735b2c; box-shadow: 0 0 0 3px rgba(115,91,44,0.5); }"
+    },
+    {
+      "name": "Numbered Stat Card",
+      "kind": "custom",
+      "refersTo": "signature-stat-card",
+      "description": "The system's signature KPI pattern: numbered uppercase kicker, large serif metric, hairline rule, and a View link. Reused verbatim across the dashboard and reports pages.",
+      "html": "<div class=\"ds-stat-card\"><p class=\"ds-stat-kicker\">01 &middot; Active Products</p><p class=\"ds-stat-number\">508</p><div class=\"ds-stat-footer\"><span class=\"ds-stat-rule\"></span><a href=\"#\" class=\"ds-stat-link\">View &rarr;</a></div></div>",
+      "css": ".ds-stat-card { background: #ffffff; border-radius: 12px; padding: 24px; box-shadow: 0 1px 2px rgba(44,36,24,0.05); display: flex; flex-direction: column; justify-content: space-between; gap: 20px; } .ds-stat-kicker { font-family: Manrope, sans-serif; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.15em; color: rgba(138,126,107,0.6); margin: 0 0 8px; } .ds-stat-number { font-family: 'Noto Serif', Georgia, serif; font-size: 48px; font-weight: 400; line-height: 1; color: #2c2418; margin: 0; } .ds-stat-footer { display: flex; align-items: center; } .ds-stat-rule { flex: 1; height: 1px; background: rgba(226,220,208,0.4); } .ds-stat-link { margin-left: 16px; font-family: Manrope, sans-serif; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(138,126,107,0.5); text-decoration: none; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Bridal Standard",
+    "overview": "D'Aisle Inventory is an internal operating system for a bridal atelier, not a storefront — its confidence comes from precision and restraint, not persuasion. The system reads as a warm, editorial ledger: a serif hand (Noto Serif) for display numbers and section titles gives every page the weight of a record kept by hand, while a plain, legible sans (Manrope) carries all working text — labels, table data, form fields — so the eye never has to work to find the number that matters. The palette stays inside one warm family (Harvest Gold, Muted Sage, Bright Gold, Warm Bronze, on warm paper neutrals) rather than reaching for department-store brights; color is spent deliberately, mostly through status meaning (in stock, low stock, out of stock) rather than decoration. Surfaces are flat and warm — soft shadow-sm lift on cards, nothing heavier — because the material world being tracked (fabric, thread, lace) is soft, not glossy or industrial. This is an Operate-mode surface: staff complete real tasks against it daily (receive a shipment, log usage against a bride's commission, correct a count), so scanability and consistency outrank expression. The editorial voice lives in precise, deliberate details — a serif number, a hairline rule, an uppercase label — not in page-level flourish.",
+    "keyCharacteristics": [
+      "Warm, single-family palette (gold/sage/bronze on warm neutrals) — color carries status meaning, not decoration",
+      "Serif display numbers and titles (Noto Serif) paired with plain sans for everything functional (Manrope)",
+      "Flat, warm surfaces with restrained shadow-sm lift; no heavy elevation",
+      "A signature numbered-kicker stat card (\"01 · Active Products\") reused for KPI summaries across dashboard and reports",
+      "Generous page rhythm (space-y-8), tight grouping within cards"
+    ],
+    "rules": [
+      { "name": "The One Family Rule", "body": "Every accent color, including chart colors, comes from the gold/sage/bronze family or its warm neutrals. A new hue never enters without a stated reason — status meaning is the only reason that has qualified so far.", "section": "colors" },
+      { "name": "The Serif-Only-For-Weight Rule", "body": "Serif type is reserved for titles and standalone metrics — the moments that carry real weight. Table cells, buttons, badges, and helper text are always sans; mixing serif into dense data makes it harder to scan, not more elegant.", "section": "typography" },
+      { "name": "The Single-Step Lift Rule", "body": "There is one elevation step above the page (shadow-sm cards) and one above that (shadow-xl dialogs). Nothing escalates further; a third shadow tier has no role in this system.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do keep Harvest Gold rare and intentional — primary actions, active states, and the metric numbers. It should never read as a background or fill color for large areas.",
+      "Do reuse the numbered-kicker stat card for any new KPI summary rather than inventing a new card pattern.",
+      "Do pair every serif title or metric with plain sans supporting text; never set dense data or long copy in the display serif.",
+      "Do let tables scroll horizontally on narrow viewports (overflow-x-auto, whitespace-nowrap on action cells) instead of letting row content wrap and balloon row height."
+    ],
+    "donts": [
+      "Don't introduce a shadow tier beyond shadow-sm (cards) and shadow-xl (dialogs) — depth in this system comes from warm-neutral color contrast, not stacked elevation.",
+      "Don't add a new accent hue outside the gold/sage/bronze family without a status-meaning reason; chart and UI colors both draw from the same five-color palette.",
+      "Don't stack a redundant uppercase \"kicker\" label directly above a heading that already says the same thing — the title should stand alone unless the kicker carries genuinely different information (like the numbered stat cards' sequence + label)."
+    ]
+  }
+}

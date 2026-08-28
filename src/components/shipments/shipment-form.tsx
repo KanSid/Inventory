@@ -174,6 +174,7 @@ export function ShipmentForm({ suppliers, products, mode = "create", shipmentId,
                     size="icon"
                     className="absolute top-2 right-2 text-red-500 h-7 w-7"
                     onClick={() => removeItem(idx)}
+                    aria-label="Remove item"
                   >
                     <Trash2 size={14} />
                   </Button>
@@ -275,7 +276,7 @@ export function ShipmentForm({ suppliers, products, mode = "create", shipmentId,
           </div>
 
           <div className="space-y-2">
-            <Label>Notes</Label>
+            <Label>Notes (optional)</Label>
             <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} />
           </div>
 

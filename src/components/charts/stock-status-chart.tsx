@@ -14,7 +14,6 @@ export function StockStatusChart({ data }: { data: StatusData[] }) {
     return (
       <Card>
         <CardContent className="p-6">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/60 mb-1">Stock Status</p>
           <h3 className="font-serif text-lg text-foreground">Stock Status Distribution</h3>
           <p className="text-sm text-muted-foreground mt-0.5 mb-6">Products by inventory status</p>
           <div className="h-64 flex items-center justify-center text-muted-foreground text-sm">No status data available</div>
@@ -40,7 +39,6 @@ export function StockStatusChart({ data }: { data: StatusData[] }) {
   return (
     <Card>
       <CardContent className="p-6">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/60 mb-1">Stock Status</p>
         <h3 className="font-serif text-lg text-foreground">Stock Status Distribution</h3>
         <p className="text-sm text-muted-foreground mt-0.5 mb-4">Products by inventory status</p>
         <div>

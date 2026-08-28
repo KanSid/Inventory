@@ -17,14 +17,16 @@ export default async function AdjustmentReportPage() {
 
   const { data: adjustments } = await supabase
     .from("stock_adjustments")
-    .select("*, rolls(roll_number, products(item_code)), profiles:adjusted_by(full_name)")
+    .select(
+      "*, rolls(roll_number, products(item_code)), piece_batches(batch_number, products(item_code)), profiles:adjusted_by(full_name)"
+    )
     .order("created_at", { ascending: false })
     .limit(500);
 
   const adjustmentData = (adjustments ?? []).map((item: any) => ({
     created_at: item.created_at,
-    item_code: item.rolls?.products?.item_code || "Unknown",
-    roll_number: item.rolls?.roll_number || "—",
+    item_code: item.rolls?.products?.item_code || item.piece_batches?.products?.item_code || "Unknown",
+    roll_number: item.rolls?.roll_number || item.piece_batches?.batch_number || "—",
     adjustment_type: item.adjustment_type,
     quantity: item.quantity,
     reason: item.reason || "—",
@@ -36,7 +38,7 @@ export default async function AdjustmentReportPage() {
       <PageHeader title="Adjustments Log" description="Stock corrections and damage records" />
 
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
+        <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2">
           <CardTitle className="text-lg">Adjustments</CardTitle>
           <AdjustmentReportClient data={adjustmentData} />
         </CardHeader>

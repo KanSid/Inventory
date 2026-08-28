@@ -142,7 +142,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
         description={product.description}
         action={
           canEdit ? (
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <Link href={addHref}>
                 <Button>
                   <Plus size={16} className="mr-2" />

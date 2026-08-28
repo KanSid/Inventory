@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "design-system-color",
+        "value": "rgba(0,0,0,0.08)",
+        "files": [
+          "src/components/charts/shipment-timeline-chart.tsx"
+        ],
+        "createdAt": "2026-08-28T11:11:46.620Z",
+        "reason": "pre-existing code (Tooltip contentStyle boxShadow), not introduced or touched by this session's edits"
+      }
+    ]
+  }
+}

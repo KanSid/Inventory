@@ -45,7 +45,7 @@ export default async function ShipmentReportPage() {
       <PageHeader title="Shipment History" description="Received and pending shipments" />
 
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
+        <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2">
           <CardTitle className="text-lg">Shipments</CardTitle>
           <ShipmentReportClient data={shipmentData} />
         </CardHeader>
