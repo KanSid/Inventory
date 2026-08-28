@@ -18,6 +18,7 @@ import {
   Users,
   ScrollText,
   SlidersHorizontal,
+  PackageSearch,
 } from "lucide-react";
 import type { UserRole } from "@/types";
 
@@ -27,6 +28,7 @@ const navItems = [
   { href: "/categories", label: "Categories", icon: FolderOpen },
   { href: "/shipments", label: "Shipments", icon: Truck },
   { href: "/usage", label: "Stock Usage", icon: Scissors },
+  { href: "/material-demand", label: "Material Demand", icon: PackageSearch },
   { href: "/brides", label: "Brides", icon: Heart },
   { href: "/adjustments", label: "Adjustments", icon: Wrench },
   { href: "/suppliers", label: "Suppliers", icon: Store },
