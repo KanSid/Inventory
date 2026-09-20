@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Search } from "lucide-react";
 import { SearchableSelect } from "@/components/ui/searchable-select";
 import { createProduct, updateProduct } from "@/actions/product";
-import { uploadProductImage } from "@/actions/upload";
+import { validateImageFile, MAX_IMAGE_MB } from "@/lib/image-upload";
 import type { Product, Category } from "@/types";
 
 interface LookupItem { id: string; name: string; }
@@ -56,19 +56,37 @@ export function ProductForm({ categories, suppliers, productTypes, costingCatego
   }
 
   async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
+    const input = e.target;
+    const file = input.files?.[0];
     if (!file) return;
-    setUploading(true);
-    setUploadError("");
-    const result = await uploadProductImage(file);
-    if ("error" in result) {
-      setUploadError(result.error ?? "Upload failed");
+
+    try {
+      // Reject invalid or oversized files before the network round-trip.
+      const validation = validateImageFile(file);
+      if (!validation.ok) {
+        setUploadError(validation.error);
+        return;
+      }
+
+      setUploading(true);
+      setUploadError("");
+
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch("/api/upload", { method: "POST", body: formData });
+      const result = await res.json();
+
+      if (!res.ok || "error" in result) {
+        setUploadError(result.error ?? "Upload failed");
+        return;
+      }
+      setImageUrl(result.url);
+    } catch {
+      setUploadError("Upload failed. Please try again with a smaller image.");
+    } finally {
       setUploading(false);
-      return;
+      input.value = "";
     }
-    setImageUrl(result.url);
-    setUploading(false);
-    e.target.value = "";
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -261,7 +279,7 @@ export function ProductForm({ categories, suppliers, productTypes, costingCatego
                   className="cursor-pointer"
                 />
                 <p className="mt-1 text-xs text-muted-foreground">
-                  JPG, PNG, WebP • Max 5MB
+                  JPG, PNG, WebP • Max {MAX_IMAGE_MB}MB
                 </p>
               </div>
             </div>
